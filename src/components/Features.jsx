@@ -74,14 +74,24 @@ function Features() {
   const imgRef = useRef(null);
 
   useEffect(() => {
-    const splitText = new SplitType(".features-main-text p");
-    gsap.from(splitText.chars, {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.02,
-      ease: "power3.out",
-    });
+    const featuresCont = ".features-container";
+    const mainTextP = ".features-main-text p";
+    gsap.fromTo(
+      mainTextP,
+      { y: -50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        stagger: 0.2,
+        ease: "power2.out",
+        duration: 1,
+        scrollTrigger: {
+          trigger: featuresCont,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
 
     featureData.forEach((_, index) => {
       const featureClass = `.feature-item-${index + 1}`;
