@@ -8,10 +8,10 @@ function App() {
   return (
     <div className="jobjot-entire-wrap">
       {/*insert Navbar goes here */}
+      <Nav />
       <div className="hero-section">
       <HeroSection />
       </div>
-      <Nav />
       <div className="jobjot-main-container">
         <Features />
         <About />
