@@ -3,7 +3,7 @@ import Nav from "./components/Nav";
 import Features from "./components/Features";
 import About from "./components/About";
 import HeroSection from "./components/HeroSection";
-import FAQ from "./components/Faq"
+import FAQ from "./components/Faq";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <HeroSection />
         <Features />
         <About />
-        <FAQ/>
+        <FAQ />
       </div>
       {/*insert footer goes here */}
     </div>
