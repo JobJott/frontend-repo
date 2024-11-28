@@ -1,99 +1,215 @@
-.Jobjot-container{
-    display: flex;
-    justify-content: space-between;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    height: 100px
-}
-.Jobjot-container img{
-    height: 100px;
-    
-}
-.Navigation{
-    display: flex;
-    justify-content: space-between;
-    margin-right: 400px;
-    color: black;
-    /* background-color: blue; */
-    a{
-        margin-left: 80px;
-        margin-top: 22px;
-        font-size: 17px;
-    }
-}
-.dropdown{
-    position: relative;
-    display: inline-block;
-
-}
-.dropdown-content{
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    overflow: auto;
-    min-width: 160px;
-    border-radius: 5px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-
-    a{
-        color:black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        font-size: 15px;
-    }
+.navbar-header {
+  background-color: var(--whiteColor);
+  box-shadow: 0 4px 13px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between;
 }
 
-.dropdown-content a:hover{
-    background-color: #ddd;
-}
-.dropdown:hover .dropdown-content{
-    display:block;
-}
-.dropdown:hover .dropbtn{
-    background-color: #636369;
-}
-.dropbtn{
-    background-color: white;
-    margin-left: 60px;
-    margin-top: 6px;
-    color: black;
-    height: 50px;
-    padding: 16px;
-    font-size: 17px;
-    cursor: pointer;
-    border:none
-
-}
-.Login{
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-
-    nav{
-        color: #7b61ff;
-        font-size: 15px;
-        margin-top: 10px;
-        margin-right: 50px;
-        cursor: pointer;
-    }
-
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  color: var(--textColor);
+  align-items: center;
+  padding: 0 60px;
+  margin: 0 auto;
+  max-width: 1400px;
+  width: 100%;
 }
 
-.Signup{
+.navbar-left,
+.navbar-right,
+.navbar-logo,
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
 
-    border-left: 1px solid rgba(233, 230, 230, 0.877);
+.navbar-logo img {
+  width: 99px;
+  height: 50px;
+  object-fit: contain;
+}
 
-    button{
-        margin-left: 50px;
-        margin-bottom: 100px;
-        color: white;
-        width: 100px;
-        height: 40px;
-        padding: 10px;
-        border-radius: 10px;
-        border: transparent;
-        background-color: #7b61ff;
-        cursor: pointer;
-    }
+.navbar-menu {
+  display: flex;
+  margin-left: 15%;
+  align-items: center;
+  gap: 42px;
+}
+
+.menu-links {
+  min-width: fit-content;
+  position: relative;
+  text-decoration: none;
+}
+
+.menu-title {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #515b6f;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.dropdown-icon {
+  margin-left: 5px;
+  margin-top: 3px;
+}
+
+.navbar-right {
+  gap: 10px;
+}
+
+.cta-button {
+  position: relative;
+  margin: auto;
+  padding: 12px 18px;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+  top: 3px;
+}
+
+.cta-button:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50px;
+  background: #b1dae7;
+  width: 35px;
+  height: 35px;
+  transition: all 0.3s ease;
+}
+
+.cta-button span {
+  position: relative;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--whiteColor);
+  bottom: 3px;
+}
+
+.box a {
+  text-decoration: none;
+  color: #4640de;
+  font-family: "Epilogue", sans-serif;
+}
+
+.cta-button:hover:before {
+  width: 100%;
+  /* background: #b1dae7; */
+  background: #4640de;
+  border-radius: 10px;
+}
+
+.cta-button:hover .box a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.cta-button:active {
+  transform: scale(0.95);
+}
+
+.cta-button-2 {
+  position: relative;
+  padding: 12px 18px;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  height: 35px;
+  border-radius: 10px;
+  background-color: #4640de;
+}
+
+.cta-button-2 span {
+  position: relative;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--whiteColor);
+  bottom: 3px;
+}
+
+.box-2 a {
+  text-decoration: none;
+  color: #fff;
+  font-family: "Epilogue", sans-serif;
+}
+
+.cta-button-2:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button-2:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button-2::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  transition: all 0.4s;
+}
+
+.cta-button-2::after {
+  background-color: #4640de;
+}
+
+.cta-button-2:hover::after {
+  transform: scaleX(1.4) scaleY(1.6);
+  opacity: 0;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 798px) {
+  .navbar-header {
+    height: 65px;
+  }
+
+  .menu-item {
+    margin-right: 42px;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1280px) and (max-height: 698px) {
+  .nav-menu {
+    margin-left: 8%;
+  }
+
+  .navbar-header {
+    height: 58px;
+  }
+
+  .menu-item {
+    margin-right: 36px;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .navbar {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }

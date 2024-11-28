@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: #333; */
+    font-family: "Noto Serif", serif;
+}
+.hero-section-container{
+
+    /* margin-top: 50px; */
+    min-height: calc(100vh - 120px);
+    /* width: 95%; */
+    /* background-color: #F5F8F8;x */
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.5;
+}
+.hero-section-container .textContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-inline: 50px;
+    align-items: center;
+    max-width: 1080px;
+}
+.headline{
+    font-size: 30px;
+    font-weight: 800;
+    color: #018df0;
+
+    
+    @media screen and (max-width:800px) {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+}
+.call-to-action{
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.5;
+    max-width: 800px;
+    
+}
+.hero-section-btn{
+    display: flex;
+    gap: 20px;
+    padding-top: 10px;
+    min-height: 50px;
+    min-width: 70px;
+}
+.hero-section-btn .get-started-btn{
+    width: 9em;
+        height: 3em;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        border: 0;
+        background-color: white;
+        color: #333;
+        box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+        letter-spacing: 1.5px;
+        font-size: 15px;
+        transition: all 0.5s ease;
+}
+.hero-section-btn .get-started-btn:hover{
+    letter-spacing: 2px;
+    background-color: rgb(24, 191, 220);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
+}
+.hero-section-btn .learn-more-btn{
+        width: 9em;
+        height: 3em;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        border: 0;
+        background-color: #333;
+        letter-spacing: 1.5px;
+        font-size: 15px;
+        transition: all 0.5s ease;
+}
+.learn-more-btn:hover {
+    letter-spacing: 2px;
+    background-color: rgb(24, 191, 220);
+    color: hsl(0, 0%, 100%);
+    box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
+  }
+.imageContent img{
+    width: 500px;
+    border-radius: 10px;
+}
