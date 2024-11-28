@@ -4,6 +4,7 @@ import Features from "./components/Features";
 import About from "./components/About";
 import HeroSection from "./components/HeroSection";
 import FAQ from "./components/Faq";
+import Testimonials from "./components/Testimonials";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <div className="jobjot-main-container">
         <HeroSection />
         <Features />
+        <Testimonials/>
         <About />
         <FAQ />
       </div>
