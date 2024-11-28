@@ -316,7 +316,7 @@ function Features() {
             <span>
               <Typewriter
                 words={["Streamline your job application process today with"]}
-                loop={1}
+                loop={2}
                 typeSpeed={50}
                 deleteSpeed={30}
                 delaySpeed={1000}
