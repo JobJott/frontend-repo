@@ -4,7 +4,7 @@ import "../styles/About.css";
 
 function About() {
   useEffect(() => {
-    const animation = gsap.fromTo(
+    gsap.fromTo(
       ".about-text h2, .about-text p",
       { opacity: 0, y: 50 },
       {
@@ -21,10 +21,6 @@ function About() {
         },
       }
     );
-
-    return () => {
-      animation.kill();
-    };
   }, []);
 
   return (
@@ -37,7 +33,7 @@ function About() {
             Welcome to <span className="text-highlight">JobJott</span>, your
             ultimate job application tracker. Our mission is to simplify your
             job hunt by helping you organize and manage your applications, track
-            deadlines, schedule interviews, and set custom reminders—all in one
+            deadlines, schedule interviews, and set custom reminders all in one
             place. With intuitive features and notifications, JobJott ensures
             you stay ahead, seize every opportunity, and take control of your
             career journey.{" "}

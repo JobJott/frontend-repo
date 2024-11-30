@@ -51,7 +51,6 @@ html {
 }
 
 body {
-  font-family: "Epilogue", sans-serif;
   overflow-x: hidden;
 }
 
@@ -84,8 +83,7 @@ a {
   padding-right: 20px;
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1440px) and
-(max-height: 798px) {
+@media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 798px) {
   body,
   html {
     font-size: 15px !important;
@@ -99,8 +97,7 @@ a {
   }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1440px) and
-(max-height: 800px) {
+@media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 800px) {
   body,
   html {
     font-size: 14px !important;
@@ -139,11 +136,8 @@ a {
   }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1280px) and
-(max-height: 698px) {
+@media only screen and (min-width: 768px) and (max-width: 1280px) and (max-height: 698px) {
   .jobjot-main-container {
     max-width: 991px;
   }
 }
-
-

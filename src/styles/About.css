@@ -12,7 +12,7 @@
   line-height: 1.6;
   color: #6c757d;
   text-align: justify;
-  text-align: center;
+  margin-inline: 50px;
 }
 
 .text-highlight {

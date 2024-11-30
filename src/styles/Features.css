@@ -39,6 +39,18 @@
   line-height: 1.15;
   width: 100%;
   gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-blue {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #018df0;
+  z-index: 1;
 }
 
 .features-main-text .text-colour {
@@ -122,6 +134,7 @@
   height: 3em;
   display: flex;
   align-items: center;
+  justify-content: center;
   font-family: inherit;
   cursor: pointer;
   font-size: 14px;

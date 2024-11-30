@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Typewriter } from "react-simple-typewriter";
-import SplitType from "split-type";
 import scribble from "../assets/scribble.svg";
 import "../styles/Features.css";
 import dashboard from "../assets/Dashboard.svg";
@@ -72,21 +70,20 @@ function FeatureItem({
 
 function Features() {
   const imgRef = useRef(null);
+  const textRef = useRef(null);
 
   useEffect(() => {
-    const featuresCont = ".features-container";
-    const mainTextP = ".features-main-text p";
+    const coverBlue = document.querySelector(".cover-blue");
+
     gsap.fromTo(
-      mainTextP,
-      { y: -50, opacity: 0 },
+      coverBlue,
+      { x: "0%" },
       {
-        y: 0,
-        opacity: 1,
-        stagger: 0.2,
-        ease: "power2.out",
+        x: "102%",
         duration: 1,
+        ease: "circ.inOut",
         scrollTrigger: {
-          trigger: featuresCont,
+          trigger: textRef.current,
           start: "top 80%",
           toggleActions: "play none none none",
         },
@@ -312,27 +309,16 @@ function Features() {
     <section className="features-main-section">
       <div className="features-container">
         <div className="features-main-text">
-          <h1>
-            <span>
-              <Typewriter
-                words={["Streamline your job application process today with"]}
-                loop={2}
-                typeSpeed={50}
-                deleteSpeed={30}
-                delaySpeed={1000}
-                cursor={false}
-              />
-            </span>
-            <span className="text-colour">JobJot's tracking tools.</span>
-            <span>
-              <img ref={imgRef} src={scribble} alt="scribble" />
-            </span>
-          </h1>
-          <p>
-            Easily manage your job applications, deadlines, and interview
-            schedules all in one place. Stay organized and never miss an
-            opportunity with our intuitive tracking system.
-          </p>
+          <div ref={textRef} style={{ position: "relative" }}>
+            <h1>
+              Streamline your job application process today with
+              <span className="text-colour">JobJot's tracking tools.</span>
+              <span className="cover-blue"></span>
+              <span>
+                <img ref={imgRef} src={scribble} alt="scribble" />
+              </span>
+            </h1>
+          </div>
         </div>
 
         <div className="features-details">
