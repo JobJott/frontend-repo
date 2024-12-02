@@ -8,6 +8,7 @@ import tracking from "../assets/Tracking.svg";
 import organize from "../assets/Organize.svg";
 import notification from "../assets/Notification.svg";
 import visualization from "../assets/Visualization.svg";
+import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,9 +29,12 @@ function FeatureItem({
               <h1>{header}</h1>
               <p>{subtext}</p>
               <div className="features-button">
-                <button className="btn-features1 btn-3 btn-5">
-                  <a href="/">{buttonText}</a>
-                </button>
+                <Link to="/auth/signup" style={{ textDecoration: "none" }}>
+                  {" "}
+                  <button className="btn-features1 btn-3 btn-5">
+                  <span className="bt">{buttonText}</span>
+                  </button>{" "}
+                </Link>
               </div>
             </div>
           </div>
@@ -56,9 +60,10 @@ function FeatureItem({
               <h1>{header}</h1>
               <p>{subtext}</p>
               <div className="features-button">
-                <button className="btn-features1 btn-4">
-                  <a href="/">{buttonText}</a>
-                </button>
+                <Link to="/auth/signup" style={{ textDecoration: "none" }}>
+                  {" "}
+                  <button className="btn-features1 btn-4"><span className="bt">{buttonText}</span></button>
+                </Link>
               </div>
             </div>
           </div>
@@ -315,7 +320,12 @@ function Features() {
               <span className="text-colour">JobJot's tracking tools.</span>
               <span className="cover-blue"></span>
               <span>
-                <img ref={imgRef} src={scribble} alt="scribble" />
+                <img
+                  ref={imgRef}
+                  src={scribble}
+                  alt="scribble"
+                  className="text-colour"
+                />
               </span>
             </h1>
           </div>

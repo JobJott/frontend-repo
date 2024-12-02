@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "../styles/HeroSection.css";
 import { Typewriter } from "react-simple-typewriter";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 
 const HeroSection = () => {
@@ -48,8 +49,7 @@ const HeroSection = () => {
             </p>
           </div>
           <div className="hero-section-btn">
-            <button className="get-started-btn">Get Started</button>
-            <button className="learn-more-btn">Learn More</button>
+          <Link to="/auth/signup"><button className="get-started-btn">Get Started</button></Link>
           </div>
         </div>
         </div>

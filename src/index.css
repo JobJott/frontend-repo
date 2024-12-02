@@ -20,23 +20,9 @@
   --successColor: #18864b;
   --negativeColor: #f7685b;
   --whiteColor: #ffffff;
-  --whiteAlt: #fff;
-  --darkAlt: #000;
-  --offWhite: #f9f9f9;
-  --offWhiteTrans: hsla(228, 7%, 87%, 0.3);
-  --borderOff: hsla(228, 7%, 87%, 0.5);
-  --offText: rgba(0, 0, 0, 0.5);
-  --bgOffset: #f4f4f4;
-  --placeHolder: #636369;
-  --offBlue: #eff1ff;
-  --boxShadow: rgba(64, 25, 109, 0.07);
-  --offBlueTran: rgba(223, 227, 255, 0.3);
-  --primaryAlt: #40196d;
-  --offGreen: rgba(72, 211, 138, 0.5);
-  --ctaOffBlue: rgba(64, 25, 109, 0.3);
-  --overlay: rgba(64, 25, 109, 0.2);
-  --successColorTrans: #dcffec;
-  --fontFamily: "Epilogue", sans-serif;
+  --neutral: #f8f8fd;
+  --fontFamily: font-family: "Epilogue", sans-serif;
+
 }
 
 * {
@@ -60,12 +46,14 @@ h3,
 p,
 a {
   font-family: "Epilogue", sans-serif;
+  
 }
 
 .jobjot-entire-wrap {
   -webkit-overflow-scrolling: touch;
   height: 100%;
   overflow-x: hidden;
+  background-color: #f0fcff;
 }
 
 .jobjot-main-container {

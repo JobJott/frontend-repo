@@ -1,19 +1,36 @@
-import React, { useState } from "react";
-import SignUpForm from "./SignUpForm";
-import SignInForm from "./SignInForm";
-import Overlay from "./Overlay";
+import React, { useState, useEffect, Suspense } from "react";
 import { FiLoader } from "react-icons/fi";
+import LoaderForm from "./LoaderForm";
 import "./Forms.css";
+
+const SignUpForm = React.lazy(() => import("./SignUpForm"));
+const SignInForm = React.lazy(() => import("./SignInForm"));
+const Overlay = React.lazy(() => import("./Overlay"));
 
 const AuthContainer = ({ formType }) => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(
     formType === "signup"
   );
 
+  const [showLoader, setShowLoader] = useState(true); 
+
   const handleSignUpClick = () => setIsRightPanelActive(true);
   const handleSignInClick = () => setIsRightPanelActive(false);
 
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false); // Hide LoaderForm after 1 second
+    }, 1000);
+    return () => clearTimeout(timer); // Cleanup on unmount
+  }, []);
+
+  if (showLoader) {
+    return <LoaderForm />;
+  }
+
   return (
+    <Suspense fallback={<LoaderForm />}>
     <div className="auth-bg">
       <div className="logo">
         <h1>
@@ -46,6 +63,7 @@ const AuthContainer = ({ formType }) => {
         </div>
       </div>
     </div>
+    </Suspense> 
   );
 };
 

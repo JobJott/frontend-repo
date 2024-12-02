@@ -1,9 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
-
-* {
-  box-sizing: border-box;
-}
-
 body {
   font-family: "Montserrat", sans-serif;
   margin: 0;
@@ -27,7 +21,7 @@ body {
   }
 
   .logo span {
-	font-size: 32px;
+    font-size: 32px;
   }
 
   h1 {
@@ -52,13 +46,21 @@ body {
     font-family: "Montserrat", sans-serif !important;
   }
 
-  span {
+  .error-message {
+    color: red;
     font-size: 12px;
+    margin-top: 5px;
+  }
+
+  span {
+    font-size: 14px;
     font-family: "Montserrat", sans-serif !important;
+    color: #000;
   }
 
   a {
-    color: #fff;
+    /* color: #fff; */
+    color: #000;
     font-size: 14px;
     text-decoration: none;
     margin: 15px 0;
@@ -94,7 +96,8 @@ body {
     border: 1px solid #2b2f6a;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     background: #2b2f6a;
-    color: white;
+    /* color: white; */
+    color: rgb(31, 134, 228);
     border-radius: 20px;
   }
 
@@ -156,7 +159,8 @@ body {
   }
 
   form {
-    background-color: #171830;
+    /* background-color: #171830; */
+    background-color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,7 +172,8 @@ body {
   }
 
   form h1 {
-    color: #fff;
+    /* color: #fff; */
+    color: #000;
   }
   input {
     background-color: #eee;
@@ -178,7 +183,8 @@ body {
   }
 
   .container {
-    background-color: #02021e;
+    /* background-color: #02021e; */
+    background-color: #f0fcff;
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
@@ -252,9 +258,9 @@ body {
   }
 
   .overlay {
-    background: #181b41;
-    background: -webkit-linear-gradient(to right, #3c418f, #181b41);
-    background: linear-gradient(to right, #3c418f, #181b41);
+    /* background: #181b41; */
+    /* background: -webkit-linear-gradient(to right, #3c418f, #181b41);
+    background: linear-gradient(to right, #3c418f, #181b41); */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;
@@ -303,10 +309,6 @@ body {
   .container.right-panel-active .overlay-right {
     transform: translateX(20%);
   }
-
-  /* .social-container {
-    margin: 20px 0;
-  } */
 
   .social-container a {
     border-radius: 50%;

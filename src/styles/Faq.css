@@ -69,8 +69,7 @@
 .faqAnswer {
   display: none;
   padding: 1rem;
-  font-size: 0.95rem;
-  color: #004080;
+  color: #25324b;
   animation: fadeIn 0.3s ease-in-out;
 }
 

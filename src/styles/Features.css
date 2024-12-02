@@ -1,6 +1,6 @@
 .features-main-section {
   overflow: hidden;
-  background-color: #f0fcff;
+  background-color: var(--whiteColor);
   margin-top: 7%;
   padding-bottom: 7%;
   padding-top: 8%;
@@ -49,12 +49,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #018df0;
+  background: var(--primaryColor);
   z-index: 1;
 }
 
 .features-main-text .text-colour {
-  color: var(--blue);
+  color: var(--primaryColor);
 }
 
 .features-main-text p {
@@ -108,15 +108,14 @@
 }
 
 .features-text h1 {
-  /* color: #25324b; */
-  color: var(--blue);
+  color: var(--primaryColor);
   font-weight: 900;
   font-size: 2.5rem;
   line-height: 1.38;
 }
 
 .features-text p {
-  color: #515b6f;
+  color: #25324b;
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.5;
@@ -142,7 +141,7 @@
   letter-spacing: 0.05em;
   padding: 0.7em 1.4em 0.7em 1.1em;
   color: white;
-  background: #4640de;
+  background: rgb(1, 141, 240);
   background: linear-gradient(
     0deg,
     rgba(70, 64, 222, 1) 0%,
@@ -161,7 +160,7 @@
   box-shadow: 0 0.3em 1em -0.5em #4640de;
 }
 
-.feature-item-1 .btn-features1 a {
+.feature-item-1 .btn-features1 .bt {
   text-decoration: none;
   color: var(--whiteColor);
 }
@@ -208,13 +207,14 @@
   height: 400px;
 }
 
-.feature-item-2 .btn-features1 a {
+.feature-item-2 .btn-features1 .bt {
   text-decoration: none;
-  color: #4640de;
+  color: #fff;
 }
 
 .feature-item-2 .btn-features1 {
   width: 15em;
+  background-color: var(--primaryColor);
   cursor: pointer;
   height: 3em;
   border-radius: 30em;
@@ -237,13 +237,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to right, #b1dae7 0%, #4640de 100%);
+  background-image: linear-gradient(to right, #018df0 0%, #4640de 100%);
   transition: 0.5s ease;
   display: block;
   z-index: -1;
 }
 
-.feature-item-2 .btn-features1:hover a {
+.feature-item-2 .btn-features1:hover .bt {
   color: var(--whiteColor);
 }
 
@@ -268,7 +268,7 @@
     font-weight: 600;
     letter-spacing: 0.05em;
     border: 0;
-    background-color: white;
+    background-color: #018df0;
     box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
     letter-spacing: 1.5px;
     font-size: 15px;
@@ -291,12 +291,12 @@
     transition: 100ms;
   }
 
-  .btn-3 a {
+  .btn-3 .bt {
     text-decoration: none;
-    color: black;
+    color: var(--whiteColor);
   }
 
-  .btn-3:hover > a {
+  .btn-3:hover > .bt {
     color: var(--whiteColor);
   }
 }
@@ -332,13 +332,9 @@
     transform: scale(0.98);
   }
 
-  .btn-4 a {
+  .btn-4 .bt {
     text-decoration: none;
     color: var(--whiteColor);
-  }
-
-  .btn-4:hover > a {
-    color: var(--blackColor);
   }
 }
 
@@ -402,13 +398,13 @@
     transform: scale(0.95);
   }
 
-  .btn-5 a {
+  .btn-5 .bt {
     text-decoration: none;
     color: var(--whiteColor);
     z-index: 2;
   }
 
-  .btn-5:hover > a {
+  .btn-5:hover > .bt {
     color: var(--whiteColor);
     z-index: 2;
   }

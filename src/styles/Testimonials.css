@@ -3,7 +3,7 @@
   margin-left: -50vw;
   position: relative;
   width: 100vw;
-  background-color: #f0fcff;
+  background-color: var(--whiteColor);
   padding: 30px;
 }
 

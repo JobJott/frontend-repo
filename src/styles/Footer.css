@@ -1,0 +1,145 @@
+.footer {
+  position: relative;
+  border-top: 0.2px solid rgba(0, 0, 0, 0.17);
+  margin: 0;
+  margin-top: 12.5%;
+  background-color: #202430;
+}
+
+.footer-container {
+  height: 328px;
+}
+
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-1 {
+  width: 350px;
+  height: 190px;
+  margin-top: 64px;
+  margin-left: 165px;
+  margin-bottom: 74.33px;
+}
+
+.copyright {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-1 p {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: sans-serif;
+  line-height: 20px;
+  display: grid;
+  gap: 8px;
+  color: #f5f7fa;
+}
+
+.footer-2 {
+  width: 635px;
+  height: 200px;
+  margin-top: 64px;
+  margin-bottom: 64px;
+  margin-right: 165px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.footer-2 > div {
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px;
+  width: 160px;
+  height: 200px;
+}
+
+.footer-2 h4 {
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: sans-serif;
+  line-height: 28px;
+  color: #ffffff;
+}
+
+.footer-2 a {
+  margin-bottom: 12px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 00;
+  font-family: sans-serif;
+  line-height: 20px;
+  color: #f5f7fa;
+}
+
+.footer-2 a:hover {
+  text-decoration: underline;
+}
+
+.stay .email-subscribe {
+  display: flex;
+  align-items: center;
+}
+
+.stay input[type="email"] {
+  padding: 9px 117px 11px 12px;
+  width: 255px;
+  background-color: #717171;
+  border: 1px solid #717171;
+  border-radius: 8px;
+  outline: none;
+  flex-grow: 1;
+}
+
+.stay input[type="email"]::placeholder {
+  color: #d9dbe1;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  font-family: sans-serif;
+  opacity: 1;
+}
+
+.stay button {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  right: 33px;
+}
+
+.logo h1 a {
+  font-weight: bold;
+  font-size: 48px;
+  margin: 0;
+  color: #fff;
+  font-family: "Montserrat", sans-serif !important;
+  text-decoration: none;
+}
+
+.logo span {
+  font-size: 32px;
+}
+
+.stay {
+  width: 255px;
+  height: 92px;
+}
+
+.footbottom {
+  border-top: 1px solid rgba(217, 217, 217, 1);
+  margin-bottom: 36px;
+}
+
+.footbottom p {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 1);
+  margin-top: 35px;
+}
