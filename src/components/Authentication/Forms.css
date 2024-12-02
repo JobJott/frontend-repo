@@ -3,14 +3,24 @@ body {
   margin: 0;
 }
 
-.auth-bg {
+.auth-page{
   background: url("../../assets/authbg.png") no-repeat center center/cover;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-bg {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 50px 0;
+
 
   .logo h1 a {
     font-weight: bold;

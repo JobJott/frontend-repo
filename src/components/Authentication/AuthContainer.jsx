@@ -12,11 +12,10 @@ const AuthContainer = ({ formType }) => {
     formType === "signup"
   );
 
-  const [showLoader, setShowLoader] = useState(true); 
+  const [showLoader, setShowLoader] = useState(true);
 
   const handleSignUpClick = () => setIsRightPanelActive(true);
   const handleSignInClick = () => setIsRightPanelActive(false);
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,39 +30,39 @@ const AuthContainer = ({ formType }) => {
 
   return (
     <Suspense fallback={<LoaderForm />}>
-    <div className="auth-bg">
-      <div className="logo">
-        <h1>
-          <a href="/">
-            JobJ
-            <span>
-              <FiLoader />
-            </span>
-            tt
-          </a>
-        </h1>
+      <div className="auth-bg">
+        <div className="logo">
+          <h1>
+            <a href="/">
+              JobJ
+              <span>
+                <FiLoader />
+              </span>
+              tt
+            </a>
+          </h1>
+        </div>
+        <div
+          className={`container ${
+            isRightPanelActive ? "right-panel-active" : ""
+          }`}
+          id="container"
+        >
+          <div className="form-container sign-up-container">
+            <SignUpForm />
+          </div>
+          <div className="form-container sign-in-container">
+            <SignInForm />
+          </div>
+          <div className="overlay-container">
+            <Overlay
+              onSignUpClick={handleSignUpClick}
+              onSignInClick={handleSignInClick}
+            />
+          </div>
+        </div>
       </div>
-      <div
-        className={`container ${
-          isRightPanelActive ? "right-panel-active" : ""
-        }`}
-        id="container"
-      >
-        <div className="form-container sign-up-container">
-          <SignUpForm />
-        </div>
-        <div className="form-container sign-in-container">
-          <SignInForm />
-        </div>
-        <div className="overlay-container">
-          <Overlay
-            onSignUpClick={handleSignUpClick}
-            onSignInClick={handleSignInClick}
-          />
-        </div>
-      </div>
-    </div>
-    </Suspense> 
+    </Suspense>
   );
 };
 
