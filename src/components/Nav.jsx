@@ -2,10 +2,19 @@ import "../styles/Nav.css";
 import arrowdown from "../assets/chevron-arrow-down.svg";
 import divider from "../assets/Divider.svg";
 import Logo from "../assets/jobjott1.svg";
+import { Link } from "react-router-dom";
+import { RxHamburgerMenu } from "react-icons/rx"; 
+import { useState } from "react";
+import SideBar from "./SideBar";
+
 
 const Nav = () => {
-  return (
-    <nav className="navbar-header">
+  const [toggle, setToggle] = useState(false)
+  const handleToggle = () =>{
+    setToggle(!toggle)
+  }
+  return (<>
+            <nav className="navbar-header">
       <div className="navbar">
         <div className="navbar-left">
           <div className="navbar-logo">
@@ -52,22 +61,32 @@ const Nav = () => {
       </div> */}
 
         <div className="navbar-right">
+        <Link to="/auth/signin">
           <button className="cta-button">
             <span className="box">
-              <a href="/">Log in</a>
+              Log in
             </span>
           </button>
+          </Link>
 
           <img src={divider} alt="" />
 
+          <Link to="/auth/signup">
           <button className="cta-button-2">
             <span className="box-2">
-              <a href="/">Sign up</a>
+              Sign up
             </span>
           </button>
+          </Link>
         </div>
+        <div className="icon-menu" onClick={handleToggle}> <RxHamburgerMenu color="black" size={25}/> </div>
       </div>
     </nav>
+     {
+      toggle === false ? null : <SideBar toggle={toggle} setToggle={setToggle}/>
+    }
+         </>
+    
   );
 };
 

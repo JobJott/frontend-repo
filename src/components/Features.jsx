@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Typewriter } from "react-simple-typewriter";
-import SplitType from "split-type";
 import scribble from "../assets/scribble.svg";
 import "../styles/Features.css";
 import dashboard from "../assets/Dashboard.svg";
@@ -10,6 +8,7 @@ import tracking from "../assets/Tracking.svg";
 import organize from "../assets/Organize.svg";
 import notification from "../assets/Notification.svg";
 import visualization from "../assets/Visualization.svg";
+import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,9 +29,12 @@ function FeatureItem({
               <h1>{header}</h1>
               <p>{subtext}</p>
               <div className="features-button">
-                <button className="btn-features1 btn-3 btn-5">
-                  <a href="/">{buttonText}</a>
-                </button>
+                <Link to="/auth/signup" style={{ textDecoration: "none" }}>
+                  {" "}
+                  <button className="btn-features1 btn-3 btn-5">
+                  <span className="bt">{buttonText}</span>
+                  </button>{" "}
+                </Link>
               </div>
             </div>
           </div>
@@ -58,9 +60,10 @@ function FeatureItem({
               <h1>{header}</h1>
               <p>{subtext}</p>
               <div className="features-button">
-                <button className="btn-features1 btn-4">
-                  <a href="/">{buttonText}</a>
-                </button>
+                <Link to="/auth/signup" style={{ textDecoration: "none" }}>
+                  {" "}
+                  <button className="btn-features1 btn-4"><span className="bt">{buttonText}</span></button>
+                </Link>
               </div>
             </div>
           </div>
@@ -72,21 +75,20 @@ function FeatureItem({
 
 function Features() {
   const imgRef = useRef(null);
+  const textRef = useRef(null);
 
   useEffect(() => {
-    const featuresCont = ".features-container";
-    const mainTextP = ".features-main-text p";
+    const coverBlue = document.querySelector(".cover-blue");
+
     gsap.fromTo(
-      mainTextP,
-      { y: -50, opacity: 0 },
+      coverBlue,
+      { x: "0%" },
       {
-        y: 0,
-        opacity: 1,
-        stagger: 0.2,
-        ease: "power2.out",
+        x: "102%",
         duration: 1,
+        ease: "circ.inOut",
         scrollTrigger: {
-          trigger: featuresCont,
+          trigger: textRef.current,
           start: "top 80%",
           toggleActions: "play none none none",
         },
@@ -312,27 +314,21 @@ function Features() {
     <section className="features-main-section">
       <div className="features-container">
         <div className="features-main-text">
-          <h1>
-            <span>
-              <Typewriter
-                words={["Streamline your job application process today with"]}
-                loop={2}
-                typeSpeed={50}
-                deleteSpeed={30}
-                delaySpeed={1000}
-                cursor={false}
-              />
-            </span>
-            <span className="text-colour">JobJot's tracking tools.</span>
-            <span>
-              <img ref={imgRef} src={scribble} alt="scribble" />
-            </span>
-          </h1>
-          <p>
-            Easily manage your job applications, deadlines, and interview
-            schedules all in one place. Stay organized and never miss an
-            opportunity with our intuitive tracking system.
-          </p>
+          <div ref={textRef} style={{ position: "relative" }}>
+            <h1>
+              Streamline your job application process today with
+              <span className="text-colour">JobJot's tracking tools.</span>
+              <span className="cover-blue"></span>
+              <span>
+                <img
+                  ref={imgRef}
+                  src={scribble}
+                  alt="scribble"
+                  className="text-colour"
+                />
+              </span>
+            </h1>
+          </div>
         </div>
 
         <div className="features-details">
