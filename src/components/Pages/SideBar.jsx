@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import "../styles/SideBar.css"
+import "../../styles/SideBar.css"
 
 const SideBar = ({toggle, setToggle}) => {
     const test = () =>{
