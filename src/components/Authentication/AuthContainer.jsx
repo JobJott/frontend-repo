@@ -54,12 +54,12 @@ const AuthContainer = ({ formType }) => {
           <div className="form-container sign-in-container">
             <SignInForm />
           </div>
-          <div className="overlay-container">
+          {/* <div className="overlay-container">
             <Overlay
               onSignUpClick={handleSignUpClick}
               onSignInClick={handleSignInClick}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </Suspense>

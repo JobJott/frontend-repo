@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "../styles/Testimonials.css";
-import igbo from "../assets/igbo.svg";
-import odidi from "../assets/odidi.svg";
-import mahmud from "../assets/mahmud.svg";
-import precious from "../assets/precious.svg";
-import olubiyi from "../assets/olubiyi.svg";
+import "../../styles/Testimonials.css";
+import igbo from "../../assets/igbo.svg";
+import odidi from "../../assets/odidi.svg";
+import mahmud from "../../assets/mahmud.svg";
+import precious from "../../assets/precious.svg";
+import olubiyi from "../../assets/olubiyi.svg";
 
 gsap.registerPlugin(ScrollTrigger);
 

@@ -1,7 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap");
-
 .hero-section-container {
-  background-color: #f0fcff;
+  background-color: inherit;
   overflow: hidden;
   font-family: "Montserrat", sans-serif;
 }
@@ -15,6 +13,20 @@
   justify-content: center;
   align-items: center;
   line-height: 1.5;
+}
+
+.hero-rect{
+  position: absolute;
+  top: 80px;
+  right: -100px;
+  z-index: -20;
+}
+
+.hero-rect2{
+  position: absolute;
+  top: 130px;
+  right: 100px;
+  z-index: -20;
 }
 
 .hero-section-container .textContent {
@@ -41,7 +53,7 @@
 
 .call-to-action p {
   font-size: 18px;
-  color: #25324B;
+  color: rgb(96, 111, 133);
   font-weight: bold;
   line-height: 1.5;
   max-width: 800px;
@@ -59,7 +71,7 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   border: 0;
-  background-color: var(--primaryColor);
+  background-color: var(--buttonColor);
   color: #fff;
   box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
   letter-spacing: 1.5px;
@@ -70,33 +82,9 @@
 
 .hero-section-btn .get-started-btn:hover {
   letter-spacing: 2px;
-  background-color: rgb(24, 191, 220);
+  background-color: var(--buttonColor);
   color: hsl(0, 0%, 100%);
-  box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
-}
-.hero-section-btn .learn-more-btn {
-  width: 9em;
-  height: 3em;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  border: 0;
-  background-color: #33333348;
-  letter-spacing: 1.5px;
-  font-size: 15px;
-  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
-  transition: all 0.5s ease;
-}
-.learn-more-btn:hover {
-  letter-spacing: 2px;
-  background-color: rgb(24, 191, 220);
-  color: hsl(0, 0%, 100%);
-  box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
-}
-.imageContent img {
-  width: 500px;
-  border-radius: 10px;
+  box-shadow: var(--buttonColor) 0px 7px 29px 0px;
 }
 
 @media (min-width: 576px) {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { gsap } from "gsap";
-import "../styles/About.css";
+import "../../styles/About.css";
 
 function About() {
   useEffect(() => {

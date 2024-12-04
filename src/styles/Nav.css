@@ -1,6 +1,6 @@
 .navbar-header {
-  background-color: var(--whiteColor);
-  box-shadow: 0 4px 13px rgba(0, 0, 0, 0.05);
+  background-color: #F1F1F1;
+  /* box-shadow: 0 4px 13px rgba(0, 0, 0, 0.05); */
   position: fixed;
   left: 0;
   top: 0;
@@ -33,7 +33,6 @@
 
 .navbar-logo img {
   width: 99px;
-  height: 50px;
   object-fit: contain;
 }
 
@@ -55,7 +54,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: #515b6f;
+  color: var(--primaryColor);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.5;
@@ -93,7 +92,7 @@
   left: 0;
   display: block;
   border-radius: 50px;
-  background: #b1dae7;
+  background: var(--buttonColor);
   width: 35px;
   height: 35px;
   transition: all 0.3s ease;
@@ -108,20 +107,24 @@
 }
 
 .box{
-  color: #4640de;
+  color: var(--blackColor);
   font-family: "Epilogue", sans-serif;
 }
 
 .cta-button:hover:before {
   width: 100%;
   /* background: #b1dae7; */
-  background: #4640de;
+  background: var(--buttonColor);
   border-radius: 10px;
+}
+
+.cta-button:hover .box{
+  color: var(--whiteColor);
+  font-family: "Epilogue", sans-serif;
 }
 
 .cta-button:hover .box {
   text-decoration: none;
-  color: #fff;
 }
 
 .cta-button:active {
@@ -137,7 +140,7 @@
   border: none;
   height: 35px;
   border-radius: 10px;
-  background-color: #4640de;
+  background: var(--buttonColor);
 }
 
 .cta-button-2 span {
@@ -179,7 +182,7 @@
 }
 
 .cta-button-2::after {
-  background-color: #4640de;
+  background: var(--buttonColor);
 }
 
 .cta-button-2:hover::after {

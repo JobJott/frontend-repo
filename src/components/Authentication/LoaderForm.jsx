@@ -24,9 +24,9 @@ const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; // Ensure full height
-  width: 100vw; // Ensure full width
-  position: absolute; // To overlay on top of the content
+  height: 100vh;
+  width: 100vw; 
+  position: absolute;
   top: 0;
   left: 0;
   --bg-color: #f0fcff;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import AuthContainer from "./Authentication/AuthContainer";
-import ResetPassword from "./Authentication/ResetPassword";
+import AuthContainer from "../Authentication/AuthContainer";
+import ResetPassword from "../Authentication/ResetPassword";
 
 const AuthPage = () => {
   return (

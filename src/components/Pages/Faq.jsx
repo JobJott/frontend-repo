@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import "../styles/Faq.css";
+import "../../styles/Faq.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import FAQImage from "../assets/faq.png";
+import FAQImage from "../../assets/faq.png";
 
 gsap.registerPlugin(ScrollTrigger);
 

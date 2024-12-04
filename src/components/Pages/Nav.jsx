@@ -1,7 +1,7 @@
-import "../styles/Nav.css";
-import arrowdown from "../assets/chevron-arrow-down.svg";
-import divider from "../assets/Divider.svg";
-import Logo from "../assets/jobjott1.svg";
+import "../../styles/Nav.css";
+import arrowdown from "../../assets/chevron-arrow-down.svg";
+import divider from "../../assets/Divider.svg";
+import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 
 
@@ -11,7 +11,7 @@ const Nav = () => {
       <div className="navbar">
         <div className="navbar-left">
           <div className="navbar-logo">
-            <a href="/">
+            <a href="/" style={{ margin: "auto 0"}}>
               <img src={Logo} alt="logo" />
             </a>
           </div>

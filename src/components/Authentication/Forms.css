@@ -5,6 +5,7 @@ body {
 
 .auth-page{
   background: url("../../assets/authbg.png") no-repeat center center/cover;
+  background: #062863;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -199,13 +200,15 @@ body {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
-    width: 768px;
+    /* width: 768px; */
+    width: max-content;
+    width: 300px;
     max-width: 100%;
     min-height: 480px;
   }
 
   .form-container {
-    position: absolute;
+    /* position: absolute; */
     top: 0;
     height: 100%;
     transition: all 0.6s ease-in-out;
@@ -225,7 +228,7 @@ body {
 
   .sign-up-container {
     left: 0;
-    width: 50%;
+    /* width: 50%; */
     opacity: 0;
     z-index: 1;
     background-color: #171830;

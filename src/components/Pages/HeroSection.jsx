@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import "../styles/HeroSection.css";
+import "../../styles/HeroSection.css";
+import rectbig from "../../assets/rectbig.svg"
+import rectsmall from "../../assets/rectsmall.svg"
 import { Typewriter } from "react-simple-typewriter";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
@@ -52,6 +54,11 @@ const HeroSection = () => {
           <Link to="/auth/signup"><button className="get-started-btn">Get Started</button></Link>
           </div>
         </div>
+        </div>
+        <div>
+          <img src={rectsmall} alt="rectangle" className="hero-rect"/>
+          <img src={rectsmall} alt="rectangle" className="hero-rect2"/>
+          {/* <img src={rectangle} alt="rectangle" /> */}
         </div>
         </div>
     </>

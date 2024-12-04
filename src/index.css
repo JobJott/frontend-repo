@@ -7,9 +7,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --primaryColor: #018df0;
-  --secondary: #ccccf5;
-  --tertiary: #e7f6fd;
+  --primaryColor: rgb(1, 35, 50);
+  --secondary: rgb(4, 4, 5);
+  --buttonColor: rgb(42, 142, 158);
   --yellow: #ffb836;
   --green: #56cdad;
   --red: #ff6550;
@@ -21,19 +21,12 @@
   --negativeColor: #f7685b;
   --whiteColor: #ffffff;
   --neutral: #f8f8fd;
-  --fontFamily: font-family: "Epilogue", sans-serif;
-
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-body,
-html {
-  background-color: var(--whiteAlt);
 }
 
 body {
@@ -45,15 +38,15 @@ h2,
 h3,
 p,
 a {
-  font-family: "Epilogue", sans-serif;
-  
+  font-family: "Montserrat", sans-serif;  
 }
 
 .jobjot-entire-wrap {
   -webkit-overflow-scrolling: touch;
   height: 100%;
   overflow-x: hidden;
-  background-color: #f0fcff;
+  background-color: #F1F1F1;
+  position: relative;
 }
 
 .jobjot-main-container {

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import scribble from "../assets/scribble.svg";
-import "../styles/Features.css";
-import dashboard from "../assets/Dashboard.svg";
-import tracking from "../assets/Tracking.svg";
-import organize from "../assets/Organize.svg";
-import notification from "../assets/Notification.svg";
-import visualization from "../assets/Visualization.svg";
+import scribble from "../../assets/scribble.svg";
+import "../../styles/Features.css";
+import dashboard from "../../assets/Dashboard.svg";
+import tracking from "../../assets/Tracking.svg";
+import organize from "../../assets/Organize.svg";
+import notification from "../../assets/Notification.svg";
+import visualization from "../../assets/Visualization.svg";
 import { Link } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);

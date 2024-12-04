@@ -1,7 +1,7 @@
 import React from "react";
-import errorImg from "../assets/errorimg.svg";
+import errorImg from "../../assets/errorimg.svg";
 import { Link } from "react-router-dom";
-import "../styles/Error.css";
+import "../../styles/Error.css";
 
 const Error = () => {
   return (

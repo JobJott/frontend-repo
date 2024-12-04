@@ -1,8 +1,8 @@
 import React from "react";
 import { FiLoader } from "react-icons/fi";
-import send from "../assets/send.png"
+import send from "../../assets/send.png"
 import { Link } from "react-router-dom";
-import "../styles/Footer.css"
+import "../../styles/Footer.css"
 
 const Footer = () => {
   return (
@@ -19,6 +19,12 @@ const Footer = () => {
                   </span>
                   tt
                 </a>
+              </h1>
+            </div>
+
+            <div>
+              <h1  className="footer-1-text">
+              Stay Organized with <br /> Your Job <br /> Applications
               </h1>
             </div>
 
