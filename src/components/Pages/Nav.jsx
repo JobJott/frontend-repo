@@ -3,11 +3,18 @@ import arrowdown from "../../assets/chevron-arrow-down.svg";
 import divider from "../../assets/Divider.svg";
 import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
+import { RxHamburgerMenu } from "react-icons/rx"; 
+import { useState } from "react";
+import SideBar from "./SideBar";
 
 
 const Nav = () => {
-  return (
-    <nav className="navbar-header">
+  const [toggle, setToggle] = useState(false)
+  const handleToggle = () =>{
+    setToggle(!toggle)
+  }
+  return (<>
+            <nav className="navbar-header">
       <div className="navbar">
         <div className="navbar-left">
           <div className="navbar-logo">
@@ -72,8 +79,14 @@ const Nav = () => {
           </button>
           </Link>
         </div>
+        <div className="icon-menu" onClick={handleToggle}> <RxHamburgerMenu color="black" size={25}/> </div>
       </div>
     </nav>
+     {
+      toggle === false ? null : <SideBar toggle={toggle} setToggle={setToggle}/>
+    }
+         </>
+    
   );
 };
 
