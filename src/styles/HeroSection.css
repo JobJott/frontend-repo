@@ -1,100 +1,117 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+.hero-section-container {
+  background-color: inherit;
+  overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+}
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    /* background-color: #333; */
-    font-family: "Noto Serif", serif;
+.hero {
+  min-height: 540px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.5;
 }
-.hero-section-container{
 
-    /* margin-top: 50px; */
-    min-height: calc(100vh - 120px);
-    /* width: 95%; */
-    background-color: #F5F8F8;
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    line-height: 1.5;
+.hero-rect{
+  position: absolute;
+  top: 80px;
+  right: -100px;
+  z-index: -20;
 }
-.hero-section-container .textContent{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-inline: 50px;
-    align-items: center;
-    max-width: 1080px;
-}
-.headline{
-    font-size: 30px;
-    font-weight: 800;
-    color: #018df0;
 
-    
-    @media screen and (max-width:800px) {
-        font-size: 20px;
-        line-height: 1.2;
-    }
+.hero-rect2{
+  position: absolute;
+  top: 130px;
+  right: 100px;
+  z-index: -20;
 }
-.call-to-action{
-    font-size: 18px;
-    color: #333;
-    font-weight: bold;
-    line-height: 1.5;
-    max-width: 800px;
-    
+
+.hero-section-container .textContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-inline: 50px;
+  gap: 20px;
+  align-items: center;
+  max-width: 1080px;
+  margin-bottom: 50px;
 }
-.hero-section-btn{
-    display: flex;
-    gap: 20px;
-    padding-top: 10px;
-    min-height: 50px;
-    min-width: 70px;
-}
-.hero-section-btn .get-started-btn{
-    width: 9em;
-        height: 3em;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        border: 0;
-        background-color: white;
-        color: #333;
-        box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
-        letter-spacing: 1.5px;
-        font-size: 15px;
-        transition: all 0.5s ease;
-}
-.hero-section-btn .get-started-btn:hover{
-    letter-spacing: 2px;
-    background-color: rgb(24, 191, 220);
-    color: hsl(0, 0%, 100%);
-    box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
-}
-.hero-section-btn .learn-more-btn{
-        width: 9em;
-        height: 3em;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        border: 0;
-        background-color: #333;
-        letter-spacing: 1.5px;
-        font-size: 15px;
-        transition: all 0.5s ease;
-}
-.learn-more-btn:hover {
-    letter-spacing: 2px;
-    background-color: rgb(24, 191, 220);
-    color: hsl(0, 0%, 100%);
-    box-shadow: rgb(24, 191, 220) 0px 7px 29px 0px;
+
+.headline h1 {
+  font-size: 60px;
+  font-weight: 800;
+  color: var(--primaryColor);
+
+  @media screen and (max-width: 800px) {
+    font-size: 20px;
+    line-height: 1.2;
   }
-.imageContent img{
-    width: 500px;
-    border-radius: 10px;
+}
+
+.call-to-action p {
+  font-size: 18px;
+  color: rgb(96, 111, 133);
+  font-weight: bold;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+.hero-section-btn {
+  padding-top: 10px;
+}
+
+.hero-section-btn .get-started-btn {
+  width: 9em;
+  height: 3em;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: 0;
+  background-color: var(--buttonColor);
+  color: #fff;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+  transition: all 0.5s ease;
+  border-radius: 100px;
+}
+
+.hero-section-btn .get-started-btn:hover {
+  letter-spacing: 2px;
+  background-color: var(--buttonColor);
+  color: hsl(0, 0%, 100%);
+  box-shadow: var(--buttonColor) 0px 7px 29px 0px;
+}
+
+@media (min-width: 576px) {
+}
+
+@media only screen and (min-width: 768px) {
+  .hero-section-container {
+    min-height: 635px;
+  }
+
+  .hero-section-container > div {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 798px) {
+  .hero-section-container {
+    min-height: 555px;
+  }
+
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1280px) and (max-height: 698px) {
+  .hero-section-container {
+    min-height: 469px;
+  }
 }
