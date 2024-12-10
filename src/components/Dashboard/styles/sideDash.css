@@ -1,0 +1,56 @@
+
+.sideDash {
+    width: 250px;
+    transition: width 0.3s ease;
+    background-color: #018df0;
+    height: 100vh;
+}
+
+.sideDash.collapsed {
+    width: 80px;
+}
+
+.jobjott-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 3rem;
+}
+
+.jobjot-img {
+    width: 40px; 
+    border-radius: 50%;
+}
+
+.toggle-icon {
+    cursor: pointer;
+    font-size: 2.5rem;
+}
+
+.list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.list-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    font-size: 22px;
+}
+
+.icon-only-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.icon {
+    font-size: 1.8rem;
+    cursor: pointer;
+}

@@ -1,0 +1,110 @@
+
+.util-container {
+    font-size: 16px; 
+    margin-top: 2rem;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px; 
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.utils {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    color: #0056b3;
+}
+
+.right-util {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap; 
+}
+
+label {
+    font-size: 16px;
+    color: #555;
+}
+
+select {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+select:focus {
+    outline: 2px solid #007bff;
+}
+
+.columns button {
+    width: 120px;
+    height: 35px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.columns button:hover {
+    background-color: #0056b3;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.add-job button {
+    width: 160px;
+    height: 40px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-job button:hover {
+    background-color: #218838;
+}
+
+.add-job button:focus {
+    outline: 2px solid #218838;
+}
+
+@media screen and (max-width: 768px) {
+    .right-util {
+        gap: 15px;
+    }
+    
+    .columns button, 
+    .add-job button {
+        font-size: 14px;
+        width: 100px;
+        height: 35px;
+    }
+}

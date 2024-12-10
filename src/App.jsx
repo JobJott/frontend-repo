@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Loader from "./components/Pages/Loader";
 import Error from "./components/Pages/Error";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 const Nav = lazy(() => import("./components/Pages/Nav"));
 const HeroSection = lazy(() => import("./components/Pages/HeroSection"));
@@ -61,6 +62,7 @@ function App() {
           }
         />
         <Route path="*" element={<Error />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
