@@ -1,0 +1,74 @@
+.cta-section {
+  margin-top: 100px;
+  margin-bottom: -150px;
+}
+
+.cta-container {
+  background: rgb(2, 50, 71);
+  border-radius: 15px;
+  overflow: hidden;
+  padding: 100px;
+  position: relative;
+  align-items: center !important;
+  gap: 140px;
+  display: flex !important;
+}
+
+.cta-left {
+  width: 50%;
+}
+
+.cta-right {
+  width: 50%;
+}
+
+.cta-left-wrap {
+  max-width: 423px;
+}
+
+.cta-text h3 {
+    margin-bottom: 15px;
+    color: var(--buttonColor);
+    line-height: 1.38;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.cta-subtext h2 {
+  color: var(--whiteColor);
+  line-height: 1.5;
+  font-size: 2rem;
+}
+
+a{
+    text-decoration: none;
+}
+
+.cta-section-btn button {
+  margin-top: 2rem !important;
+  border-radius: 15px;
+ padding: 20px 25px;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 15px;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 1;
+  background: var(--buttonColor);
+  color: var(--whiteColor);
+  height: 48px;
+  text-decoration: none;
+  border: none;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 798px) {
+  .entry-left-wrap {
+    max-width: 396px;
+  }
+
+  .entry-button a {
+    font-size: 15px;
+  }
+}

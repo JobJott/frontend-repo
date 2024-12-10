@@ -1,37 +1,26 @@
 import React from "react";
 import { FiLoader } from "react-icons/fi";
-import send from "../../assets/send.png"
+import { FaTwitter } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa6";
+import { FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import "../../styles/Footer.css"
+import "../../styles/Footer.css";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-row">
-          <div className="footer-1">
-            <div className="logo">
-              <h1>
-                <a href="/">
-                  JobJ
-                  <span>
-                    <FiLoader />
-                  </span>
-                  tt
-                </a>
-              </h1>
-            </div>
-
-            <div>
-              <h1  className="footer-1-text">
-              Stay Organized with <br /> Your Job <br /> Applications
-              </h1>
-            </div>
-
-            <div className="copyright">
-              <p>Copyright © 2024 JobJott ltd.</p>
-              <p>All rights reserved</p>
-            </div>
+          <div className="logo">
+            <h1>
+              <a href="/">
+                JobJ
+                <span>
+                  <FiLoader />
+                </span>
+                tt
+              </a>
+            </h1>
           </div>
 
           <div className="footer-2">
@@ -52,17 +41,26 @@ const Footer = () => {
               <a href="#">Privacy policy</a>
               <a href="#">Status</a>
             </div>
-
-            <div className="stay">
-              <h4>Stay up to date</h4>
-              <div className="email-subscribe">
-                <input type="email" placeholder="Your email address" />
-                <button type="submit">
-                  <img src={send} alt="Send" />
-                </button>
-              </div>
             </div>
+
+            <div className="socials">
+              <h4>Follow us on</h4>
+              <div className="social-icons">
+                <a href="#">
+                  <FaTwitter />
+                </a>
+                <a href="#">
+                  <FaLinkedin />
+                </a>
+                <a href="#">
+                  <FaFacebook />
+                </a>
+              </div>
           </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>©JobJott 2024.All Rights Reserved</p>
         </div>
       </div>
     </footer>

@@ -1,0 +1,82 @@
+.services-section {
+  background-color: rgb(2, 50, 71);
+  overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+  left: 50%;
+  margin-left: -50vw;
+  position: relative;
+  width: 100vw;
+  margin-top: 12.5%;
+}
+
+.services-container {
+  margin: 0 auto;
+  max-width: 1100px;
+  padding: 100px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+}
+
+.services-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--whiteColor);
+}
+
+.services-text h1 {
+font-size: 33px;
+}
+
+.services-details {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  height: 100%;
+}
+
+.services-number {
+  font-size: 45px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(
+    to bottom,
+    rgb(126, 151, 161) 0%,
+    rgb(148, 167, 177) 50%,
+    rgb(97, 127, 141) 80%,
+    rgb(38, 79, 95) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  vertical-align: middle;
+}
+
+.services-item {
+  background-color: rgb(12, 58, 78);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.services-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.services-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.services-card-text h1{
+    font-size: 23px;
+    font-weight: 600;
+  color: var(--whiteColor);
+}
+
+.services-card-text p{
+    font-weight: 300;
+}

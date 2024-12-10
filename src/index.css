@@ -38,14 +38,14 @@ h2,
 h3,
 p,
 a {
-  font-family: "Montserrat", sans-serif;  
+  font-family: "Montserrat", sans-serif;
 }
 
 .jobjot-entire-wrap {
   -webkit-overflow-scrolling: touch;
   height: 100%;
   overflow-x: hidden;
-  background-color: #F1F1F1;
+  background-color: #ffffff;
   position: relative;
 }
 
@@ -53,7 +53,7 @@ a {
   min-height: calc(100vh - 120px);
   transform: translateY(0) !important;
   margin-top: 70px;
-  padding: 70px 40px 63px;
+  padding: 0px 40px 63px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -62,6 +62,8 @@ a {
   margin-right: auto;
   padding-left: 20px;
   padding-right: 20px;
+  z-index: 2;
+  position: relative;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1440px) and (max-height: 798px) {
@@ -72,7 +74,7 @@ a {
 
   .jobjot-main-container {
     margin-top: 65px !important;
-    padding: 48px 40px 60px;
+    padding: 0px 40px 60px;
     display: flex;
     justify-content: center;
   }

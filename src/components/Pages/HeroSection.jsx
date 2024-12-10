@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import "../../styles/HeroSection.css";
-import rectbig from "../../assets/rectbig.svg"
+// import rectbig from "../../assets/rectbig.svg"
 import rectsmall from "../../assets/rectsmall.svg"
-import { Typewriter } from "react-simple-typewriter";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 
@@ -23,22 +22,15 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <>
-      <div className="hero-section-container">
+      <section className="hero-section-container"
+      id="home-section">
         <div className="hero">
         {/* text content */}
         <div className="textContent">
           <div className="headline">
             <h1>
               <span>
-                <Typewriter
-                  words={["Simplify Your Job Search with Our Tracker"]}
-                  loop={1}
-                  typeSpeed={50}
-                  deleteSpeed={30}
-                  delaySpeed={1000}
-                  cursor={false}
-                />
+                 Simplify Your Job Search with Our Tracker             
               </span>
             </h1>
           </div>
@@ -54,14 +46,12 @@ const HeroSection = () => {
           <Link to="/auth/signup"><button className="get-started-btn">Get Started</button></Link>
           </div>
         </div>
-        </div>
         <div>
-          <img src={rectsmall} alt="rectangle" className="hero-rect"/>
+          <img src={rectsmall} alt="rectangle" className="hero-rect1"/>
           <img src={rectsmall} alt="rectangle" className="hero-rect2"/>
-          {/* <img src={rectangle} alt="rectangle" /> */}
         </div>
         </div>
-    </>
+        </section>
   );
 };
 

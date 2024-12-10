@@ -1,59 +1,93 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-function SignInForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const SignInForm = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { email, password } = formData;
+
     if (!email || !password) {
-      setError("Please fill out all fields");
+      setError("Please fill out all fields.");
       return;
     }
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
       return;
     }
+
     setError("");
-    console.log("Sign In successful with email:", email);
-    // testing
+    console.log("Sign In successful with:", formData); // For testing
   };
 
   return (
-    <form onSubmit={handleSubmit} action="#">
-      <h1>Sign In</h1>
-      <div className="social-container">
-        <a href="#" className="social red">
-          <i className="fab fa-google-plus-g"></i>
-        </a>
-        <a href="#" className="social blue">
-          <i className="fab fa-linkedin-in"></i>
-        </a>
+    <section className="signin-section">
+      <div className="signin-container">
+        <h1 className="signin-heading">Sign in to your account</h1>
+        <div className="social-container">
+          <button className="social-btn red" aria-label="Sign in with Google">
+            <i className="fab fa-google-plus-g"></i>
+          </button>
+          <button
+            className="social-btn blue"
+            aria-label="Sign in with LinkedIn"
+          >
+            <i className="fab fa-linkedin-in"></i>
+          </button>
+        </div>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleSubmit} className="signin-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="fp">
+            <Link to="/auth/reset-password" className="forgot-password">
+              Forgot your password?
+            </Link>
+          </div>
+          <button type="submit" className="auth-btn">
+            Sign In
+          </button>
+        </form>
+        <div className="links-div">
+          <span>
+            Don't have an account?{" "}
+            <Link to="/auth/signup" className="colour-text">
+              Register
+            </Link>
+          </span>
+        </div>
       </div>
-      <span>or use your account</span>
-      {error && <p className="error-message">{error}</p>}
-      <input
-        type="email"
-        id="email-signin"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        id="password-signin"
-        placeholder="Enter your password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Link to="/auth/reset-password">Forgot your password?</Link>
-      <button className="auth-btn" type="submit">
-        Sign In
-      </button>
-    </form>
+    </section>
   );
-}
+};
 
 export default SignInForm;

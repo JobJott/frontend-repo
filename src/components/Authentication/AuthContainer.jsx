@@ -1,35 +1,29 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { Suspense } from "react";
 import { FiLoader } from "react-icons/fi";
-import LoaderForm from "./LoaderForm";
+import Loader from "../Pages/Loader";
+import { Link } from "react-router-dom";
 import "./Forms.css";
 
 const SignUpForm = React.lazy(() => import("./SignUpForm"));
 const SignInForm = React.lazy(() => import("./SignInForm"));
-const Overlay = React.lazy(() => import("./Overlay"));
+const ResetPasswordForm = React.lazy(() => import("./ResetPassword"));
 
 const AuthContainer = ({ formType }) => {
-  const [isRightPanelActive, setIsRightPanelActive] = useState(
-    formType === "signup"
-  );
-
-  const [showLoader, setShowLoader] = useState(true);
-
-  const handleSignUpClick = () => setIsRightPanelActive(true);
-  const handleSignInClick = () => setIsRightPanelActive(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLoader(false); // Hide LoaderForm after 1 second
-    }, 1000);
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, []);
-
-  if (showLoader) {
-    return <LoaderForm />;
-  }
+  const renderForm = () => {
+    switch (formType) {
+      case "signup":
+        return <SignUpForm />;
+      case "signin":
+        return <SignInForm />;
+      case "reset-password":
+        return <ResetPasswordForm />;
+      default:
+        return <SignInForm />;
+    }
+  };
 
   return (
-    <Suspense fallback={<LoaderForm />}>
+    <Suspense fallback={<Loader />}>
       <div className="auth-bg">
         <div className="logo">
           <h1>
@@ -42,24 +36,15 @@ const AuthContainer = ({ formType }) => {
             </a>
           </h1>
         </div>
-        <div
-          className={`container ${
-            isRightPanelActive ? "right-panel-active" : ""
-          }`}
-          id="container"
-        >
-          <div className="form-container sign-up-container">
-            <SignUpForm />
-          </div>
-          <div className="form-container sign-in-container">
-            <SignInForm />
-          </div>
-          {/* <div className="overlay-container">
-            <Overlay
-              onSignUpClick={handleSignUpClick}
-              onSignInClick={handleSignInClick}
-            />
-          </div> */}
+
+        <div className="form-container">{renderForm()}</div>
+
+        <div className="auth-footer">
+          <Link to="/auth/support">Support</Link>
+          <span className="dot">.</span>
+          <Link to="/auth/terms">Terms</Link>
+          <span className="dot">.</span>
+          <Link to="/auth/privacy">Privacy</Link>
         </div>
       </div>
     </Suspense>

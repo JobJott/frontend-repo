@@ -74,7 +74,8 @@ const FAQ = () => {
   };
 
   return (
-    <div className="faqContainer info-container">
+    <section className="faqSection">
+    <div className="faqContainer">
       <div className="faqHeader">
         <img src={FAQImage} alt="" className="faqImage" />
         <h1 className="faqTitle">Frequently Asked Questions</h1>
@@ -94,7 +95,8 @@ const FAQ = () => {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </section>
   );
 };
 
