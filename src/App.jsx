@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Loader from "./components/Pages/Loader";
 import Error from "./components/Pages/Error";
-import Dashboard from "./components/Dashboard/Dashboard";
+import "./index.css";
 
 const Nav = lazy(() => import("./components/Pages/Nav"));
 const HeroSection = lazy(() => import("./components/Pages/HeroSection"));
@@ -15,6 +15,7 @@ const FAQ = lazy(() => import("./components/Pages/Faq"));
 const CTA = lazy(() => import("./components/Pages/Cta"));
 const Footer = lazy(() => import("./components/Pages/Footer"));
 const AuthPage = lazy(() => import("./components/Pages/AuthPage"));
+const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);

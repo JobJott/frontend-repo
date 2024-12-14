@@ -1,47 +1,78 @@
+import React from "react";
+import { FiLoader } from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+import { SideDashData, SideDashData2 } from "./Sidedash/SidedashData";
+import chevronCollapse from "../../assets/chevronCollapse.svg";
 
-// omo ologo chat gpt
-
-import { useState } from "react";
-import { MdOutlineArrowLeft, MdContacts, MdOutlineManageAccounts } from "react-icons/md";
-import { FaHome } from "react-icons/fa";
-import { FcSupport } from "react-icons/fc";
-import jobjott from '../../assets/jobjott1.svg';
-import './styles/sideDash.css'
-
-const SideDash = () => {
-    const [toggle, setToggle] = useState(false);
-
-    const handleToggle = () => {
-        setToggle((prevToggle) => !prevToggle);
-    };
-
-    return (
-        <div className={`sideDash ${toggle ? "collapsed" : "expanded"}`}>
-            <div className="jobjott-container">
-                <h4>JOBJOTT</h4>
-                <img className="jobjot-img" src={jobjott} alt="JobJott Logo" />
-                <MdOutlineArrowLeft onClick={handleToggle} className="toggle-icon" />
+const SideDash = ({ isOpen, toggleSidebar }) => {
+  return (
+    <nav className={`sidebar ${isOpen ? "open" : "closed"}`}>
+      <div className="sidebar-container">
+        <div className="sidebar-container-wrap">
+          <div className="side-nav-header">
+            <div className="side-nav-content">
+              <div className="content-text">
+                <h1>
+                  JobJ
+                  <span>
+                    <FiLoader />
+                  </span>
+                  tt
+                </h1>
+              </div>
+              <button className="toggle-btn" onClick={toggleSidebar}>
+                <img
+                  src={chevronCollapse}
+                  style={{ color: "white" }}
+                  className={`chevron ${isOpen ? "" : "rotate"}`}
+                />
+              </button>
             </div>
+          </div>
 
-            {!toggle && (
-                <ul className="list">
-                    <li className="list-name" title="Tracker"><FaHome /> Job Tracker</li>
-                    <li className="list-name" title="Contacts"><MdContacts /> Contacts</li>
-                    <li className="list-name"><FcSupport /> Support Center</li>
-                    <li className="list-name"><MdOutlineManageAccounts /> Account</li> 
-                </ul>
-            )}
+          <div className="side-nav-menu">
+            {SideDashData.map((item) => (
+              <div key={item.id} className="menu-item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    isActive ? "active-link" : "link"
+                  }
+                >
+                  <div className="menu-content">
+                    <span className="sidebar-icon">{item.icon}</span>
+                    {isOpen && (
+                      <span className="sidebar-title">{item.title}</span>
+                    )}
+                  </div>
+                </NavLink>
+              </div>
+            ))}
+          </div>
 
-            {toggle && (
-                <div className="icon-only-list">
-                    <FaHome className="icon" title="Job Tracker" />
-                    <MdContacts className="icon" title="Contacts" />
-                    <FcSupport className="icon" title="Support Center" />
-                    <MdOutlineManageAccounts className="icon" title="Account" />
-                </div>
-            )}
+          <div className="side-nav-footer">
+            {SideDashData2.map((item) => (
+              <div key={item.id} className="menu-item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    isActive ? "active-link" : "link"
+                  }
+                >
+                  <div className="menu-content">
+                    <span className="sidebar-icon">{item.icon}</span>
+                    {isOpen && (
+                      <span className="sidebar-title">{item.title}</span>
+                    )}
+                  </div>
+                </NavLink>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      </div>
+    </nav>
+  );
 };
 
 export default SideDash;

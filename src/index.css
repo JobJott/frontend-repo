@@ -1,3 +1,11 @@
+@import "tailwindcss/tailwind.css";
+@layer tailwind-base, antd; /* Ensure Ant Design comes after Tailwind base styles */
+@layer tailwind-base {
+  @tailwind base;
+}
+@tailwind components;
+@tailwind utilities;
+
 :root {
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -21,6 +29,96 @@
   --negativeColor: #f7685b;
   --whiteColor: #ffffff;
   --neutral: #f8f8fd;
+  --color-danger-900: #771f0d;
+  --dashboardBlack: hsl(180, 6%, 7%);
+  --background: 0 0% 100%;
+  --jobjott-50: 180, 5%, 97%;
+  --jobjott-100: 180, 6%, 90%;
+  --jobjott-200: 180, 6%, 50%;
+  --jobjott-400: 180, 6%, 20%;
+  --jobjott-600: 180, 6%, 15%;
+  --jobjott-700: 180, 6%, 10%;
+  --jobjott-750: 180, 6%, 7%;
+  --teal-700: 180 6% 10%;
+
+  --grey-50: 0 0% 97%;
+  --grey-100: 0 0% 93%;
+  --grey-150: 0 0% 80%;
+  --grey-200: 0 0% 66%;
+  --grey-300: 0 0% 60%;
+  --grey-500: 0 0% 55%;
+  --grey-600: 0 0% 47%;
+  --grey-700: 0 0% 41%;
+  --grey-800: 0 0% 32%;
+  --grey-900: 0 0% 20%;
+  --white: 0 0% 100%;
+  --black: 0 0% 0%;
+  --brown-50: 20 33% 98%;
+  --brown-100: 37 54% 92%;
+  --brown-200: 38 43% 84%;
+  --brown-400: 37 43% 75%;
+  --brown-600: 38 43% 65%;
+  --brown-700: 38 44% 49%;
+  --yellow-50: 54 100% 92%;
+  --yellow-200: 55 89% 75%;
+  --yellow-300: 52 88% 68%;
+  --yellow-400: 52 89% 65%;
+  --yellow-600: 48 90% 59%;
+  --yellow-700: 44 99% 48%;
+  --red-50: 10 100% 89%;
+  --red-200: 10 89% 82%;
+  --red-400: 10 85% 72%;
+  --red-600: 10 82% 64%;
+  --red-700: 10 80% 55%;
+  --maroon-50: 338 59% 92%;
+  --maroon-200: 338 37% 81%;
+  --maroon-400: 338 29% 63%;
+  --maroon-600: 338 30% 47%;
+  --maroon-700: 338 60% 30%;
+  --blue-50: 231 100% 94%;
+  --blue-200: 232 86% 85%;
+  --blue-400: 231 83% 79%;
+  --blue-600: 232 80% 72%;
+  --blue-700: 231 79% 64%;
+  --purple-50: 238 54% 89%;
+  --purple-200: 239 48% 77%;
+  --purple-400: 239 46% 66%;
+  --purple-600: 239 45% 54%;
+  --purple-700: 239 65% 41%;
+  --accent-purple: 239 100% 75%;
+  --accent-green: 171 66% 42%;
+  --accent-aqua: 174 94% 69%;
+  --accent-orange: 35 100% 71%;
+  --accent-blue: 201 100% 69%;
+  --accent-red: 11 100% 70%;
+  --accent-yellow: 54 96% 80%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 3.9%;
+  --popover-inverted: 0 0% 20%;
+  --popover-inverted-foreground: 0 0% 98%;
+  --primary: var(--jobjott-750);
+  --primary-foreground: 0 0% 98%;
+  --primary-muted: var(--jobjott-50);
+  --primary-muted-foreground: var(--jobjott-400);
+  --secondary: 44 99% 48%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --accent: 0 0% 96.1%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 60% 42%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 32 31% 89%;
+  --input: 0 0% 89.8%;
+  --ring: 0 0% 3.9%;
+  --radius: 0.5rem;
+  --surface: 20 33% 98%;
+  --surface-foreground: 0 0% 3.9%;
+  --default-text-secondary: 0 0% 28.6%;
 }
 
 * {

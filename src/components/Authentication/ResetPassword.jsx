@@ -38,6 +38,7 @@ const ResetPassword = () => {
           {success && (
             <p className="success-message">Email sent successfully!</p>
           )}
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             value={email}

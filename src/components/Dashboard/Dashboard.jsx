@@ -1,16 +1,21 @@
-import React from 'react'
-import MainBoard from './MainBoard'
-import SideDash from './SideDash'
+import React, { useState } from "react";
+import MainBoard from "./MainBoard";
+import SideDash from "./SideDash";
+import "./styles/Dashboard.css";
 
 const Dashboard = () => {
-  return (
-    <>
-    <div className="container" style={{display:'flex', justifyContent: 'space-between', width: '100'}}>
-        <h1><SideDash/></h1>
-        <h1><MainBoard/></h1>
-    </div>
-    </>
-  )
-}
+  const [isSideDashOpen, setIsSideDashOpen] = useState(true);
 
-export default Dashboard
+  const toggleSidebar = () => {
+    setIsSideDashOpen((prev) => !prev);
+  };
+
+  return (
+    <div className="dashboard">
+      <SideDash isOpen={isSideDashOpen} toggleSidebar={toggleSidebar} />
+      <MainBoard isSideDashOpen={isSideDashOpen} />
+    </div>
+  );
+};
+
+export default Dashboard;
