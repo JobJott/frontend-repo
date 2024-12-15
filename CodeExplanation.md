@@ -1,4 +1,4 @@
-For anyone confused how the dashboard is structured; heres a walkthrough, so the dashboard component is inside a major folder called "Dashboard" and inside this folder; There are 3 Subfolders(Mainboard, Sidedash and Styles) and 3 Main files(Dashboard, Mainboard and Sidedash)
+<!-- For anyone confused how the dashboard is structured; heres a walkthrough, so the dashboard component is inside a major folder called "Dashboard" and inside this folder; There are 3 Subfolders(Mainboard, Sidedash and Styles) and 3 Main files(Dashboard, Mainboard and Sidedash)
 
 ## 3 Main Files
 
@@ -16,4 +16,5 @@ For anyone confused how the dashboard is structured; heres a walkthrough, so the
 
 -1. Mainboard(contains the codes for the mainboard(actionbuttons folder, jobpipeline, JobTrackerSectionOne))
 -2. Sidedash(contains the sidedash data and icons)
--3. Styles(contains the two main css file(Dashboard, Mainboard).css)
+-3. Styles(contains the two main css file(Dashboard, Mainboard).css) -->
+ ignore this format changed
