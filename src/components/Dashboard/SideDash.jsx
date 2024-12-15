@@ -39,12 +39,24 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                     isActive ? "active-link" : "link"
                   }
                 >
-                  <div className="menu-content">
-                    <span className="sidebar-icon">{item.icon}</span>
-                    {isOpen && (
-                      <span className="sidebar-title">{item.title}</span>
-                    )}
-                  </div>
+                  {({ isActive }) => (
+                    <div className="menu-content">
+                      <span
+                        className={`sidebar-icon ${isActive ? "selected" : ""}`}
+                      >
+                        {item.icon}
+                      </span>
+                      {isOpen && (
+                        <span
+                          className={`sidebar-title ${
+                            isActive ? "selected" : ""
+                          }`}
+                        >
+                          {item.title}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </NavLink>
               </div>
             ))}
@@ -59,12 +71,24 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                     isActive ? "active-link" : "link"
                   }
                 >
-                  <div className="menu-content">
-                    <span className="sidebar-icon">{item.icon}</span>
-                    {isOpen && (
-                      <span className="sidebar-title">{item.title}</span>
-                    )}
-                  </div>
+                  {({ isActive }) => (
+                    <div className="menu-content">
+                      <span
+                        className={`sidebar-icon ${isActive ? "selected" : ""}`}
+                      >
+                        {item.icon}
+                      </span>
+                      {isOpen && (
+                        <span
+                          className={`sidebar-title ${
+                            isActive ? "selected" : ""
+                          }`}
+                        >
+                          {item.title}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </NavLink>
               </div>
             ))}

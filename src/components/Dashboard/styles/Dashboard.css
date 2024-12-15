@@ -170,7 +170,7 @@
   vertical-align: middle;
 }
 
-.active-link .sidebar-icon {
+.active-link .sidebar-icon.selected {
   color: #111313;
   background: #fff;
   opacity: 1;

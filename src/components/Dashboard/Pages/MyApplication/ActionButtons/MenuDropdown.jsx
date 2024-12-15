@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const MenuDropdown = () => {
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   const toggleMenuDropdown = () => {
     setIsMenuDropdownOpen((prev) => !prev);
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsMenuDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="menu-container">
+    <div className="menu-container" ref={dropdownRef}>
       {" "}
       <button
         type="button"

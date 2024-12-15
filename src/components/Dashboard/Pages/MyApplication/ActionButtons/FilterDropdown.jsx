@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import draghandle from "../../../assets/drag-handle.svg";
+import React, { useState, useRef, useEffect } from "react";
+import draghandle from "../../../../../assets/drag-handle.svg";
 
 const FilterDropdownMenu = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState({});
+  const dropdownRef = useRef(null);
+
   const toggleFilterDropdown = () => {
     setIsFilterDropdownOpen((prev) => !prev);
   };
 
-  const [isChecked, setIsChecked] = useState({});
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setIsChecked((prev) => ({ ...prev, [name]: checked }));
@@ -64,8 +66,21 @@ const FilterDropdownMenu = () => {
     setHoveredIndex(null);
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsFilterDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="filter-dropdown-menu-container">
+    <div className="filter-dropdown-menu-container" ref={dropdownRef}>
       <button
         type="button"
         className={`filter-btn filter-btn-default filter-btn-sm filter-dropdown-trigger ${

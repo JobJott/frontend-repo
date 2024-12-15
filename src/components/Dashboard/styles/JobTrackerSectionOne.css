@@ -1,0 +1,53 @@
+.job-tracker-container .job-tracker-section.drawer-visible {
+  padding: 0;
+}
+
+.hide-x-overflow {
+  overflow-x: hidden;
+}
+
+.job-tracker-container .job-tracker-table-container {
+  position: relative;
+  display: flex;
+  height: 100%;
+}
+
+.job-tracker-container .job-tracker-table-container.shared-table-container {
+  margin-top: 1rem;
+}
+
+.job-tracker-container .job-tracker-table-container .table-column-wrapper {
+  transition: all 0.5s ease;
+}
+
+.job-tracker-container
+  .job-tracker-table-container.shared-table-container
+  .table-column-wrapper {
+  display: none;
+  width: 280px;
+  margin-left: 1rem;
+}
+
+.tabulator {
+  position: relative;
+  border: 1px solid #999;
+  background-color: #888;
+  font-size: 14px;
+  text-align: left;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.tabulator {
+  font-size: 14px;
+  background-color: transparent;
+  border: none;
+}
+
+@media (min-width: 1200px) {
+  .job-tracker-container
+    .job-tracker-table-container.shared-table-container
+    .table-column-wrapper {
+    display: block;
+  }
+}

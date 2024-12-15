@@ -63,7 +63,7 @@ function App() {
           }
         />
         <Route path="*" element={<Error />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/*" element={<Dashboard />} />
       </Routes>
     </Router>
   );
