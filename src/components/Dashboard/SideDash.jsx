@@ -32,7 +32,7 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
 
           <div className="side-nav-menu">
             {SideDashData.map((item) => (
-              <div key={item.id} className="menu-item">
+              <div key={item.id} className="side-nav-menu-item">
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
@@ -64,7 +64,7 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
 
           <div className="side-nav-footer">
             {SideDashData2.map((item) => (
-              <div key={item.id} className="menu-item">
+              <div key={item.id} className="side-nav-menu-item">
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>

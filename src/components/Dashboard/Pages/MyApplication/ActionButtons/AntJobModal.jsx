@@ -54,15 +54,6 @@ const StyledModal = styled(Modal)`
     font-size: 14px;
   }
 
-  .bg-background {
-    background-color: hsl(var(--background));
-  }
-  .border-input {
-    border-color: hsl(var(--input));
-  }
-  .rounded-md {
-    border-radius: calc(var(--radius) - 2px);
-  }
 
   .ProseMirror {
     word-wrap: break-word;
@@ -79,19 +70,6 @@ const StyledModal = styled(Modal)`
 
   textarea {
     color: #000;
-  }
-
-  .shadow-primary {
-    --tw-shadow-color: hsl(var(--primary));
-    --tw-shadow: var(--tw-shadow-colored);
-  }
-
-  .text-primary-foreground {
-    color: hsl(var(--primary-foreground));
-  }
-
-  .bg-primary {
-    background-color: hsl(var(--primary));
   }
 `;
 
@@ -172,30 +150,34 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
               name: "jobTitle",
               type: "text",
               placeholder: "Job Title",
+              id: "job-title",
             },
             {
               label: "URL for Original Posting",
               name: "URL",
               type: "text",
               placeholder: "URL for Original Posting",
+              id: "URL",
             },
             {
               label: "Company Name",
               name: "companyName",
               type: "text",
               placeholder: "Company Name",
+              id: "company-name",
             },
             {
               label: "Location",
               name: "location",
               type: "text",
               placeholder: "Location",
+              id: "location",
             },
           ].map((input) => (
             <div className="space-y-2 w-full" key={input.name}>
               <label
                 className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:text-neutral-400"
-                htmlFor=":rn:-form-item"
+                htmlFor={input.id}
               >
                 {input.label}
               </label>
@@ -208,7 +190,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
                 value={formData[input.name]}
                 onChange={handleChange}
                 aria-invalid="false"
-                id=":rn:-form-item"
+                id={input.id}
               />
               {errors[input.name] && (
                 <span className="text-red-500 text-xs">

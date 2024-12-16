@@ -1,11 +1,17 @@
+/* .job-tracker-container .job-tracker-section:last-child { */
+.job-tracker-container .job-tracker-section.drawer-visible {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  border-bottom: none;
+}
+
 .job-tracker-container .job-tracker-section.drawer-visible {
   padding: 0;
 }
-
 .hide-x-overflow {
   overflow-x: hidden;
 }
-
 .job-tracker-container .job-tracker-table-container {
   position: relative;
   display: flex;
@@ -15,7 +21,6 @@
 .job-tracker-container .job-tracker-table-container.shared-table-container {
   margin-top: 1rem;
 }
-
 .job-tracker-container .job-tracker-table-container .table-column-wrapper {
   transition: all 0.5s ease;
 }
@@ -27,7 +32,6 @@
   width: 280px;
   margin-left: 1rem;
 }
-
 .tabulator {
   position: relative;
   border: 1px solid #999;
@@ -37,13 +41,116 @@
   overflow: hidden;
   transform: translateZ(0);
 }
-
 .tabulator {
   font-size: 14px;
   background-color: transparent;
   border: none;
 }
+.job-tracker-container
+  .job-tracker-table-container:not(.shared-table-container)
+  .table-column-wrapper {
+  flex: auto;
+  max-width: 100%;
+}
 
+.tabulator .tabulator-header {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  border-bottom: 1px solid #999;
+  background-color: #e6e6e6;
+  color: #555;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tabulator .tabulator-row,
+.tabulator .tabulator-header {
+  background-color: transparent !important;
+}
+
+.tabulator .tabulator-header {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  font-weight: 600;
+  background-color: #fcfaf9;
+}
+
+.tabulator .tabulator-header .tabulator-header-contents {
+  position: relative;
+  overflow: hidden;
+}
+.tabulator .tabulator-header .tabulator-header-contents .tabulator-headers {
+  display: inline-block;
+}
+
+.tabulator .tabulator-header .tabulator-col {
+  display: inline-flex;
+  position: relative;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-right: 1px solid #aaa;
+  background: #e6e6e6;
+  text-align: left;
+  vertical-align: bottom;
+  overflow: hidden;
+}
+
+.tabulator .tabulator-header .tabulator-col {
+  background-color: #fcfaf9;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+  box-sizing: border-box;
+  position: relative;
+  padding: 4px;
+}
+
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+  padding: 0.5rem;
+}
+
+.tabulator
+  .tabulator-header
+  .tabulator-col
+  .tabulator-col-content
+  .tabulator-col-title-holder {
+  position: relative;
+}
+.tabulator
+  .tabulator-header
+  .tabulator-col
+  .tabulator-col-content
+  .tabulator-col-title {
+  box-sizing: border-box;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.tabulator
+  .tabulator-header
+  .tabulator-col
+  .tabulator-col-content
+  .tabulator-col-title {
+  white-space: normal;
+}
+
+@media (min-width: 576px) {
+  .tabulator.job-tracker-table .tabulator-cell,
+  .tabulator.job-tracker-table .tabulator-col {
+    border-right: 1px solid #dcdcdc;
+  }
+
+  .tabulator.job-tracker-table .tabulator-cell:first-child,
+  .tabulator.job-tracker-table .tabulator-col:first-child {
+    border-right: 0;
+  }
+}
 @media (min-width: 1200px) {
   .job-tracker-container
     .job-tracker-table-container.shared-table-container

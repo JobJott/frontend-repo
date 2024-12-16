@@ -1,33 +1,33 @@
-import Homeicon from "../../../assets/homeicon.svg";
-import resumeicon from "../../../assets/resumebuilder.svg";
-import application from "../../../assets/myapplication.svg";
-import contacticon from "../../../assets/contacticon.svg";
-import helpicon from "../../../assets/helpicon.svg";
-import usericon from "../../../assets/usericon.svg";
+import HomeIcon from "../../../assets/homeicon.svg?react";
+import ResumeIcon from "../../../assets/resumebuilder.svg?react";
+import ApplicationIcon from "../../../assets/myapplication.svg?react";
+import ContactIcon from "../../../assets/contacticon.svg?react";
+import HelpIcon from "../../../assets/helpicon.svg?react";
+import { FaRegUserCircle } from "react-icons/fa";
 
 export const SideDashData = [
   {
     id: 1,
     title: "Overview",
-    icon: <img src={Homeicon} alt="" />,
+    icon: <HomeIcon />,
     path: "/dashboard/Overview",
   },
   {
     id: 2,
     title: "Resume Builder",
-    icon: <img src={resumeicon} alt="" />,
+    icon: <ResumeIcon />,
     path: "/dashboard/resume-builder",
   },
   {
     id: 3,
     title: "My Applications",
-    icon: <img src={application} alt="" />,
+    icon: <ApplicationIcon />,
     path: "/dashboard/my-applications",
   },
   {
     id: 4,
     title: "Contacts",
-    icon: <img src={contacticon} alt="" />,
+    icon: <ContactIcon />,
     path: "/dashboard/contacts",
   },
 ];
@@ -36,13 +36,13 @@ export const SideDashData2 = [
   {
     id: 5,
     title: "Support Center",
-    icon: <img src={helpicon} alt="" />,
+    icon: <HelpIcon />,
     path: "/dashboard/support",
   },
   {
     id: 6,
     title: "Account",
-    icon: <img src={usericon} alt="" />,
+    icon: <FaRegUserCircle />,
     path: "/dashboard/account",
   },
 ];
