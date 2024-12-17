@@ -1,4 +1,4 @@
-<div className="job-tracker-section drawer-visible" data-projection-id="3">
+{/* <div className="job-tracker-section drawer-visible" data-projection-id="3">
   <div className="job-tracker-table-container hide-x-overflow shared-table-container ">
     <div className="table-column-wrapper">
       <div
@@ -172,6 +172,7 @@
     </div>
     <div className="table-drawer-wrapper">
       <div className="job-listing-drawer">
+        
         <div className="mobile-drawer-actions">
           <a href="/job-tracker">
             <button type="button" className="ant-btn ant-btn-link">
@@ -239,6 +240,7 @@
             </button>
           </div>
         </div>
+
         <div
           className="drawer-container"
           data-projection-id="5"
@@ -1425,4 +1427,4 @@
       </div>
     </div>
   </div>
-</div>;
+</div>; */}
