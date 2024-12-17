@@ -1,0 +1,23 @@
+.stack{
+    color: #333;
+    font-size: 14px
+}
+.acct-btn{
+    background-color: #E9F3F3;
+    padding: 12px;
+}
+.my-acct{
+    color: #005249;
+    font-size: 14px;
+    font-weight: 700;
+}
+.job-sub-btn{
+    padding: 12px;
+}
+.job-sub{
+    color: #005249;
+    font-size: 14px;
+}
+.text{
+    font-weight: 600;
+}
