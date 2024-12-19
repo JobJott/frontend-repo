@@ -701,6 +701,12 @@ strong {
   filter: drop-shadow(1px 0px 0px #bdbdbd);
 }
 
+.ant-btn-variant-outlined:not(:disabled):not(.ant-btn-disabled):active:hover {
+  color: #111313;
+  border-color: #111313;
+  background: #ffffff;
+}
+
 .ant-dropdown-menu-title-content {
   font-family: "Montserrat", sans-serif !important;
   color: #000;
@@ -719,6 +725,124 @@ strong {
   border: 1px solid #aeccca;
   border-radius: 5px;
   margin-block-start: 1rem;
+}
+
+._cluster_jw67l_1 {
+  display: flex;
+  flex-wrap: var(--wrap);
+  gap: var(--space);
+  align-items: var(--align);
+  justify-content: var(--justify);
+}
+
+._header_1qsov_11 {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+._stack_lds83_1 > div > * {
+  margin: 0 !important;
+}
+
+._header-text_1qsov_16 {
+  font-size: 16px;
+  line-height: 1;
+}
+
+._btn_mkpcn_1,
+._btn_mkpcn_1:hover {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  text-align: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+._toggle-btn_1qsov_25 {
+  height: 1.25rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+._content-wrapper_1qsov_77 {
+  position: relative;
+  overflow: hidden;
+}
+
+._content_1qsov_77 {
+  padding-top: 1rem;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+._checklist_1qsov_32 {
+  min-width: 30%;
+}
+
+._checklist_1qsov_32 > li {
+  padding: 0.75rem;
+}
+
+ul li:not(.bulleted) {
+  list-style: none;
+}
+
+._checklist_1qsov_32 > li._selected_1qsov_40 {
+  font-weight: 600;
+  background: #fff;
+  border-radius: 4px;
+}
+
+._item-label_1qsov_46 {
+  color: #111313;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ant-checkbox {
+  text-align: left;
+}
+
+._suggestions_1qsov_50 {
+  flex-grow: 1;
+  padding: 1rem;
+  color: #333;
+  background: #fff;
+  border-radius: 4px;
+  width: 0;
+
+  a,
+  #btn-click {
+    color: #111313;
+    text-decoration: underline;
+    color: #056464;
+  }
+}
+
+ul li.bulleted {
+  list-style: disc;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+._suggestions_1qsov_50 ul li {
+  color: #111313;
 }
 
 @media (min-width: 480px) {
@@ -801,6 +925,15 @@ strong {
   .job-listing-fields .job-listing-fields-row .job-listing-fields-secondary {
     order: 2;
     margin-top: 0.5rem;
+  }
+
+  ._checklist_1qsov_32 > li._selected_1qsov_40 {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  ._suggestions_1qsov_50 {
+    border-top-left-radius: 0;
   }
 }
 

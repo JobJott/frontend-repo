@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
-import { Button, Space, Typography, Radio, Dropdown, Menu } from "antd";
+import { Button, Space, Typography, Radio, Dropdown } from "antd";
 import {
   LeftCircleOutlined,
   EditOutlined,
@@ -9,10 +9,18 @@ import {
   CheckOutlined,
   BulbOutlined,
   UpCircleOutlined,
+  DownCircleOutlined,
 } from "@ant-design/icons";
 import "../../styles/JobTrackerSectionOne.css";
 import EditJobModal from "./JobTrackerSectOne/EditJobModal";
 import { StyleProvider } from "@ant-design/cssinjs";
+import {
+  AppliedExtended,
+  ApplyingExtended,
+  BookmarkExtended,
+  InterviewingExtended,
+  NegotiatingExtended,
+} from "./JobTrackerSectOne/ExtendedSections";
 // import "antd/dist/reset.css";
 
 const columnData = [
@@ -39,6 +47,12 @@ const JobTrackerSectionOne = () => {
     "f89e69f7-f859-4863-b63e-36c247bac3d5"
   );
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
+
+  const handleToggle = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   const handleMenuClick = (key) => {
     console.log(`Clicked on: ${key}`);
@@ -66,8 +80,6 @@ const JobTrackerSectionOne = () => {
     },
   ];
 
-  console.log("Dropdown children:", dropdownVisible);
-
   const statusOptions = [
     { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
     { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
@@ -79,7 +91,181 @@ const JobTrackerSectionOne = () => {
 
   // Handler to change selected status
   const handleStatusChange = (e) => {
-    setSelectedStatus(e.target.value);
+    const value = e.target.value;
+    setSelectedStatus(value);
+    setIsAccepted(value === "21b7fdb7-4260-430b-a648-3cab1eb83288"); // Check if "Accepted" is clicked
+  };
+
+  const [isChecked, setIsChecked] = useState(false);
+  const [checkedItems, setCheckedItems] = useState({
+    setOne: [],
+    setTwo: [],
+    setThree: [],
+  });
+  const [selectedItem, setSelectedItem] = useState("Get Referral");
+  const [secondSelectedItem, setSecondSelectedItem] =
+    useState("Research & Prepare");
+  const [thirdSelectedItem, setThirdSelectedItem] = useState(
+    "Research your Targets"
+  );
+  const [isItemSelected, setIsItemSelected] = useState(false);
+
+  const totalItemsOne = 5;
+  const totalItemsTwo = 4;
+  const totalItemsThree = 3;
+
+  const progressPercentageOne =
+    (checkedItems.setOne.length / totalItemsOne) * 100;
+  const progressPercentageTwo =
+    (checkedItems.setTwo.length / totalItemsTwo) * 100;
+  const progressPercentageThree = Math.ceil(
+    (checkedItems.setThree.length / totalItemsThree) * 100
+  );
+
+  // Centralized function to update checked items
+  const updateCheckedItems = (setKey, item, isChecked) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [setKey]: isChecked
+        ? [...prev[setKey], item]
+        : prev[setKey].filter((checkedItem) => checkedItem !== item),
+    }));
+    setIsExpanded(true); // Keep the section expanded
+  };
+
+  // Handle checkbox change for setOne
+  const handleBoxCheckedOne = (e, item) => {
+    updateCheckedItems("setOne", item, e.target.checked);
+  };
+
+  // Handle checkbox change for setTwo
+  const handleBoxCheckedTwo = (e, item) => {
+    updateCheckedItems("setTwo", item, e.target.checked);
+  };
+
+  // Handle checkbox change for setThree
+  const handleBoxCheckedThree = (e, item) => {
+    updateCheckedItems("setThree", item, e.target.checked);
+  };
+
+  // Handle item selection for setOne
+  const handleItemSelectedOne = (item, event) => {
+    event.stopPropagation(); // Prevent event bubbling
+
+    setSelectedItem(item); // Set the selected item
+    setIsItemSelected(true); // Keep the section expanded when an item is selected
+    setIsExpanded(true); // Ensure the section stays expanded
+  };
+
+  // Handle item selection for setTwo
+  const handleItemSelectedTwo = (item, event) => {
+    event.stopPropagation();
+    setSecondSelectedItem(item);
+    setIsItemSelected(true);
+    setIsExpanded(true);
+  };
+
+  const handleItemSelectedThree = (item, event) => {
+    event.stopPropagation();
+    setThirdSelectedItem(item);
+    setIsItemSelected(true);
+    setIsExpanded(true);
+  };
+
+  useEffect(() => {
+    // Only update the expanded state if an item is selected
+    if (isItemSelected) {
+      setIsExpanded(true); // Ensure the section stays expanded
+      setIsItemSelected(false); // Reset the item selected flag
+    }
+  }, [isItemSelected]);
+
+  useEffect(() => {
+    if (checkedItems.setOne.length === totalItemsOne) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setOne]);
+
+  useEffect(() => {
+    if (checkedItems.setTwo.length === totalItemsTwo) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setTwo]);
+
+  useEffect(() => {
+    if (checkedItems.setThree.length === totalItemsThree) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setThree]);
+
+  // useEffect(() => {
+  //   // Debugging logs
+  //   console.log("Checked Items:", checkedItems);
+  //   console.log("Selected Item:", selectedItem);
+  //   console.log("isExpanded:", isExpanded);
+  // }, [checkedItems, selectedItem, isExpanded]);
+
+  const renderExtendedSection = () => {
+    switch (selectedStatus) {
+      case "f89e69f7-f859-4863-b63e-36c247bac3d5":
+        return (
+          <BookmarkExtended isChecked={isChecked} setIsChecked={setIsChecked} />
+        );
+      case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
+        return (
+          <ApplyingExtended
+            checkedItems={checkedItems}
+            setIsExpanded={setIsExpanded}
+            selectedItem={selectedItem}
+            handleBoxCheckedOne={handleBoxCheckedOne}
+            handleItemSelectedOne={handleItemSelectedOne}
+          />
+        );
+      case "5689f93d-a084-489c-9a6a-7d74b155b49a":
+        return (
+          <AppliedExtended isChecked={isChecked} setIsChecked={setIsChecked} />
+        );
+      case "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2":
+        return (
+          <InterviewingExtended
+            checkedItems={checkedItems}
+            setIsExpanded={setIsExpanded}
+            secondSelectedItem={secondSelectedItem}
+            handleBoxCheckedTwo={handleBoxCheckedTwo}
+            handleItemSelectedTwo={handleItemSelectedTwo}
+          />
+        );
+      case "079cebfd-0e2e-458a-8782-58ea19a5af6d":
+        return (
+          <NegotiatingExtended
+            checkedItems={checkedItems}
+            setIsExpanded={setIsExpanded}
+            thirdSelectedItem={thirdSelectedItem}
+            handleBoxCheckedThree={handleBoxCheckedThree}
+            handleItemSelectedThree={handleItemSelectedThree}
+          />
+        );
+      // Add cases for other statuses here
+      default:
+        return null;
+    }
+  };
+
+  const getProgressText = () => {
+    switch (selectedStatus) {
+      case "f89e69f7-f859-4863-b63e-36c247bac3d5":
+        return `Bookmarked Steps: ${isChecked ? "100%" : "0%"} Complete`;
+      case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
+        return `Applying Steps: ${progressPercentageOne}% Complete`;
+      case "5689f93d-a084-489c-9a6a-7d74b155b49a":
+        return `Applied Steps: ${isChecked ? "100%" : "0%"} Complete`;
+      case "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2":
+        return `Interviewing Steps: ${progressPercentageTwo}% Complete`;
+      case "079cebfd-0e2e-458a-8782-58ea19a5af6d":
+        return `Negotiating Steps: ${progressPercentageThree}% Complete`;
+      default:
+        return "Other Steps";
+    }
   };
 
   return (
@@ -358,7 +544,13 @@ const JobTrackerSectionOne = () => {
                       className="status-progress-bar"
                     >
                       {statusOptions.map((status) => (
-                        <Radio.Button key={status.value} value={status.value}>
+                        <Radio.Button
+                          key={status.value}
+                          value={status.value}
+                          onClick={() =>
+                            status.label === "Accepted" && setIsAccepted(true)
+                          }
+                        >
                           {status.label}{" "}
                           {status.value !==
                             "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
@@ -396,6 +588,7 @@ const JobTrackerSectionOne = () => {
                         "--style": "solid",
                         "--width": "0",
                       }}
+                      onClick={handleToggle}
                     >
                       <div className="_stack_lds83_1">
                         <div style={{ "--stack-space": "0" }}>
@@ -408,44 +601,61 @@ const JobTrackerSectionOne = () => {
                               "--wrap": "wrap",
                             }}
                           >
-                            <div
-                              className="_cluster_jw67l_1 _header-text_1qsov_16"
-                              style={{
-                                "--space": "0.375rem",
-                                "--align": "center",
-                                "--justify": "flex-start",
-                                "--wrap": "wrap",
-                              }}
-                            >
-                              <span>
-                                <span
-                                  role="img"
-                                  aria-label="bulb"
-                                  className="anticon anticon-bulb"
-                                >
-                                  <BulbOutlined />
-                                </span>
-                              </span>
-                              <span>
-                                <strong>Guidance</strong>
-                              </span>
-                              <span>&gt;</span>
-                              <span>Bookmarked Steps: 0% Complete</span>
-                            </div>
-                            <button
-                              aria-label="toggle guidance"
-                              className="_btn_mkpcn_1 none _toggle-btn_1qsov_25"
-                              type="button"
-                            >
-                              <span
-                                role="img"
-                                aria-label="up-circle"
-                                className="anticon anticon-up-circle"
+                            {isAccepted ? (
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  fontSize: "1.2rem",
+                                  fontFamily: "Montserrat, sans-serif",
+                                }}
+                                className="m-auto font-extrabold"
                               >
-                                <UpCircleOutlined />
-                              </span>
-                            </button>
+                                Congratulations 🎉
+                              </div>
+                            ) : (
+                              <>
+                                <div
+                                  className="_cluster_jw67l_1 _header-text_1qsov_16"
+                                  style={{
+                                    "--space": "0.375rem",
+                                    "--align": "center",
+                                    "--justify": "flex-start",
+                                    "--wrap": "wrap",
+                                  }}
+                                >
+                                  <span className="text-base">
+                                    <BulbOutlined />
+                                  </span>
+                                  <span>
+                                    <strong>Guidance</strong>
+                                  </span>
+                                  <span>&gt;</span>
+                                  <span className="font-medium">
+                                    {getProgressText()}
+                                  </span>
+                                </div>
+                                <button
+                                  aria-label="toggle guidance"
+                                  className="_btn_mkpcn_1 none _toggle-btn_1qsov_25"
+                                  type="button"
+                                >
+                                  <span
+                                    role="img"
+                                    aria-label={
+                                      isExpanded ? "up-circle" : "down-circle"
+                                    }
+                                  >
+                                    {isExpanded ? (
+                                      <DownCircleOutlined />
+                                    ) : (
+                                      <UpCircleOutlined />
+                                    )}
+                                  </span>
+                                </button>
+                              </>
+                            )}
                           </div>
+                          {isExpanded && renderExtendedSection()}
                         </div>
                       </div>
                     </div>

@@ -1,4 +1,5 @@
-{/* <div className="job-tracker-section drawer-visible" data-projection-id="3">
+{
+  /* <div className="job-tracker-section drawer-visible" data-projection-id="3">
   <div className="job-tracker-table-container hide-x-overflow shared-table-container ">
     <div className="table-column-wrapper">
       <div
@@ -1427,4 +1428,14 @@
       </div>
     </div>
   </div>
-</div>; */}
+</div>; */
+}
+
+//       // Close the section only if all items are checked, and reset selectedItem if all are checked
+//       if (updatedCheckedItems.length === totalItems) {
+//         setIsExpanded(false); // Close section when all items are checked
+//         setSelectedItem(null); // Reset selected item
+//       } else {
+//         setIsExpanded(true); // Keep expanded if not all items are checked
+//       }
+// };
