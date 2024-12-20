@@ -25,8 +25,13 @@
   color: var(--whiteColor);
 }
 
+.services-text h3 {
+  color: var(--buttonColor);
+  font-weight: 500;
+}
 .services-text h1 {
-font-size: 33px;
+  font-size: 33px;
+  font-weight: 600;
 }
 
 .services-details {
@@ -71,12 +76,12 @@ font-size: 33px;
   gap: 10px;
 }
 
-.services-card-text h1{
-    font-size: 23px;
-    font-weight: 600;
+.services-card-text h1 {
+  font-size: 23px;
+  font-weight: 600;
   color: var(--whiteColor);
 }
 
-.services-card-text p{
-    font-weight: 300;
+.services-card-text p {
+  font-weight: 300;
 }

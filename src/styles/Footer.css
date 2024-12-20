@@ -30,6 +30,7 @@
 
 .logo span {
   font-size: 32px;
+  display: inline-block;
 }
 
 .logo span svg {

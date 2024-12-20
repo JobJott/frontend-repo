@@ -33,21 +33,30 @@ const ResetPassword = () => {
           Enter the email address associated with your account and we’ll email
           you a link to reset your password.
         </p>
-        <form className="reset-form" onSubmit={handleSubmit}>
+        id="sign-up"
+        <form
+          className="reset-form"
+          onSubmit={handleSubmit}
+          id="reset-form"
+          autoComplete="on"
+        >
           {error && <p className="error-message">{error}</p>}
           {success && (
             <p className="success-message">Email sent successfully!</p>
           )}
+          <label htmlFor="email">Email</label>
           <input
             type="email"
+            name="email"
             value={email}
+            id="email"
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
           />
           <button className="auth-btn" type="submit">
             Send Reset Link
           </button>
         </form>
-
         <div className="links-div">
           <span>
             Go back to{" "}

@@ -8,6 +8,7 @@ const SignUpForm = () => {
     email: "",
     password: "",
   });
+
   const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
@@ -26,6 +27,12 @@ const SignUpForm = () => {
     }
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -49,27 +56,34 @@ const SignUpForm = () => {
           </button>
         </div>
         {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSubmit} className="signup-form">
+        <form
+          onSubmit={handleSubmit}
+          className="signup-form"
+          autoComplete="on"
+          id="sign-up"
+        >
           <div className="form-group name-grid">
             <div className="flex1">
-              <label htmlFor="name">First Name</label>
+              <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
                 id="firstName"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
+                autoComplete="given-name"
               />
             </div>
 
             <div className="flex2">
-              <label htmlFor="name">Last Name</label>
+              <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
                 id="lastName"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
+                autoComplete="family-name"
               />
             </div>
           </div>
@@ -82,6 +96,7 @@ const SignUpForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              autoComplete="email"
             />
           </div>
 
@@ -103,7 +118,7 @@ const SignUpForm = () => {
 
         <div className="links-div">
           <span>
-            Don't have an account?
+            Already have an account?
             <Link to="/auth/signin" className="colour-text">
               Sign In
             </Link>

@@ -47,7 +47,7 @@ const SignInForm = () => {
           </button>
         </div>
         {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSubmit} className="signin-form">
+        <form onSubmit={handleSubmit} className="signin-form" id="sign-in">
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -56,6 +56,7 @@ const SignInForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              autoComplete="email"
             />
           </div>
           <div className="form-group">

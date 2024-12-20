@@ -1,0 +1,15 @@
+.mainboard-section {
+  overflow-x: hidden;
+  margin-left: 15rem;
+  min-height: 100%;
+  background-color: transparent;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  background: #fff;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.expanded-mainboard {
+  margin-left: 4rem;
+}
