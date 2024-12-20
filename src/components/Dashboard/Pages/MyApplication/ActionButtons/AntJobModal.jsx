@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import styled from "styled-components";
 
-const StyledModal = styled(Modal)`
+const StyledModal = styled(Modal)`  
   .ant-modal-content {
     padding: 0 !important;
     border-radius: 0px;

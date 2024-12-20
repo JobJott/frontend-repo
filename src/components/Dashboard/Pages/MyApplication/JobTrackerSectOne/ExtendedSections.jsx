@@ -1,10 +1,115 @@
 import React, { useState } from "react";
-import { Checkbox, Modal, Button } from "antd";
+import { Checkbox, Modal } from "antd";
 import styled from "styled-components";
 
-export const BookmarkExtended = ({ isChecked, setIsChecked }) => {
+const StyledDeleteModal = styled(Modal)`
+  .ant-modal-content {
+    padding: 0;
+  }
+
+  .ant-modal-body {
+    padding: 32px 32px 24px;
+  }
+
+  .ant-modal-confirm-title {
+    display: block;
+    overflow: hidden;
+    color: #111313;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: "Montserrat", sans-serif !important;
+  }
+
+  .ant-modal-confirm-title {
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  .ant-modal-confirm-content {
+    margin-top: 1rem;
+  }
+
+  .ant-btn:not(.ant-btn-dangerous, [disabled]) {
+    color: #111313;
+    border-color: #111313;
+    border: 1px solid;
+  }
+
+  .ant-btn-dangerous {
+    color: #c32525;
+    border-color: #c32525;
+    border: 1px solid;
+    background: #fff;
+  }
+
+  .ant-modal-confirm-btns {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .ant-modal-confirm-btns .ant-btn:not(.ant-btn-primary) {
+    order: 2;
+    margin-left: 0.5rem;
+    min-width: 86px;
+  }
+
+  .ant-modal-confirm-btns .ant-btn {
+    font-size: 14px;
+  }
+`;
+export const DeleteJobModal = ({ deleteModalOpen, setDeleteModalOpen }) => {
+  const handleDeleteClick = () => {
+    // Add custom logic for "Delete Job"
+    console.log("Job Deleted");
+
+    setDeleteModalOpen(false); // Close dropdown
+  };
+
+  return (
+    <StyledDeleteModal
+      open={deleteModalOpen}
+      onOk={() => setDeleteModalOpen(false)}
+      onCancel={() => setDeleteModalOpen(false)}
+      footer={null}
+      closable={false}
+    >
+      <span className="ant-modal-confirm-title">
+        Are you sure you want to delete this job post?
+      </span>
+      <div className="ant-modal-confirm-content"></div>
+      <div className="ant-modal-confirm-btns">
+        <button
+          type="button"
+          className="ant-btn ant-btn-default"
+          onClick={() => setDeleteModalOpen(false)}
+        >
+          <span>No, Keep Job Post</span>
+        </button>
+        <button
+          type="button"
+          className="ant-btn ant-btn-default ant-btn-dangerous"
+          onClick={handleDeleteClick}
+        >
+          <span>Yes, Delete Job Post</span>
+        </button>
+      </div>
+    </StyledDeleteModal>
+  );
+};
+
+export const BookmarkExtended = ({
+  isChecked,
+  setIsChecked,
+  setIsExpanded,
+}) => {
   const handleBoxChecked = (e) => {
     setIsChecked(e.target.checked);
+  };
+
+  const handleSuggestionBoxClick = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setIsExpanded(true); // Keep the section expanded
   };
 
   return (
@@ -49,7 +154,7 @@ export const BookmarkExtended = ({ isChecked, setIsChecked }) => {
 
         {/* Suggestions */}
         <div
-          className="_box_1rxfg_1 _suggestions_1qsov_50"
+          className="_box_1rxfg_1 _suggestions_1qsov_50_bookmark"
           style={{
             "--py": 0,
             "--px": 0,
@@ -59,18 +164,19 @@ export const BookmarkExtended = ({ isChecked, setIsChecked }) => {
             "--style": "solid",
             "--width": 0,
           }}
+          onClick={handleSuggestionBoxClick}
         >
           <ul>
             <li className="bulleted">
               <div>
-                Look through the highlighted skills and keywords to see if the
-                job matches your experience
+                Check if the job matches your experience based on the
+                highlighted skills and keywords
               </div>
             </li>
             <li className="bulleted">
               <div>
-                Research the company and its values to look for alignment with
-                your career goals
+                Explore the company and its values to determine if they aligns
+                with your career goals
               </div>
             </li>
           </ul>
@@ -236,9 +342,9 @@ export const ApplyingExtended = ({
         href: "",
       },
       {
-        type: "text",
-        content:
-          "Use our cover letter generator in the resume builder to get started",
+        type: "link",
+        content: "Use a cover letter generator to get started",
+        href: "https://www.grammarly.com/ai/ai-writing-tools/cover-letter-generator",
       },
       {
         type: "link",
@@ -791,3 +897,152 @@ export const NegotiatingExtended = ({
     </div>
   );
 };
+
+const JobListingDrawer = () => {
+  const [activeTab, setActiveTab] = useState("job-info");
+
+  const tabs = [
+    { id: "job-info", label: "Job Info", icon: JobInfoIcon },
+    { id: "notes", label: "Notes", icon: NotesIcon },
+    { id: "resumes", label: "Resumes", icon: ResumesIcon },
+    { id: "contacts", label: "Contacts", icon: ContactsIcon },
+    { id: "templates", label: "Email Templates", icon: EmailTemplatesIcon },
+    { id: "checklist", label: "Check List", icon: CheckListIcon },
+  ];
+  return (
+    <div
+      role="tablist"
+      aria-orientation="horizontal"
+      tabIndex={0}
+      data-orientation="horizontal"
+      style={{ outline: "none" }}
+    >
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          role="tab"
+          aria-selected={activeTab === tab.id}
+          aria-controls={`content-${tab.id}`}
+          data-state={activeTab === tab.id ? "active" : "inactive"}
+          id={`trigger-${tab.id}`}
+          tabIndex={activeTab === tab.id ? "0" : "-1"}
+          data-orientation="horizontal"
+          type="button"
+          className={`_button_11uyj_1 _with-icon_11uyj_47 _ghost_11uyj_112 _medium_11uyj_127 ${
+            activeTab === tab.id ? "active" : ""
+          }`}
+          onClick={() => setActiveTab(tab.id)}
+        >
+          <tab.icon />
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const JobInfoIcon = () => (
+  <svg
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10.1544 9L10.1544 15"></path>
+    <path d="M10.1544 5L10.1544 6"></path>
+    <path d="M10.1544 19C15.125 19 19.1544 14.9706 19.1544 10C19.1544 5.02944 15.125 1 10.1544 1C5.18386 1 1.15442 5.02944 1.15442 10C1.15442 14.9706 5.18386 19 10.1544 19Z"></path>
+  </svg>
+);
+
+const NotesIcon = () => (
+  <svg
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 16 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M8.94303 0.832031H1.38184"></path>
+    <path d="M14.7202 19.1769L14.7202 6.25037"></path>
+    <path d="M1.27979 19.1766L1.27978 0.831909"></path>
+    <path d="M8.94336 6.25022L8.94336 0.832031"></path>
+    <path d="M8.94284 6.25037L14.7202 6.25037"></path>
+    <path d="M8.94281 0.832129L14.6078 6.12559"></path>
+    <path d="M14.7205 19.1768L1.27979 19.1768"></path>
+  </svg>
+);
+
+const ResumesIcon = () => (
+  <svg
+    fill="none"
+    height="20"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 18 20"
+    width="18"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M13.9449 6.5291V13.9082C13.9449 16.6544 11.7187 18.8807 8.97246 18.8807V18.8807C6.22625 18.8807 4 16.6544 4 13.9082V4.31498C4 2.48416 5.48416 1 7.31498 1V1C9.14579 1 10.63 2.48417 10.63 4.31498V12.6357C10.63 13.5511 9.88787 14.2931 8.97246 14.2931V14.2931C8.05706 14.2931 7.31498 13.5511 7.31498 12.6357V6.5291"></path>
+  </svg>
+);
+
+const ContactsIcon = () => (
+  <svg
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeWidth="1.5"
+    viewBox="0 0 20 17"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect height="13" rx="0.5" width="18" x="1" y="2.5"></rect>
+    <path d="M10 1V4"></path>
+    <path d="M14 1V4"></path>
+    <path d="M6 1V4"></path>
+    <circle cx="9.99998" cy="8.21043" r="1.59764"></circle>
+    <path d="M12.4727 12.75C12.4727 12.3889 12.4088 12.0313 12.2845 11.6976C12.1602 11.364 11.9781 11.0608 11.7485 10.8055C11.5189 10.5501 11.2463 10.3475 10.9463 10.2093C10.6463 10.0711 10.3247 10 10 10C9.67531 10 9.35377 10.0711 9.05377 10.2093C8.75377 10.3475 8.48119 10.5501 8.25158 10.8055C8.02197 11.0608 7.83983 11.364 7.71557 11.6976C7.5913 12.0313 7.52734 12.3889 7.52734 12.75"></path>
+  </svg>
+);
+
+const EmailTemplatesIcon = () => (
+  <svg
+    fill="none"
+    height="40"
+    viewBox="0 0 20 16"
+    width="40"
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeWidth="1.5"
+  >
+    <rect height="13" rx="0.5" width="18" x="1.07727" y="1.5"></rect>
+    <path d="M1.07727 2L9.7703 8.76125C9.95086 8.90168 10.2037 8.90168 10.3842 8.76125L19.0773 2"></path>
+  </svg>
+);
+
+const CheckListIcon = () => (
+  <svg
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    viewBox="0 0 18 18"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M16.9997 1H1.12177"></path>
+    <path d="M16.9997 17L16.9997 1"></path>
+    <path d="M1 16.9998L1 1"></path>
+    <path d="M17 16.9998L1 16.9998"></path>
+    <path d="M5.48926 9.20947L8.06812 12.2095L13.2259 6.20947"></path>
+  </svg>
+);
+
+export default JobListingDrawer;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
-import { Button, Space, Typography, Radio, Dropdown } from "antd";
+import { Button, Space, Typography, Radio } from "antd";
 import {
   LeftCircleOutlined,
   EditOutlined,
@@ -14,13 +14,15 @@ import {
 import "../../styles/JobTrackerSectionOne.css";
 import EditJobModal from "./JobTrackerSectOne/EditJobModal";
 import { StyleProvider } from "@ant-design/cssinjs";
-import {
+import JobListingDrawer, {
   AppliedExtended,
   ApplyingExtended,
   BookmarkExtended,
+  DeleteJobModal,
   InterviewingExtended,
   NegotiatingExtended,
 } from "./JobTrackerSectOne/ExtendedSections";
+import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 // import "antd/dist/reset.css";
 
 const columnData = [
@@ -46,7 +48,7 @@ const JobTrackerSectionOne = () => {
   const [selectedStatus, setSelectedStatus] = useState(
     "f89e69f7-f859-4863-b63e-36c247bac3d5"
   );
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccepted, setIsAccepted] = useState(false);
 
@@ -54,31 +56,9 @@ const JobTrackerSectionOne = () => {
     setIsExpanded((prev) => !prev);
   };
 
-  const handleMenuClick = (key) => {
-    console.log(`Clicked on: ${key}`);
-    if (key === "5") {
-      // Add custom logic for "Delete Job"
-      console.log("Job Deleted");
-    }
-    setDropdownVisible(false); // Close dropdown
+  const handleDeleteJobClick = () => {
+    setDeleteModalOpen(true); // Open delete job modal
   };
-
-  const menuItems = [
-    {
-      key: "1",
-      label: "I Withdrew",
-      onClick: () => handleMenuClick("1"),
-    },
-    { key: "2", label: "Not Selected", onClick: () => handleMenuClick("2") },
-    { key: "3", label: "No Response 👻", onClick: () => handleMenuClick("3") },
-    { key: "4", label: "Archived", onClick: () => handleMenuClick("4") },
-    { key: "divider", type: "divider" },
-    {
-      key: "5",
-      label: <span className="delete-job-btn">Delete Job</span>,
-      onClick: () => handleMenuClick("5"),
-    },
-  ];
 
   const statusOptions = [
     { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
@@ -209,7 +189,11 @@ const JobTrackerSectionOne = () => {
     switch (selectedStatus) {
       case "f89e69f7-f859-4863-b63e-36c247bac3d5":
         return (
-          <BookmarkExtended isChecked={isChecked} setIsChecked={setIsChecked} />
+          <BookmarkExtended
+            isChecked={isChecked}
+            setIsChecked={setIsChecked}
+            setIsExpanded={setIsExpanded}
+          />
         );
       case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
         return (
@@ -559,22 +543,19 @@ const JobTrackerSectionOne = () => {
                         </Radio.Button>
                       ))}
 
-                      <Dropdown
-                        menu={{ items: menuItems }}
-                        open={dropdownVisible}
-                        onOpenChange={(flag) => setDropdownVisible(flag)}
-                        trigger={["click"]}
-                        placement="bottomRight"
+                      <Button
+                        id="archiveDropdown"
+                        type="button"
+                        size="small"
+                        className="delete-job-btn"
+                        onClick={handleDeleteJobClick}
                       >
-                        <Button
-                          id="archiveDropdown"
-                          type="default"
-                          size="small"
-                          className="status-progress-bar-archive-dropdown"
-                        >
-                          Close Job
-                        </Button>
-                      </Dropdown>
+                        Delete Job
+                      </Button>
+                      <DeleteJobModal
+                        deleteModalOpen={deleteModalOpen}
+                        setDeleteModalOpen={setDeleteModalOpen}
+                      />
                     </Radio.Group>
 
                     <div
@@ -660,6 +641,12 @@ const JobTrackerSectionOne = () => {
                       </div>
                     </div>
                   </div>
+
+                  <div className="job-listing-drawer-item _job-listing-toolbar_q9krx_1">
+                    <JobListingDrawer />
+                  </div>
+
+                  <AntdTracker />
                 </div>
               </div>
             </div>
