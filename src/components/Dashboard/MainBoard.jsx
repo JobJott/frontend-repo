@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "./styles/Mainboard.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 import MyApplication from "./Pages/MyApplication";
+import Contact from "./Pages/Contact"
 import Account from "./Pages/Account/Account"
 
 const MainBoard = ({ isSideDashOpen }) => {
@@ -26,8 +27,8 @@ const MainBoard = ({ isSideDashOpen }) => {
         {/* <Route path="overview" element={<Overview />} />
         <Route path="resume-builder" element={<ResumeBuilder />} /> */}
         <Route path="my-applications" element={<MyApplication />} />
-        {/* <Route path="contacts" element={<Contacts />} />
-        <Route path="support" element={<Support />} />*/}
+        <Route path="contacts" element={<Contact />} />
+        {/* <Route path="support" element={<Support />} /> */}
         <Route path="account" element={<Account />} /> 
       </Routes>
     </section>
