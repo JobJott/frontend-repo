@@ -5,7 +5,7 @@ import './Account.css'
 const Account = () => {
     const password = 'password'
     const text = 'text'
-const [isEye, setIsEye] = useState(false)
+const [isEye, setIsEye] = useState(true)
 const handleEye = () => {
     setIsEye((prev) => !prev)
 }
