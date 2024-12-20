@@ -54,3 +54,45 @@
   margin: 0;
   text-align: left;
 }
+
+/* Mobile First - Default */
+.mission-keypoints {
+  grid-template-columns: 1fr;
+}
+
+/* Medium Devices - Tablets (576px and above) */
+@media (min-width: 576px) {
+  .mission-keypoints {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .mission-subheading {
+    font-size: 28px;
+  }
+}
+
+/* Large Devices - Desktops (768px and above) */
+@media (min-width: 768px) {
+  .mission-keypoints {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .mission-subheading {
+    font-size: 30px;
+  }
+}
+
+/* Extra Large Devices (1200px and above) */
+@media (min-width: 1200px) {
+  .mission-keypoints {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+
+  .mission-subheading {
+    font-size: 33px;
+  }
+}
+
