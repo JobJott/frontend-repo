@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, DatePicker, Button, Select, Modal, Input, Form } from "antd";
+import { Row, Col, DatePicker, Button, Select, Input } from "antd";
 import {
   PlusCircleOutlined,
   CalendarOutlined,
@@ -19,7 +19,7 @@ const AntdTracker = () => {
   const [interviewType, setInterviewType] = useState(null);
   const [interviewFormat, setInterviewFormat] = useState(null);
   const [showContacts, setShowContacts] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const toggleDates = () => setDatesCollapsed(!isDatesCollapsed);
   const toggleInterviews = () => setInterviewsCollapsed(!isInterviewsCollapsed);
@@ -27,12 +27,14 @@ const AntdTracker = () => {
     setShowContacts(true);
   };
 
-  const handleModalOpen = () => {
-    setIsModalVisible(true);
+  const handleAddContact = () => {
+    setShowContacts(false);
+    setShowForm(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalVisible(false);
+  const handleCancel = () => {
+    setShowForm(false);
+    setShowContacts(false);
   };
 
   return (
@@ -192,7 +194,7 @@ const AntdTracker = () => {
 
                     <div className="interview-details-interviewers">
                       <p className="title">Interviewers</p>
-                      {!showContacts && (
+                      {!showContacts && !showForm && (
                         <div>
                           <button
                             className="add-btn"
@@ -225,7 +227,7 @@ const AntdTracker = () => {
                               type="primary"
                               size="small"
                               className="full-width"
-                              onClick={handleModalOpen}
+                              onClick={handleAddContact}
                             >
                               <PlusCircleOutlined />
                               <span>Add a Contact</span>
@@ -233,89 +235,101 @@ const AntdTracker = () => {
                           </div>
                         </div>
                       )}
-                      <Modal
-                        title="Add Interview Contact"
-                        visible={isModalVisible}
-                        onCancel={handleModalClose}
-                        footer={null}
-                      >
-                        <Form layout="vertical">
-                          <Form.Item
-                            label="First Name"
-                            name="firstName"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input the first name!",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="First Name" />
-                          </Form.Item>
-                          <Form.Item
-                            label="Last Name"
-                            name="lastName"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input the last name!",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Last Name" />
-                          </Form.Item>
-                          <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[
-                              {
-                                required: true,
-                                type: "email",
-                                message: "Please input a valid email!",
-                              },
-                            ]}
-                          >
-                            <Input placeholder="hello@example.com" />
-                          </Form.Item>
-                          <Form.Item label="Job Title" name="jobTitle">
-                            <Input placeholder="Job Title" />
-                          </Form.Item>
-                          <Form.Item label="LinkedIn" name="linkedIn">
-                            <Input placeholder="https://www.linkedin.com/in/yourname" />
-                          </Form.Item>
-                          <Form.Item label="Relationship" name="relationship">
-                            <Select placeholder="None">
-                              <Select.Option value="colleague">
-                                Colleague
-                              </Select.Option>
-                              <Select.Option value="manager">
-                                Manager
-                              </Select.Option>
-                              <Select.Option value="friend">
-                                Friend
-                              </Select.Option>
-                            </Select>
-                          </Form.Item>
-                          <Form.Item label="Notes" name="notes">
-                            <Input.TextArea
-                              placeholder="Add notes about this contact"
-                              rows={4}
-                            />
-                          </Form.Item>
-                          <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                              Save
-                            </Button>
-                            <Button
-                              htmlType="button"
-                              onClick={handleModalClose}
-                              style={{ marginLeft: "8px" }}
-                            >
-                              Cancel
-                            </Button>
-                          </Form.Item>
-                        </Form>
-                      </Modal>
+
+                      {showForm && (
+                        <div className="interview-contacts-container">
+                          <div className="add-interview-form">
+                            <div className="field-row">
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-firstName">
+                                  First Name
+                                </label>
+                                <Input
+                                  id="interview-firstName"
+                                  placeholder="First Name"
+                                />
+                              </div>
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-lastName">
+                                  Last Name
+                                </label>
+                                <Input
+                                  id="interview-lastName"
+                                  placeholder="Last Name"
+                                />
+                              </div>
+                            </div>
+                            <div className="field-row">
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-contactEmail">
+                                  Email
+                                </label>
+                                <Input
+                                  id="interview-contactEmail"
+                                  placeholder="hello@example.com"
+                                  size="small"
+                                />
+                              </div>
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-jobTitle">
+                                  Job Title
+                                </label>
+                                <Input
+                                  id="interview-jobTitle"
+                                  placeholder="Job Title"
+                                  size="small"
+                                />
+                              </div>
+                            </div>
+                            <div className="field-row">
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-linkedIn">
+                                  LinkedIn
+                                </label>
+                                <Input
+                                  id="interview-linkedIn"
+                                  placeholder="https://www.linkedin.com/in/yourname"
+                                  size="small"
+                                />
+                              </div>
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-relationship">
+                                  Relationship
+                                </label>
+                                <Select
+                                  placeholder="None"
+                                  style={{ width: "100%" }}
+                                  id="interview-relationship"
+                                />
+                              </div>
+                            </div>
+                            <div className="field-row">
+                              <div className="job-contacts-input">
+                                <label htmlFor="interview-contactNotes">
+                                  Notes
+                                </label>
+                                <Input.TextArea
+                                  id="interview-contactNotes"
+                                  placeholder="Add notes about this contact"
+                                  rows={4}
+                                />
+                              </div>
+                            </div>
+                            <div className="field-row">
+                              <Button type="primary" size="small">
+                                Save
+                              </Button>
+                              <Button
+                                type="default"
+                                size="small"
+                                onClick={handleCancel}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
