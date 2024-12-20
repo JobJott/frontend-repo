@@ -1,8 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { FaRegEyeSlash,  FaRegEye } from "react-icons/fa";
 import './Account.css'
 
 const Account = () => {
+    const password = 'password'
+    const text = 'text'
+const [isEye, setIsEye] = useState(true)
+const handleEye = () => {
+    setIsEye((prev) => !prev)
+}
 
+
+const [updateName, setUpdateName] = useState({
+    firstName: '',
+    lastName: ''
+})
+const [updatePassword, setUpdatePassword] = useState({
+    newPassword: '',
+    confirmPassword:''
+})
 
   return (
     <div className="stack">
@@ -83,8 +99,44 @@ const Account = () => {
                         </div>
                     </div>
             </form>
-            
+            <div className="horizontal-line mb-5 mt-5"><hr /></div>
             <h3>Change Password</h3>
+            <div className="password-div">
+                <form action="" className='password-form mt-5 mb-5'>
+                    <div className="password-row flex gap-20">
+                        <div className="password-col pass-new">
+                            <div className="password-col pass-name mb-3">New Password</div>
+                            <div className="password-col pass-input">
+                                <input type={isEye ? password: text} />
+                                <div className="eye-icon" onClick={handleEye}>
+                                    {
+                                         isEye ? <FaRegEyeSlash/> : <FaRegEye/>
+                                    }
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div className="password-col pass-confirm">
+                        <div className="password-col pass-confirm">
+                            <div className="password-col pass-confirm mb-3">Confirm Password</div>
+                            <div className="password-col pass-input">
+                            <input type={isEye ? password: text} />
+                                <div className="eye-icon" onClick={handleEye}>
+                                    {
+                                         isEye ? <FaRegEyeSlash/> : <FaRegEye/>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+                <div className="action-buttons">
+                        <div className="action-row">
+                            <div className="action-col active ant-btn ant-btn mr-4"><button>Save</button></div>
+                        </div>
+                    </div>
+            </div>
             
 
         </div>
