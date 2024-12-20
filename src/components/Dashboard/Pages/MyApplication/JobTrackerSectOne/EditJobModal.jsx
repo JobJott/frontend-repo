@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import styled from "styled-components";
 
-const StyledModal = styled(Modal)`  
+const StyledModal = styled(Modal)`
   .ant-modal-content {
     padding: 0 !important;
     border-radius: 0px;
@@ -54,7 +54,6 @@ const StyledModal = styled(Modal)`
     font-size: 14px;
   }
 
-
   .ProseMirror {
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -73,7 +72,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",
@@ -138,7 +137,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
       }}
     >
       <div className="flex flex-col gap-3 w-96 md:w-[520px]">
-        <h3 className="text-primary">Add a New Job Post</h3>
+        <h3 className="text-primary">Edit Job Post</h3>
         <form
           className="flex flex-col gap-6 w-full"
           id="job-post"
@@ -244,4 +243,4 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   );
 };
 
-export default AntJobModal;
+export default EditJobModal;

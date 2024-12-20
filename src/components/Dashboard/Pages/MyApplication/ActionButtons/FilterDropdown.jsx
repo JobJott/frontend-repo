@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Button } from "antd";
 import draghandle from "../../../../../assets/drag-handle.svg";
 
 const FilterDropdownMenu = () => {
@@ -81,7 +82,7 @@ const FilterDropdownMenu = () => {
 
   return (
     <div className="filter-dropdown-menu-container" ref={dropdownRef}>
-      <button
+      <Button
         type="button"
         className={`filter-btn filter-btn-default filter-btn-sm filter-dropdown-trigger ${
           isFilterDropdownOpen ? "filter-dropdown-open" : ""
@@ -89,7 +90,7 @@ const FilterDropdownMenu = () => {
         onClick={toggleFilterDropdown}
       >
         <span>Columns</span>
-      </button>
+      </Button>
 
       {/*Filter Dropdown Menu */}
       {isFilterDropdownOpen && (

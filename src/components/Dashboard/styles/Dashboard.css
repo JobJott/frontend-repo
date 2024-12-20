@@ -158,7 +158,8 @@
   transition-timing-function: ease-in;
   transition-duration: 0.2s;
   transition-property: opacity, background;
-  fill: #a7b9b6;
+  /* fill: #a7b9b6; */
+  fill: #fff;
 }
 
 .sidebar-icon > svg {
@@ -168,6 +169,20 @@
   width: 2.5rem;
   height: 2.5rem;
   vertical-align: middle;
+}
+
+.side-nav-menu-item:hover .sidebar-icon,
+.side-nav-menu-item:focus .sidebar-icon,
+.mobile-header .side-nav-menu-item:hover .sidebar-icon,
+.mobile-header .side-nav-menu-item:focus .sidebar-icon {
+  opacity: 1;
+}
+
+.side-nav-menu-item:hover .sidebar-icon:not(.selected),
+.side-nav-menu-item:focus .sidebar-icon:not(.selected),
+.mobile-header .side-nav-menu-item:hover .sidebar-icon:not(.selected),
+.mobile-header .side-nav-menu-item:focus .sidebar-icon:not(.selected) {
+  background: #ffffff1a;
 }
 
 .active-link .sidebar-icon.selected {

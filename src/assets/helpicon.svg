@@ -1,12 +1,1 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_1_53146)">
-<path d="M20 35C28.2843 35 35 28.2843 35 20C35 11.7157 28.2843 5 20 5C11.7157 5 5 11.7157 5 20C5 28.2843 11.7157 35 20 35Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20 28.333V28.3497" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19.9998 22.5C19.9692 21.9589 20.1151 21.4225 20.4157 20.9716C20.7163 20.5207 21.1553 20.1797 21.6665 20C22.293 19.7604 22.8553 19.3787 23.3091 18.8849C23.763 18.3911 24.096 17.7987 24.282 17.1543C24.4681 16.5099 24.5019 15.8311 24.3811 15.1714C24.2602 14.5117 23.9878 13.889 23.5854 13.3525C23.1829 12.8159 22.6615 12.3801 22.062 12.0793C21.4625 11.7785 20.8014 11.621 20.1307 11.6192C19.46 11.6173 18.798 11.7711 18.1969 12.0686C17.5958 12.366 17.0719 12.799 16.6665 13.3333" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<clipPath id="clip0_1_53146">
-<rect width="40" height="40" fill="white"/>
-</clipPath>
-</defs>
-</svg>
+<svg viewBox="-16 -18 128 123" xmlns="http://www.w3.org/2000/svg"><g id="Question - Raw"><path clip-rule="evenodd" d="M28 27.5C28 24.7386 30.2386 22.5 33 22.5H63C65.7614 22.5 68 24.7386 68 27.5V42C68 44.7614 65.7614 47 63 47H58C49.7157 47 43 53.7157 43 62V68.6109H53V62C53 59.2386 55.2386 57 58 57H63C71.2843 57 78 50.2843 78 42V27.5C78 19.2157 71.2843 12.5 63 12.5H33C24.7157 12.5 18 19.2157 18 27.5V39H28V27.5ZM53 74.5H43V84.5H53V74.5Z" fill-rule="evenodd" id="Vector"></path></g></svg>

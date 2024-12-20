@@ -1,4 +1,4 @@
-<!-- For anyone confused how the dashboard is structured; heres a walkthrough, so the dashboard component is inside a major folder called "Dashboard" and inside this folder; There are 3 Subfolders(Mainboard, Sidedash and Styles) and 3 Main files(Dashboard, Mainboard and Sidedash)
+For anyone confused how the dashboard is structured; heres a walkthrough, so the dashboard component is inside a major folder called "Dashboard" and inside this folder; There are 3 Subfolders(Pages, Sidedash and Styles) and 3 Main files(Dashboard, Mainboard and Sidedash)
 
 ## 3 Main Files
 
@@ -10,11 +10,11 @@
 
 -2. Sidedash.jsx is the side navigation dashboard; pretty much self explanatory
 
--3. Mainboard.jsx; houses the main structure of the dashboard, basically the entry point for mainboard components; houses the jobpipeline.jsx, the action-buttons (DropdownComponent, FilterDropdownMenu, MenuDropdown, Newjob).jsx files, Addjob.jsx and some couple others; which visibility will be toggled based on the user input or navigation patterns.
+-3. Mainboard.jsx; houses the main structure of the dashboard pages routes, basically the entry point for mainboard components;(Overview, resume-builder, myapplication, contacts, support, account).jsx files
 
 ## 3 SubFolders
 
--1. Mainboard(contains the codes for the mainboard(actionbuttons folder, jobpipeline, JobTrackerSectionOne))
+-1. Pages-(This is where you should put the codes for the mainboard(Overview, resume-builder, myapplication, contacts, support, account)) or subfolders
 -2. Sidedash(contains the sidedash data and icons)
--3. Styles(contains the two main css file(Dashboard, Mainboard).css) -->
+-3. Styles(contains the two main css file(Dashboard, Mainboard).css)
  ignore this format changed

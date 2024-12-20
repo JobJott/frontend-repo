@@ -100,7 +100,7 @@
   --popover-foreground: 0 0% 3.9%;
   --popover-inverted: 0 0% 20%;
   --popover-inverted-foreground: 0 0% 98%;
-  --primary: var(--jobjott-750);
+  --primary: var(--jobjott-700);
   --primary-foreground: 0 0% 98%;
   --primary-muted: var(--jobjott-50);
   --primary-muted-foreground: var(--jobjott-400);

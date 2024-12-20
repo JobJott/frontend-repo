@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Button } from "antd";
 
 const MenuDropdown = () => {
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false);
@@ -24,7 +25,7 @@ const MenuDropdown = () => {
   return (
     <div className="menu-container" ref={dropdownRef}>
       {" "}
-      <button
+      <Button
         type="button"
         className={`filter-btn filter-btn-default filter-btn-sm filter-dropdown-trigger ${
           isMenuDropdownOpen ? "filter-dropdown-open" : ""
@@ -45,7 +46,7 @@ const MenuDropdown = () => {
           </svg>
         </span>
         <span>Menu</span>
-      </button>
+      </Button>
       {isMenuDropdownOpen && (
         <div style={{ position: "absolute", top: 0, left: 0, width: "100%" }}>
           {" "}

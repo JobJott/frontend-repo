@@ -1,0 +1,157 @@
+.job-listing-fields
+  .job-listing-fields-row
+  .job-listing-fields-secondary
+  .compensation-add-salary-range {
+  font-size: 18px;
+  font-weight: 400;
+  color: #333;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.compensation-add-salary-range .anticon {
+  color: inherit;
+}
+
+.job-listing-fields
+  .job-listing-fields-row
+  .job-listing-fields-secondary
+  .compensation-add-salary-range:hover {
+  color: #111313;
+  cursor: pointer;
+}
+
+.ant-modal {
+  min-width: 300px;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  max-width: 80% !important;
+}
+
+.job-tracker-job-compensation-modal.ant-modal {
+  max-width: 420px;
+}
+
+.job-tracker-job-compensation-modal .ant-modal-content {
+  padding: 0;
+}
+
+.job-tracker-job-compensation-modal .ant-modal-body {
+  padding: 2rem 2.5rem;
+}
+
+.job-compensation-form-container {
+  position: relative;
+}
+
+.job-compensation-form-container h3 {
+  color: #111313;
+}
+
+.job-tracker-job-compensation-modal .ant-modal-body h3 {
+  font-size: 24px;
+}
+
+.job-compensation-form-container .ant-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.job-compensation-form-container .ant-form .ant-form-item:not(.full-width) {
+  flex: 0 1 48%;
+}
+
+label,
+input,
+.ant-select-selection-item,
+button span {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.ant-form .ant-form-item-label > label {
+  height: auto;
+  font-weight: 600;
+}
+
+.ant-input-number-outlined:focus,
+.ant-input-number-outlined:focus-within,
+.ant-input-number-outlined:hover,
+.ant-select-outlined .ant-select-selector:hover,
+.ant-select-selector,
+.ant-select-outlined .ant-select-selector:focus,
+.ant-select-selector {
+  border-color: #111313;
+  box-shadow: 0 0 #24474733;
+}
+
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  border-color: #111313;
+  box-shadow: 0 0 0 2px #24474733;
+  border-right-width: 1px;
+  outline: 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.ant-select {
+  text-align: left;
+}
+
+.job-compensation-form-container .compensation-input {
+  font-feature-settings: normal;
+  font-variant-numeric: normal;
+  width: 100%;
+}
+
+.job-compensation-form-container .compensation-currency-select {
+  top: -1px;
+}
+
+.job-compensation-form-container .ant-form .ant-form-item:last-child {
+  margin-bottom: 0;
+  text-align: right;
+}
+
+.ant-row {
+  display: flex;
+  flex-flow: row wrap;
+  min-width: 0;
+}
+
+.ant-btn.ant-btn-sm {
+  font-size: 14px;
+  height: 32px;
+}
+
+.ant-btn > span {
+  display: inline-block;
+  font-weight: 500;
+}
+
+.ant-btn.ant-btn-link:not(.inline-link):after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  border-radius: 4px;
+  background-color: currentColor;
+  transition: opacity 0.4s ease;
+}
+
+.ant-btn.ant-btn-primary {
+  text-shadow: none;
+  background-color: #111313;
+  color: #fff;
+}
+
+.ant-btn-primary span {
+  color: #fff;
+}
