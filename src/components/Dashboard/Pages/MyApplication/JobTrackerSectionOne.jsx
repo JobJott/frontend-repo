@@ -11,7 +11,6 @@ import {
   UpCircleOutlined,
   DownCircleOutlined,
 } from "@ant-design/icons";
-import "../../styles/JobTrackerSectionOne.css";
 import EditJobModal from "./JobTrackerSectOne/EditJobModal";
 import { StyleProvider } from "@ant-design/cssinjs";
 import JobListingDrawer, {
@@ -23,7 +22,9 @@ import JobListingDrawer, {
   NegotiatingExtended,
 } from "./JobTrackerSectOne/ExtendedSections";
 import AntdTracker from "./JobTrackerSectOne/AntdTracker";
-// import "antd/dist/reset.css";
+import "./JobTrackerSectOne/JobTrackerSectionOne.css";
+
+
 
 const columnData = [
   { title: "Date Saved", field: "added_at" },
@@ -51,6 +52,7 @@ const JobTrackerSectionOne = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccepted, setIsAccepted] = useState(false);
+  const [activeTab, setActiveTab] = useState("job-info");
 
   const handleToggle = () => {
     setIsExpanded((prev) => !prev);
@@ -643,10 +645,10 @@ const JobTrackerSectionOne = () => {
                   </div>
 
                   <div className="job-listing-drawer-item _job-listing-toolbar_q9krx_1">
-                    <JobListingDrawer />
+                    <JobListingDrawer setActiveTab={setActiveTab}/>
                   </div>
 
-                  <AntdTracker />
+                  <AntdTracker activeTab={activeTab}/>
                 </div>
               </div>
             </div>

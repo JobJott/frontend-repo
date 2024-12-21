@@ -1335,6 +1335,139 @@ html [type="button"],
   background: #111313;
   color: #fff;
 }
+
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .add-interview-form {
+  position: relative;
+}
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .add-interview-form
+  .field-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .add-interview-form
+  .field-row
+  .job-contacts-input {
+  width: 100%;
+}
+
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .add-interview-form
+  .field-row
+  .job-contacts-input
+  label {
+  font-size: 0.75rem;
+}
+
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .interviews-container
+  .interview-details
+  .interview-details-container
+  .interview-details-interviewers
+  .interview-contacts-container
+  .add-interview-form
+  .field-row
+  label {
+  font-weight: 600;
+}
+
+.ant-input,
+.ant-progress-text {
+  font-feature-settings: normal !important;
+  font-variant-numeric: normal !important;
+}
+
+.ant-input,
+.ant-input-password,
+.ant-input-number {
+  padding: 0.5rem 0.75rem 0.4rem;
+  letter-spacing: 0;
+  line-height: 0;
+  border-radius: 0;
+}
+
+.job-listing-drawer
+  .job-posting-interview-tracking
+  .module-body
+  .add-interview-form
+  .field-row:last-of-type {
+  margin-bottom: 0;
+  margin-top: 1rem;
+}
+
+.text-primary {
+  color: #111313;
+}
+
+.job-listing-drawer .job-keywords-and-description {
+  margin-bottom: 3rem;
+}
+
+.job-listing-drawer .drawer-content .job-description-container {
+  max-width: 100%;
+}
+
+.job-listing-drawer .drawer-content .job-description-container.ant-row {
+  margin: 0 !important;
+}
+
+.job-description-textarea {
+  color: #111313;
+  font-weight: 500;
+}
+
+.job-description-textarea::placeholder {
+  color: #333;
+}
+
+._job-listing-tool-content_1pqaz_5 h3 {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.625rem;
+  align-items: center;
+}
+
+._job-listing-tool-content_1pqaz_5 h3 svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+._icon-only_11uyj_51 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  min-width: var(--btn-height);
+}
+
+._flat_11uyj_95 {
+  --btn-color: #171717;
+  --btn-focus: #111313;
+  --btn-background: transparent;
+  --btn-background-hover: #fafafa;
+  --btn-background-active: #f5f5f5;
+}
+
+._round_11uyj_141 {
+  --btn-radius: 600rem;
+}
+._close-button_1pqaz_1 {
+  --btn-color: #171717;
+}
+
 @media (min-width: 480px) {
   h2,
   .h2 {
@@ -1455,6 +1588,10 @@ html [type="button"],
     padding-right: 1rem;
     padding-left: 1rem;
   }
+
+  .job-listing-drawer .drawer-content .job-description-container.ant-row {
+    margin: inherit;
+  }
 }
 
 @media (max-width: 991px) {
@@ -1508,6 +1645,13 @@ html [type="button"],
   .job-listing-drawer .scroll {
     flex: 1;
     height: 100%;
+  }
+
+  .job-listing-drawer .scroll {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: auto;
   }
 }
 

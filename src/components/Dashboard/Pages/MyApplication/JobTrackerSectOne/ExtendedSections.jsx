@@ -322,7 +322,7 @@ export const ApplyingExtended = ({
       {
         type: "link",
         content: "Include job post title in your resume",
-        href: "https://app.tealhq.com/resume-builder/career-history#target-titles",
+        href: "",
       },
       {
         type: "text",
@@ -898,8 +898,8 @@ export const NegotiatingExtended = ({
   );
 };
 
-const JobListingDrawer = () => {
-  const [activeTab, setActiveTab] = useState("job-info");
+const JobListingDrawer = ({ setActiveTab }) => {
+  const [activeTab, setActiveTabLocal] = useState("job-info");
 
   const tabs = [
     { id: "job-info", label: "Job Info", icon: JobInfoIcon },
@@ -909,6 +909,12 @@ const JobListingDrawer = () => {
     { id: "templates", label: "Email Templates", icon: EmailTemplatesIcon },
     { id: "checklist", label: "Check List", icon: CheckListIcon },
   ];
+
+  const handleTabClick = (id) => {
+    setActiveTabLocal(id);
+    setActiveTab(id); // Update the active tab in the parent component
+  };
+
   return (
     <div
       role="tablist"
@@ -931,7 +937,7 @@ const JobListingDrawer = () => {
           className={`_button_11uyj_1 _with-icon_11uyj_47 _ghost_11uyj_112 _medium_11uyj_127 ${
             activeTab === tab.id ? "active" : ""
           }`}
-          onClick={() => setActiveTab(tab.id)}
+          onClick={() => handleTabClick(tab.id)}
         >
           <tab.icon />
           {tab.label}
