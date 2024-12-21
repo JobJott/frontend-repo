@@ -16,6 +16,7 @@ const CTA = lazy(() => import("./components/Pages/Cta"));
 const Footer = lazy(() => import("./components/Pages/Footer"));
 const AuthPage = lazy(() => import("./components/Pages/AuthPage"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
+const SupportCenter = lazy(() => import("../src/components/Dashboard/Pages/SupportCenter")); 
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -62,8 +63,16 @@ function App() {
             </Suspense>
           }
         />
-        <Route path="*" element={<Error />} />
+        <Route
+          path="/dashboard/supportcenter"
+          element={
+            <Suspense fallback={<Loader />}>
+              <SupportCenter />
+            </Suspense>
+          }
+        />
         <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </Router>
   );
