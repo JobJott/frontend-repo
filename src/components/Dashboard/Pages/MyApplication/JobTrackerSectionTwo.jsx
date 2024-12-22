@@ -32,9 +32,22 @@ const JobTrackerSectionTwo = () => {
     setDeleteModalOpen(true); // Open delete job modal
   };
 
+  // const [visibleColumns, setVisibleColumns] = useState({
+  //   selected: true,
+  //   role: true,
+  //   company_name: true,
+  //   application_deadline: true,
+  //   posted_at: true,
+  //   follow_up_at: true,
+  //   min_salary: true,
+  //   location: true,
+  //   statusName: true,
+  //   max_salary: true,
+  // });
+
   const data = [
     {
-      key: "1",
+      id: 1,
       selected: false,
       role: "Sail Innovation Engineer",
       company_name: "Sails Hub",
@@ -44,11 +57,11 @@ const JobTrackerSectionTwo = () => {
       posted_at: null,
       follow_up_at: null,
       min_salary: "US$0.00",
+      max_salary: "US$0.00",
       statusName: "Bookmarked",
       location: "Ikorodu, Lagos",
-      max_salary: "US$0.00",
     },
-    //for more objects
+    //other objexts will be added here
   ];
 
   const columns = [
@@ -56,91 +69,210 @@ const JobTrackerSectionTwo = () => {
       title: "",
       dataIndex: "selected",
       key: "selected",
-      render: (selected, record) => (
-        <input type="checkbox" checked={selected} readOnly />
+      tabulatorfield: "selected",
+      render: (selected) => (
+        <div className="formatterCell">
+          <Checkbox
+            className="font-semibold"
+            onChange={handleChange}
+            checked={isChecked}
+          />
+        </div>
       ),
       width: 40,
       height: 37,
+      height2: 56,
       align: "center",
+      className: "text-center",
     },
     {
       title: "Job Position",
       dataIndex: "role",
+      tabulatorfield: "role",
       key: "role",
       width: 180,
       height: 37,
+      height2: 56,
       align: "center",
       render: (text) => (
-        <Button type="link" className="invisible-button">
-          {text}
-        </Button>
+        <div className="formatterCell">
+          <div className="invisible-button" role="button" tabIndex="0">
+            <span>{text}</span>
+          </div>
+        </div>
       ),
+      className: "role-cell",
     },
     {
       title: "Company",
       dataIndex: "company_name",
+      tabulatorfield: "company_name",
       key: "company_name",
-      width: 171,
+      width: 120,
       height: 37,
-
+      height2: 56,
       align: "center",
       render: (text) => (
-        <Button type="link" className="invisible-button">
-          {text} <RightOutlined />
-        </Button>
+        <div className="formatterCell">
+          <div className="invisible-button" role="button" tabIndex="0">
+            <span>{text}</span>{" "}
+            <span
+              role="img"
+              aria-label="right"
+              className="anticon anticon-right"
+            >
+              <svg
+                viewBox="64 64 896 896"
+                focusable="false"
+                data-icon="right"
+                width="1em"
+                height="1em"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path>
+              </svg>
+            </span>
+          </div>
+        </div>
       ),
-    },
-    {
-      title: "Deadline",
-      dataIndex: "application_deadline",
-      key: "application_deadline",
-      width: 134,
-      height: 37,
-
-      align: "center",
-      render: (text) => (text ? text : "N/A"),
+      className: "company-cell",
     },
     {
       title: "Date Posted",
       dataIndex: "posted_at",
       key: "posted_at",
-      width: 114,
+      tabulatorfield: "posted_at",
+      tabIndex: 0,
+      width: 111,
       height: 37,
-
+      height2: 56,
       align: "center",
-      render: (text) => (text ? text : "N/A"),
+      render: (text) => (
+        <span
+          className="tabulator-cell-line-clamp tabulator-cell-full-background"
+          style={{ background: "" }}
+        >
+          {text ? text : "N/A"}
+        </span>
+      ),
+      className: "tabulator-cell-text-edit tabulator-editable",
+    },
+    {
+      title: "Date Applied",
+      dataIndex: "applied_at",
+      tabulatorfield: "applied_at",
+      tabIndex: 0,
+      key: "applied_at",
+      width: 134,
+      height: 37,
+      height2: 56,
+      align: "center",
+      render: (text) => (
+        <span className="muted-text">{text ? text : "N/A"}</span>
+      ),
+      className: "tabulator-cell-text-edit tabulator-editable",
     },
     {
       title: "Follow up",
       dataIndex: "follow_up_at",
       key: "follow_up_at",
-      width: 114,
+      tabulatorfield: "follow_up_at",
+      tabIndex: 0,
+      width: 100,
       height: 37,
-
+      height2: 56,
       align: "center",
       render: (text) => (text ? text : <Button type="link">Add date</Button>),
+      className: "tabulator-cell-text-edit tabulator-editable",
     },
+    {
+      title: "Date Saved",
+      dataIndex: "added_at",
+      key: "added_at",
+      tabulatorfield: "added_at",
+      tabIndex: 0,
+      width: 111,
+      height: 37,
+      height2: 56,
+      align: "center",
+      render: (text) => (
+        <span
+          className="tabulator-cell-line-clamp tabulator-cell-full-background"
+          style={{ background: "" }}
+        >
+          {text ? text : "N/A"}
+        </span>
+      ),
+      className: "tabulator-cell-text-edit tabulator-editable",
+    },
+    {
+      title: "Deadline",
+      dataIndex: "application_deadline",
+      tabulatorfield: "application_deadline",
+      key: "application_deadline",
+      tabIndex: 0,
+      width: 134,
+      height: 37,
+      height2: 56,
+      align: "center",
+      render: (text) => (text ? text : "N/A"),
+      className: "tabulator-cell-text-edit tabulator-editable",
+    },
+
     {
       title: "Min. Salary",
       dataIndex: "min_salary",
       key: "min_salary",
-      width: 114,
+      tabulatorfield: "min_salary",
+      tabIndex: 0,
+      width: 111,
       height: 37,
-
+      height2: 56,
       align: "center",
       render: (text) => text,
+      className: "tabulator-cell-text-edit tabulator-editable",
+    },
+    {
+      title: "Max. Salary",
+      dataIndex: "max_salary",
+      key: "max_salary",
+      tabulatorfield: "max_salary",
+      tabIndex: 0,
+      width: 111,
+      height: 37,
+      height2: 56,
+      align: "center",
+      render: (text) => text,
+      className: "tabulator-cell-text-edit tabulator-editable",
+    },
+    {
+      title: "Status",
+      dataIndex: "statusName",
+      key: "statusName",
+      tabulatorfield: "statusName",
+      tabIndex: 0,
+      width: 100,
+      height: 37,
+      height2: 56,
+      align: "center",
+      render: (text) => text,
+      className: "selection-cell tabulator-editable",
     },
     {
       title: "Location",
       dataIndex: "location",
       key: "location",
+      tabulatorfield: "location",
+      tabIndex: 0,
       width: 120,
       height: 37,
-
+      height2: 56,
       align: "center",
       render: (text) => (
         <span className="tabulator-cell-line-clamp">{text}</span>
       ),
+      className: "tabulator-cell-text-edit tabulator-editable",
     },
   ];
 
@@ -162,7 +294,7 @@ const JobTrackerSectionTwo = () => {
               <div className="selection-bar">
                 <Checkbox className="font-semibold" onChange={handleChange}>
                   {/* {selected} selected */}
-                  {isChecked ? "1 selected" : "0 selected"}
+                  {`${isChecked ? 1 : 0} selected`}
                 </Checkbox>
 
                 {isChecked && (
@@ -183,10 +315,12 @@ const JobTrackerSectionTwo = () => {
                     >
                       Delete
                     </Button>
-                    <DeleteJobModal
-                      deleteModalOpen={deleteModalOpen}
-                      setDeleteModalOpen={setDeleteModalOpen}
-                    />
+                    {isChecked && (
+                      <DeleteJobModal
+                        deleteModalOpen={deleteModalOpen}
+                        setDeleteModalOpen={setDeleteModalOpen}
+                      />
+                    )}
                   </>
                 )}
               </div>
@@ -262,29 +396,41 @@ const JobTrackerSectionTwo = () => {
                   height: "calc(100% - 38px)",
                   maxHeight: "calc(100% - 38px)",
                 }}
+                tabIndex={0}
               >
-                <div className="tabulator-table">
+                <div className="tabulator-table" role="rowgroup">
+                  {/* TODO: Implement backend connection for dynamic key generation */}
+                  {/* <div key={`${item.userId}-${item.timestamp}`}></div> */}{" "}
                   {data.map((row) => (
-                    <div key={row.key} className="tabulator-row" role="row">
+                    <div
+                      key={row.id}
+                      className="tabulator-row tabulator-selectable tabulator-row-odd"
+                      role="row"
+                    >
                       {columns.map((col) => (
-                        <div
-                          key={col.key}
-                          className={`${
-                            col.key === "selected"
-                              ? "tabulator-cell text-center"
-                              : "tabulator-cell role-cell"
-                          }`}
-                          style={{
-                            width: `${col.width}px`,
-                            justifyContent: col.align,
-                          }}
-                        >
-                          <div className="formatterCell">
+                        <>
+                          <div
+                            key={col.key}
+                            className={`tabulator-cell ${col.className}`}
+                            style={{
+                              width: `${col.width}px`,
+                              height: `${col.height2}px`,
+                            }}
+                            role="gridcell"
+                            tabIndex={col.tabIndex}
+                            tabulatorfield={col.tabulatorfield}
+                          >
                             {col.render
                               ? col.render(row[col.dataIndex], row)
                               : row[col.dataIndex]}
                           </div>
-                        </div>
+                          {col.key !== columns[columns.length - 1].key && (
+                            <span
+                              className="tabulator-col-resize-handle"
+                              style={{ height: `${col.height}px` }}
+                            ></span>
+                          )}
+                        </>
                       ))}
                     </div>
                   ))}

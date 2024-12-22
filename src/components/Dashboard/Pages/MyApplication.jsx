@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/MyApplications.css";
-import JobTrackerSectionTwo from "./MyApplication/JobTrackerSectionTwo";
-// import JobTrackerSection0 from "./MyApplication/JobTrackerSection0";
+// import JobTrackerSectionTwo from "./MyApplication/JobTrackerSectionTwo";
+import JobTrackerSection0 from "./MyApplication/JobTrackerSection0";
 // import JobTrackerSectionOne from "./MyApplication/JobTrackerSectionOne";
 
 const MyApplication = () => {
@@ -10,9 +10,9 @@ const MyApplication = () => {
       <main className="mainboard-content">
         <div className="job-tracker-container">
           <div className="job-tracker-content-wrapper">
-            {/* <JobTrackerSection0 /> */}
+            <JobTrackerSection0 />
             {/* <JobTrackerSectionOne /> */}
-            <JobTrackerSectionTwo />
+            {/* <JobTrackerSectionTwo /> */}
           </div>
         </div>
       </main>
