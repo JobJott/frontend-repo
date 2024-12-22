@@ -10,7 +10,7 @@ export const SideDashData = [
     id: 1,
     title: "Overview",
     icon: <HomeIcon />,
-    path: "/dashboard/Overview",
+    path: "/dashboard/overview",
   },
   {
     id: 2,

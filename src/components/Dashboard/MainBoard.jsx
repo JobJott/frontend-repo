@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import "./styles/Mainboard.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 import MyApplication from "./Pages/MyApplication";
-import Account from "./Pages/Account/Account"
+import Account from "./Pages/Account/Account";
+import Overview from "./Pages/Overview/Overview"
 
 const MainBoard = ({ isSideDashOpen }) => {
   const location = useLocation();
@@ -23,8 +24,8 @@ const MainBoard = ({ isSideDashOpen }) => {
       }`}
     >
       <Routes>
-        {/* <Route path="overview" element={<Overview />} />
-        <Route path="resume-builder" element={<ResumeBuilder />} /> */}
+        { <Route path="overview" element={<Overview />} />
+       /* <Route path="resume-builder" element={<ResumeBuilder />} /> */}
         <Route path="my-applications" element={<MyApplication />} />
         {/* <Route path="contacts" element={<Contacts />} />
         <Route path="support" element={<Support />} />*/}
