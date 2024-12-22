@@ -18,6 +18,7 @@ const AuthPage = lazy(() => import("./components/Pages/AuthPage"));
 const Dashboard = lazy(() => import("./components/Dashboard/Dashboard"));
 const SupportCenter = lazy(() => import("../src/components/Dashboard/Pages/SupportCenter")); 
 
+
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
 
