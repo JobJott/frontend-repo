@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import styled from "styled-components";
 
-const StyledModal = styled(Modal)`  
+const StyledModal = styled(Modal)`
   .ant-modal-content {
     padding: 0 !important;
     border-radius: 0px;
@@ -54,6 +54,15 @@ const StyledModal = styled(Modal)`
     font-size: 14px;
   }
 
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  .border-input {
+    border-color: hsl(var(--input));
+  }
+  .rounded-md {
+    border-radius: calc(var(--radius) - 2px);
+  }
 
   .ProseMirror {
     word-wrap: break-word;
@@ -71,15 +80,32 @@ const StyledModal = styled(Modal)`
   textarea {
     color: #000;
   }
+
+  .shadow-primary {
+    --tw-shadow-color: hsl(var(--primary));
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+
+  .text-primary-foreground {
+    color: hsl(var(--primary-foreground));
+  }
+
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
 `;
 
-const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const AntContactModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     jobTitle: "",
-    URL: "",
     companyName: "",
+    email: "",
+    linkedIn: "",
+    twitter: "",
     location: "",
-    jobDescription: "",
+    phoneNumber: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -88,11 +114,15 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
     // Reset form data and errors when the modal is closed
     if (!modalOpen) {
       setFormData({
+        firstName: "",
+        lastName: "",
         jobTitle: "",
-        URL: "",
         companyName: "",
+        email: "",
+        linkedIn: "",
+        twitter: "",
         location: "",
-        jobDescription: "",
+        phoneNumber: "",
       });
       setErrors({});
     }
@@ -105,10 +135,10 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.jobTitle.trim())
-      newErrors.jobTitle = "Job title is required.";
-    if (!formData.companyName.trim())
-      newErrors.companyName = "Company name is required.";
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First Name is required.";
+    if (!formData.lastName.trim())
+      newErrors.lastName = "Last Name is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -138,46 +168,72 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
       }}
     >
       <div className="flex flex-col gap-3 w-96 md:w-[520px]">
-        <h3 className="text-primary">Add a New Job Post</h3>
+        <h3 className="text-primary">Add a New Contact</h3>
         <form
-          className="flex flex-col gap-6 w-full"
+          className="ant-input phantom-input with-border"
           id="job-post"
           onSubmit={handleSubmit}
         >
           {[
             {
-              label: "Job Title",
-              name: "jobTitle",
+              label: "First Name",
+              name: "firstName",
               type: "text",
-              placeholder: "Job Title",
-              id: "job-title",
+              placeholder: "First Name",
             },
             {
-              label: "URL for Original Posting",
-              name: "URL",
-              type: "text",
-              placeholder: "URL for Original Posting",
-              id: "URL",
+                label: "Last Name",
+                name: "lastName",
+                type: "text",
+                placeholder: "Last Name",
+            },
+            {
+                label: "Job Title",
+                name: "jobTitle",
+                type: "text",
+                placeholder: "Job Title",
             },
             {
               label: "Company Name",
               name: "companyName",
               type: "text",
               placeholder: "Company Name",
-              id: "company-name",
             },
             {
-              label: "Location",
-              name: "location",
+              label: "Email",
+              name: "email",
               type: "text",
-              placeholder: "Location",
-              id: "location",
+              placeholder: "Email Address",
+            },
+            {
+              label: "LinkedIn",
+              name: "linkedIn",
+              type: "text",
+              placeholder: "LinkedIn Profile",
+            },
+            {
+                label: "Twitter",
+                name: "twitter",
+                type: "text",
+                placeholder: "Twitter Handle URL",
+            },
+            {
+                label: "Location",
+                name: "location",
+                type: "text",
+                placeholder: "Location",
+            },
+            {
+                label: "Phone Number",
+                name: "phoneNumber",
+                type: "text",
+                placeholder: "Phone",
             },
           ].map((input) => (
             <div className="space-y-2 w-full" key={input.name}>
               <label
                 className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:text-neutral-400"
-                htmlFor={input.id}
+                htmlFor=":rn:-form-item"
               >
                 {input.label}
               </label>
@@ -190,7 +246,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
                 value={formData[input.name]}
                 onChange={handleChange}
                 aria-invalid="false"
-                id={input.id}
+                id=":rn:-form-item"
               />
               {errors[input.name] && (
                 <span className="text-red-500 text-xs">
@@ -199,29 +255,6 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
               )}
             </div>
           ))}
-
-          <div className="space-y-2 w-full">
-            {/* Label for the input */}
-            <label
-              htmlFor="job-description"
-              className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:text-neutral-400"
-            >
-              Job Description
-            </label>
-
-            {/* Input container */}
-            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50">
-              <textarea
-                id="job-description"
-                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone "
-                placeholder="Enter the job description here..."
-                spellCheck="false"
-                type="text"
-                value={formData.jobDescription}
-                onChange={handleChange}
-              ></textarea>
-            </div>
-          </div>
 
           <div className="flex items-center gap-2 justify-end">
             <button
@@ -235,7 +268,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-bold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 focus-visible:ring-primary h-10 px-4 py-2 rounded-md"
               type="submit"
             >
-              Save Job
+              Save Contact
             </button>
           </div>
         </form>
@@ -244,4 +277,4 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   );
 };
 
-export default AntJobModal;
+export default AntContactModal;

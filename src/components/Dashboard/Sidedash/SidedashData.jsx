@@ -37,7 +37,7 @@ export const SideDashData2 = [
     id: 5,
     title: "Support Center",
     icon: <HelpIcon />,
-    path: "/dashboard/support",
+    path: "/dashboard/supportcenter",
   },
   {
     id: 6,

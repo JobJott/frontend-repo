@@ -7,7 +7,8 @@
     padding: 12px;
 }
 .my-acct{
-    color: #005249;
+    background-color: #333;
+    color: #fff;
     font-size: 14px;
     font-weight: 700;
 }
@@ -15,9 +16,89 @@
     padding: 12px;
 }
 .job-sub{
-    color: #005249;
+    color: #001b527c;
     font-size: 14px;
 }
 .text{
     font-weight: 600;
+}
+.user-account-setting{
+    padding: 12px;
+    max-width: 800px;
+}
+.acct-form{
+    max-width: 36rem;
+}
+.form-col{
+    line-height: 1em;
+    margin-bottom: 10px;
+}
+.form-item-label{
+    font-weight: 500;
+    color: #333;
+}
+.form-item-control{
+    padding-top: 5px;
+    /* background-color: blue; */
+}
+.form-item-control 
+.form-item-control-input{
+    color: #fff;
+    /* border: 2px solid blue; */
+}
+.form-item-control-input-content{
+    input{
+        background-color: #fff;
+        color: #333;
+        outline: none;
+        width: 250px;
+        padding: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 600;
+        height: 35px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+}
+.form-row{
+    display: flex;
+    gap: 30px;
+}
+.form-item-row{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.action-row{
+    display: flex;
+    gap: 20px;
+}
+.action-col{
+    align-items: center;
+    color: #333;
+    border: 2px solid;
+    border-color: #05587c;
+}
+.action-col.active{
+    background-color: #05627c82;
+}
+.password-col{
+    input{
+        background-color: #fff;
+        color: #333;
+        outline: none;
+        width: 250px;
+        padding: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 600;
+        height: 35px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+}
+.pass-input{
+    display: flex;
+    align-items: center;
+}
+.eye-icon{
+    padding: -20px;
 }
