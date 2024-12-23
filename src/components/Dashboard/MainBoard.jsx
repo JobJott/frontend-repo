@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import "./styles/Mainboard.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 import MyApplication from "./Pages/MyApplication";
-
-import Account from "./Pages/Account/Account";
 import Overview from "./Pages/Overview/Overview"
 
 import Contact from "./Pages/Contact"
