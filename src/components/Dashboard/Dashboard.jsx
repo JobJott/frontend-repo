@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MainBoard from "./MainBoard";
 import SideDash from "./SideDash";
+import { Outlet } from "react-router-dom";
 import "./styles/Dashboard.css";
 
 const Dashboard = () => {
@@ -14,6 +15,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <SideDash isOpen={isSideDashOpen} toggleSidebar={toggleSidebar} />
       <MainBoard isSideDashOpen={isSideDashOpen} />
+      <Outlet />
     </div>
   );
 };

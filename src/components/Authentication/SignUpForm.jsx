@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { notification } from "antd";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -10,13 +14,15 @@ const SignUpForm = () => {
   });
 
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { firstName, lastName, email, password } = formData;
@@ -37,7 +43,45 @@ const SignUpForm = () => {
     }
 
     setError("");
-    console.log("Registration successful with:", formData); // For testing
+    // console.log("Registration successful with:", formData); // For testing
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        formData
+      );
+
+      console.log("Response:", response);
+
+      if (response.status === 200 || response.status === 201) {
+        const token = response.data.token; // Extract the token from response
+        console.log("Token received:", token);
+
+        if (token) {
+          localStorage.setItem("authtoken", token); 
+          notification.success({
+            message: "Registration Successful",
+            description: "You have successfully created an account.",
+            placement: "topRight",
+          });
+          console.log("Sign-up successful. Navigating to dashboard...");
+          navigate("/dashboard");
+        } else {
+          console.error("No token received from the server.");
+        }
+      }
+    } catch (err) {
+      notification.error({
+        message: "Registration Failed",
+        description:
+          err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+        placement: "topRight",
+      });
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -72,6 +116,7 @@ const SignUpForm = () => {
                 value={formData.firstName}
                 onChange={handleInputChange}
                 autoComplete="given-name"
+                className="font-medium"
               />
             </div>
 
@@ -84,6 +129,7 @@ const SignUpForm = () => {
                 value={formData.lastName}
                 onChange={handleInputChange}
                 autoComplete="family-name"
+                className="font-medium"
               />
             </div>
           </div>
@@ -97,18 +143,33 @@ const SignUpForm = () => {
               value={formData.email}
               onChange={handleInputChange}
               autoComplete="email"
+              className="font-medium"
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group relative">
             <label htmlFor="password">Password (6 or more characters)</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <input
+                type={passwordVisible ? "text" : "password"} // Toggle input type
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="font-medium input pr-10"
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                onClick={togglePasswordVisibility} // Handle toggle click
+              >
+                {passwordVisible ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </button>
+            </div>
           </div>
 
           <button className="auth-btn" type="submit">

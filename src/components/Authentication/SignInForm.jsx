@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { notification } from "antd";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -7,13 +10,15 @@ const SignInForm = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { email, password } = formData;
@@ -28,7 +33,45 @@ const SignInForm = () => {
     }
 
     setError("");
-    console.log("Sign In successful with:", formData); // For testing
+
+    try {
+      const response = await axios.post(
+        "https://localhost:8080/api/auth/login",
+        formData
+      );
+
+      console.log("Response:", response);
+
+      if (response.status === 200) {
+        const token = response.data.token;
+        console.log("Token received:", token);
+
+        if (token && user?.firstName) {
+          localStorage.setItem("authtoken", token);
+          notification.success({
+            message: "Welcome Back!",
+            description: `Hello, ${user.firstName}!`,
+            placement: "topRight",
+          });
+          console.log("Sign-in successful. Navigating to dashboard...");
+          navigate("/dashboard"); // Redirect to the dashboard
+        } else {
+          console.error("No token received from the server.");
+        }
+      }
+    } catch (err) {
+      notification.error({
+        message: "Sign In Failed",
+        description:
+          err.response?.data?.message ||
+          "Something went wrong. Please try again.",
+        placement: "topRight",
+      });
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -57,17 +100,32 @@ const SignInForm = () => {
               value={formData.email}
               onChange={handleInputChange}
               autoComplete="email"
+              className="font-medium"
             />
           </div>
-          <div className="form-group">
+          <div className="form-group relative">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="font-medium input pr-10"
+              />
+              <button
+                type="button"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
+                onClick={togglePasswordVisibility} // Handle toggle click
+              >
+                {passwordVisible ? (
+                  <AiOutlineEyeInvisible size={20} />
+                ) : (
+                  <AiOutlineEye size={20} />
+                )}
+              </button>
+            </div>
           </div>
           <div className="fp">
             <Link to="/auth/reset-password" className="forgot-password">
