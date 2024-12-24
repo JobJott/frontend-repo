@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import styled from "styled-components";
+import axios from "axios";
 
-const StyledModal = styled(Modal)`  
+const StyledModal = styled(Modal)`
   .ant-modal-content {
     padding: 0 !important;
     border-radius: 0px;
@@ -53,7 +54,6 @@ const StyledModal = styled(Modal)`
     font-family: "Montserrat", sans-serif !important;
     font-size: 14px;
   }
-
 
   .ProseMirror {
     word-wrap: break-word;
@@ -114,11 +114,30 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
+
     if (validateForm()) {
-      onFormSubmit(formData); // Save the data and pass it to the mainboard
-      setModalOpen(false); // Close the modal after saving
+      try {
+        const token = localStorage.getItem("authtoken");
+        const response = await axios.post(
+          "http://localhost:8080/api/jobs/add",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        message.success("Job created successfully!");
+
+        onFormSubmit(response.data.job); // Save the data and pass it to the mainboard
+        setModalOpen(false); // Close the modal after saving
+      } catch (error) {
+        console.log("Error creating job:", error);
+        message.error("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -182,7 +201,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
                 {input.label}
               </label>
               <input
-                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 bg-transparent text-sm font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
                 aria-describedby=":rn:-form-item-description"
                 name={input.name}
                 type={input.type}
@@ -210,16 +229,17 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
             </label>
 
             {/* Input container */}
-            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50">
+            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50 z-1001">
               <textarea
                 id="job-description"
-                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone "
+                name="jobDescription"
+                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone z-1001 font-medium"
                 placeholder="Enter the job description here..."
                 spellCheck="false"
                 type="text"
                 value={formData.jobDescription}
                 onChange={handleChange}
-              ></textarea>
+              />
             </div>
           </div>
 

@@ -36,27 +36,41 @@ const SignInForm = () => {
 
     try {
       const response = await axios.post(
-        "https://localhost:8080/api/auth/login",
+        "http://localhost:8080/api/auth/login",
         formData
       );
 
       console.log("Response:", response);
 
       if (response.status === 200) {
-        const token = response.data.token;
+        const { token, refreshToken, user } = response.data;
         console.log("Token received:", token);
 
-        if (token && user?.firstName) {
+        if (token && refreshToken && user?.firstName) {
           localStorage.setItem("authtoken", token);
+          localStorage.setItem("refreshToken", refreshToken);
+
           notification.success({
             message: "Welcome Back!",
             description: `Hello, ${user.firstName}!`,
             placement: "topRight",
+            showProgress: true,
+            pauseOnHover: false,
           });
           console.log("Sign-in successful. Navigating to dashboard...");
+          console.log(
+            "Token stored after sign-in:",
+            localStorage.getItem("authtoken")
+          );
+          console.log(
+            "Refresh Token stored after sign-in:",
+            localStorage.getItem("refreshToken")
+          );
           navigate("/dashboard"); // Redirect to the dashboard
         } else {
-          console.error("No token received from the server.");
+          console.error(
+            "Token or refresh token missing in the server response."
+          );
         }
       }
     } catch (err) {

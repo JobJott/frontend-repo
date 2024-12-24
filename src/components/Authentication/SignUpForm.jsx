@@ -53,20 +53,27 @@ const SignUpForm = () => {
       console.log("Response:", response);
 
       if (response.status === 200 || response.status === 201) {
-        const token = response.data.token; // Extract the token from response
+        const { token } = response.data; // Extract the token from response
         console.log("Token received:", token);
 
         if (token) {
-          localStorage.setItem("authtoken", token); 
+          // Store both token and refreshToken in localStorage
+          localStorage.setItem("authtoken", token);
+
           notification.success({
-            message: "Registration Successful",
-            description: "You have successfully created an account.",
+            message: "Account Created",
+            description: "Sign-in to start tracking!.",
             placement: "topRight",
           });
-          console.log("Sign-up successful. Navigating to dashboard...");
-          navigate("/dashboard");
+          console.log("Sign-up successful.");
+          console.log(
+            "Token stored after sign-up:",
+            localStorage.getItem("authtoken")
+          );
+
+          navigate("/auth/signin");
         } else {
-          console.error("No token received from the server.");
+          console.error("Token or refresh token missing in the response.");
         }
       }
     } catch (err) {
