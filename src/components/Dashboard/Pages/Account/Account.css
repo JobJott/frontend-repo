@@ -3,7 +3,7 @@
     font-size: 14px
 }
 .acct-btn{
-    background-color: #E9F3F3;
+    background-color: #111;
     padding: 12px;
 }
 .my-acct{
@@ -16,7 +16,7 @@
     padding: 12px;
 }
 .job-sub{
-    color: #001b527c;
+    color: #000;
     font-size: 14px;
 }
 .text{
@@ -75,12 +75,15 @@
 }
 .action-col{
     align-items: center;
-    color: #333;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
     border: 2px solid;
-    border-color: #05587c;
+
 }
-.action-col.active{
-    background-color: #05627c82;
+.action-col.active:hover{
+    background-color: #fff;
+    color: #333 ;
 }
 .password-col{
     input{
