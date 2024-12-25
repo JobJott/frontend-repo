@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import DropdownComponent from "./ActionButtons/DropdownComponent";
 import FilterDropdownMenu from "./ActionButtons/FilterDropdown";
 import MenuDropdown from "./ActionButtons/MenuDropdown";
-import { StyleProvider } from "@ant-design/cssinjs";
 import Newjob from "./ActionButtons/Newjob";
 import Addjob from "./ActionButtons/Addjob";
-import AntJobModal from "./ActionButtons/AntJobModal";
+import { StyleProvider } from "@ant-design/cssinjs";
+import { useOutletContext } from "react-router-dom";
 
 const JobTrackerSection0 = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const { setModalOpen } = useOutletContext();
 
   return (
     <div>
@@ -26,9 +26,6 @@ const JobTrackerSection0 = () => {
         </div>
       </div>
       <Addjob setModalOpen={setModalOpen} />
-      <StyleProvider layer>
-        <AntJobModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
-      </StyleProvider>
     </div>
   );
 };

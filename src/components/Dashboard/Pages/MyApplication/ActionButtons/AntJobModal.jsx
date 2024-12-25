@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, message } from "antd";
 import styled from "styled-components";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
@@ -83,6 +84,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Reset form data and errors when the modal is closed
@@ -130,10 +132,15 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
           }
         );
 
-        message.success("Job created successfully!");
+        message.success("Job added successfully!");
 
-        onFormSubmit(response.data.job); // Save the data and pass it to the mainboard
-        setModalOpen(false); // Close the modal after saving
+        // Call the parent callback to update job details
+        if (onFormSubmit) {
+          onFormSubmit(response.data);
+        }
+
+        setModalOpen(false);
+        navigate("/dashboard/my-applications/job-tracker-section-one");
       } catch (error) {
         console.log("Error creating job:", error);
         message.error("Something went wrong. Please try again.");

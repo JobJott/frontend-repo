@@ -72,7 +72,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit, jobs }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",

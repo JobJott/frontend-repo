@@ -1,4 +1,5 @@
 import { logoutUser } from "../../utils/tokenManager";
+import { getValidToken } from "../../utils/tokenHelper";
 
 let activityTimeout;
 let lastInteractionTime = Date.now();
@@ -11,6 +12,8 @@ const resetActivityTimeout = (timeoutDuration = 60 * 60 * 1000) => {
 
   // Clear any existing timeout
   if (activityTimeout) clearTimeout(activityTimeout);
+
+  getValidToken();
 
   // Set logout timeout to 1 hour
   activityTimeout = setTimeout(() => {

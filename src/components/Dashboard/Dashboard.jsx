@@ -21,7 +21,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <SideDash isOpen={isSideDashOpen} toggleSidebar={toggleSidebar} />
       <MainBoard isSideDashOpen={isSideDashOpen} />
-      <Outlet />
+      {/* <Outlet /> */}
     </div>
   );
 };

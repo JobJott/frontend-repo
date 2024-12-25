@@ -91,7 +91,7 @@ function App() {
             }
           >
             <Route index element={<Overview />} />
-            <Route path="myapplications" element={<MyApplication />} />
+            <Route path="my-applications/*" element={<MyApplication />}/>
             <Route path="contacts" element={<Contact />} />
             <Route path="supportcenter" element={<SupportCenter />} />
             <Route path="account" element={<Account />} />

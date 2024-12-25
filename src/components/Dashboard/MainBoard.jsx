@@ -1,12 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy } from "react";
 import "./styles/Mainboard.css";
 import { Routes, Route, useLocation } from "react-router-dom";
-import MyApplication from "./Pages/MyApplication";
-
 import Overview from "./Pages/Overview/Overview";
-
+import MyApplication from "./Pages/MyApplication";
 import Contact from "./Pages/Contact";
 import Account from "./Pages/Account/Account";
+const JobTrackerSection0 = lazy(() =>
+  import("./Pages/MyApplication/JobTrackerSection0")
+);
+const JobTrackerSectionOne = lazy(() =>
+  import("./Pages/MyApplication/JobTrackerSectionOne")
+);
 
 const MainBoard = ({ isSideDashOpen }) => {
   const location = useLocation();
@@ -31,7 +35,13 @@ const MainBoard = ({ isSideDashOpen }) => {
           <Route path="overview" element={<Overview />} />
           /* <Route path="resume-builder" element={<ResumeBuilder />} /> */
         }
-        <Route path="my-applications" element={<MyApplication />} />
+        <Route path="my-applications/*" element={<MyApplication />}>
+          <Route index element={<JobTrackerSection0 />} />
+          <Route
+            path="job-tracker-section-one"
+            element={<JobTrackerSectionOne />}
+          />
+        </Route>
         <Route path="contacts" element={<Contact />} />
         {/* <Route path="support" element={<Support />} /> */}
         <Route path="account" element={<Account />} />

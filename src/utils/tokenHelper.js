@@ -10,10 +10,16 @@ export const getValidToken = async () => {
   if (token && !isTokenExpired(token)) {
     // If the access token is valid, return it
     return token;
-  } else {
-    // If the access token is expired or missing, attempt to refresh it
+  }
+
+  if (refreshToken && !isTokenExpired(refreshToken)) {
+    // Refresh the access token if needed
     return await refreshAccessToken(refreshToken);
   }
+
+  // If no valid tokens, log out
+  logoutUser();
+  return null;
 };
 
 // Function to refresh the access token using the refresh token

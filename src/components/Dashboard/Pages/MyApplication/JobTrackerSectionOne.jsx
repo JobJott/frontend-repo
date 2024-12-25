@@ -23,61 +23,99 @@ import JobListingDrawer, {
 } from "./JobTrackerSectOne/ExtendedSections";
 import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
-
-
+import { useOutletContext } from "react-router-dom";
 
 const columnData = [
   { title: "Date Saved", field: "added_at" },
-  { title: "&nbsp;", field: "posted_at" },
-  { title: "&nbsp;", field: "applied_at" },
-  { title: "&nbsp;", field: "follow_up_at" },
-];
-
-const jobData = [
-  {
-    role: "Sail Innovation Engineer",
-    company: "Sails Hub",
-    dateSaved: "12/16/2024",
-    postedAt: "",
-    appliedAt: "",
-    followUpAt: "",
-  },
+  { title: "N/A", field: "posted_at" },
+  { title: "N/A", field: "applied_at" },
+  { title: "N/A", field: "follow_up_at" },
 ];
 
 const JobTrackerSectionOne = () => {
+  const { jobs, setJobs } = useOutletContext();
+
+  useEffect(() => {
+    // Check if there's a saved jobs list in localStorage and update state
+    const storedJobs = JSON.parse(localStorage.getItem("jobs")) || [];
+
+    // If storedJobs exist, update state
+    if (storedJobs.length > 0) {
+      setJobs(storedJobs); // Update context state with stored jobs
+    } else {
+      // Fetch jobs from backend if localStorage is empty
+      fetch("/api/jobs") // Replace with your API endpoint
+        .then((response) => response.json())
+        .then((data) => {
+          setJobs(data);
+          saveJobsToLocalStorage(data); // Save fetched jobs to localStorage
+        })
+        .catch((error) => console.error("Error fetching jobs:", error));
+    }
+  }, [setJobs]);
+
+  useEffect(() => {
+    console.log("Jobs in Section 1:", jobs); // To confirm jobs are passed down
+  }, [jobs]);
+
+  const getTimeDifference = (createdAt) => {
+    const now = new Date();
+    const savedDate = new Date(createdAt);
+    const diffInMilliseconds = now - savedDate;
+    const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+
+    if (diffInSeconds < 60) {
+      return "a few seconds ago"; // For seconds under a minute
+    }
+
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
+    }
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+  };
+
+  // Function to save jobs to localStorage
+  const saveJobsToLocalStorage = (updatedJobs) => {
+    localStorage.setItem("jobs", JSON.stringify(updatedJobs));
+  };
+
+  // Handle job addition or update
+  const addJob = async (newJob) => {
+    try {
+      // Send the new job to the backend
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newJob),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save the job to the backend");
+      }
+
+      const savedJob = await response.json();
+
+      // Update state and localStorage with the saved job from the backend
+      const updatedJobs = [...jobs, savedJob];
+      setJobs(updatedJobs);
+      saveJobsToLocalStorage(updatedJobs);
+    } catch (error) {
+      console.error("Error adding job:", error);
+    }
+  };
+
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(
-    "f89e69f7-f859-4863-b63e-36c247bac3d5"
-  );
+  const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
+  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccepted, setIsAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("job-info");
-
-  const handleToggle = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
-  const handleDeleteJobClick = () => {
-    setDeleteModalOpen(true); // Open delete job modal
-  };
-
-  const statusOptions = [
-    { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
-    { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
-    { label: "Applied", value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
-    { label: "Interviewing", value: "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2" },
-    { label: "Negotiating", value: "079cebfd-0e2e-458a-8782-58ea19a5af6d" },
-    { label: "Accepted", value: "21b7fdb7-4260-430b-a648-3cab1eb83288" },
-  ];
-
-  // Handler to change selected status
-  const handleStatusChange = (e) => {
-    const value = e.target.value;
-    setSelectedStatus(value);
-    setIsAccepted(value === "21b7fdb7-4260-430b-a648-3cab1eb83288"); // Check if "Accepted" is clicked
-  };
-
   const [isChecked, setIsChecked] = useState(false);
   const [checkedItems, setCheckedItems] = useState({
     setOne: [],
@@ -92,17 +130,42 @@ const JobTrackerSectionOne = () => {
   );
   const [isItemSelected, setIsItemSelected] = useState(false);
 
-  const totalItemsOne = 5;
-  const totalItemsTwo = 4;
-  const totalItemsThree = 3;
+  const totalItems = {
+    setOne: 5,
+    setTwo: 4,
+    setThree: 3,
+  };
 
-  const progressPercentageOne =
-    (checkedItems.setOne.length / totalItemsOne) * 100;
-  const progressPercentageTwo =
-    (checkedItems.setTwo.length / totalItemsTwo) * 100;
-  const progressPercentageThree = Math.ceil(
-    (checkedItems.setThree.length / totalItemsThree) * 100
-  );
+  const progressPercentage = {
+    setOne: (checkedItems.setOne.length / totalItems.setOne) * 100,
+    setTwo: (checkedItems.setTwo.length / totalItems.setTwo) * 100,
+    setThree: Math.ceil(
+      (checkedItems.setThree.length / totalItems.setThree) * 100
+    ),
+  };
+
+  const handleToggle = () => {
+    setIsExpanded((prev) => !prev);
+  };
+  const handleDeleteJobClick = () => setDeleteModalOpen(true);
+
+  const statusOptions = [
+    { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
+    { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
+    { label: "Applied", value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
+    { label: "Interviewing", value: "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2" },
+    { label: "Negotiating", value: "079cebfd-0e2e-458a-8782-58ea19a5af6d" },
+    { label: "Accepted", value: "21b7fdb7-4260-430b-a648-3cab1eb83288" },
+  ];
+
+  const handleStatusChange = (e) => {
+    const { value } = e.target;
+    setSelectedStatus(value);
+    setIsAccepted(
+      value ===
+        statusOptions.find((option) => option.label === "Accepted").value
+    );
+  };
 
   // Centralized function to update checked items
   const updateCheckedItems = (setKey, item, isChecked) => {
@@ -112,46 +175,37 @@ const JobTrackerSectionOne = () => {
         ? [...prev[setKey], item]
         : prev[setKey].filter((checkedItem) => checkedItem !== item),
     }));
-    setIsExpanded(true); // Keep the section expanded
+    setIsExpanded(true);
   };
 
-  // Handle checkbox change for setOne
-  const handleBoxCheckedOne = (e, item) => {
-    updateCheckedItems("setOne", item, e.target.checked);
+  // Handle checkbox change
+  const handleBoxChecked = (setKey) => (e, item) => {
+    updateCheckedItems(setKey, item, e.target.checked);
   };
 
-  // Handle checkbox change for setTwo
-  const handleBoxCheckedTwo = (e, item) => {
-    updateCheckedItems("setTwo", item, e.target.checked);
-  };
-
-  // Handle checkbox change for setThree
-  const handleBoxCheckedThree = (e, item) => {
-    updateCheckedItems("setThree", item, e.target.checked);
-  };
+  const handleBoxCheckedOne = handleBoxChecked("setOne");
+  const handleBoxCheckedTwo = handleBoxChecked("setTwo");
+  const handleBoxCheckedThree = handleBoxChecked("setThree");
 
   // Handle item selection for setOne
-  const handleItemSelectedOne = (item, event) => {
-    event.stopPropagation(); // Prevent event bubbling
-
+  const handleItemSelectedOne = (item, e) => {
+    e.stopPropagation(); // Prevent event bubbling
     setSelectedItem(item); // Set the selected item
     setIsItemSelected(true); // Keep the section expanded when an item is selected
-    setIsExpanded(true); // Ensure the section stays expanded
   };
 
   // Handle item selection for setTwo
-  const handleItemSelectedTwo = (item, event) => {
-    event.stopPropagation();
+  const handleItemSelectedTwo = (item, e) => {
+    e.stopPropagation();
     setSecondSelectedItem(item);
     setIsItemSelected(true);
-    setIsExpanded(true);
   };
 
-  const handleItemSelectedThree = (item, event) => {
-    event.stopPropagation();
+  // Handle item selection for setThree
+  const handleItemSelectedThree = (item, e) => {
+    e.stopPropagation();
     setThirdSelectedItem(item);
     setIsItemSelected(true);
-    setIsExpanded(true);
   };
 
   useEffect(() => {
@@ -163,29 +217,22 @@ const JobTrackerSectionOne = () => {
   }, [isItemSelected]);
 
   useEffect(() => {
-    if (checkedItems.setOne.length === totalItemsOne) {
+    if (checkedItems.setOne.length === totalItems.setOne) {
       setIsExpanded(false);
     }
   }, [checkedItems.setOne]);
 
   useEffect(() => {
-    if (checkedItems.setTwo.length === totalItemsTwo) {
+    if (checkedItems.setTwo.length === totalItems.setTwo) {
       setIsExpanded(false);
     }
   }, [checkedItems.setTwo]);
 
   useEffect(() => {
-    if (checkedItems.setThree.length === totalItemsThree) {
+    if (checkedItems.setThree.length === totalItems.setThree) {
       setIsExpanded(false);
     }
   }, [checkedItems.setThree]);
-
-  // useEffect(() => {
-  //   // Debugging logs
-  //   console.log("Checked Items:", checkedItems);
-  //   console.log("Selected Item:", selectedItem);
-  //   console.log("isExpanded:", isExpanded);
-  // }, [checkedItems, selectedItem, isExpanded]);
 
   const renderExtendedSection = () => {
     switch (selectedStatus) {
@@ -242,13 +289,13 @@ const JobTrackerSectionOne = () => {
       case "f89e69f7-f859-4863-b63e-36c247bac3d5":
         return `Bookmarked Steps: ${isChecked ? "100%" : "0%"} Complete`;
       case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
-        return `Applying Steps: ${progressPercentageOne}% Complete`;
+        return `Applying Steps: ${progressPercentage.setOne}% Complete`;
       case "5689f93d-a084-489c-9a6a-7d74b155b49a":
         return `Applied Steps: ${isChecked ? "100%" : "0%"} Complete`;
       case "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2":
-        return `Interviewing Steps: ${progressPercentageTwo}% Complete`;
+        return `Interviewing Steps: ${progressPercentage.setTwo}% Complete`;
       case "079cebfd-0e2e-458a-8782-58ea19a5af6d":
-        return `Negotiating Steps: ${progressPercentageThree}% Complete`;
+        return `Negotiating Steps: ${progressPercentage.setThree}% Complete`;
       default:
         return "Other Steps";
     }
@@ -337,7 +384,7 @@ const JobTrackerSectionOne = () => {
                 role="rowgroup"
                 style={{ paddingTop: "0px", paddingBottom: "0px" }}
               >
-                {jobData.map((job, index) => (
+                {jobs.map((job, index) => (
                   <div
                     key={index}
                     className={`tabulator-row tabulator-selectable ${
@@ -358,8 +405,8 @@ const JobTrackerSectionOne = () => {
                           tabIndex="0"
                         >
                           <div className="job-content">
-                            <div className="job-role">{job.role}</div>
-                            <div className="job-company">{job.company}</div>
+                            <div className="job-role">{job.jobTitle}</div>
+                            <div className="job-company">{job.companyName}</div>
                           </div>
                         </div>
                       </div>
@@ -375,7 +422,7 @@ const JobTrackerSectionOne = () => {
                         className="tabulator-cell-line-clamp tabulator-cell-full-background"
                         style={{ background: "" }}
                       >
-                        {job.dateSaved}
+                        {job.createdAt}
                       </span>
                     </div>
                     <div
@@ -472,52 +519,56 @@ const JobTrackerSectionOne = () => {
 
                       <div className="read-only-row end">
                         <Space direction="vertical" style={{ width: "100%" }}>
-                          <div
-                            className="read-row-container"
-                            style={{ display: "block" }}
-                          >
-                            <Typography.Title level={2}>
-                              Sail Innovation Engineer
-                            </Typography.Title>
-                            <div className="job-detail-row">
-                              <Typography.Text strong>
-                                Sails Hub
-                              </Typography.Text>
-                              <Typography.Text> — </Typography.Text>
-                              <Typography.Text>Ikorodu, Lagos</Typography.Text>
-                            </div>
+                          {jobs.map((job) => (
+                            <div
+                              className="read-row-container"
+                              style={{ display: "block" }}
+                            >
+                              <Typography.Title level={2}>
+                                {job?.jobTitle}
+                              </Typography.Title>
+                              <div className="job-detail-row">
+                                <Typography.Text strong>
+                                  {job?.companyName}
+                                </Typography.Text>
+                                <Typography.Text> — </Typography.Text>
+                                <Typography.Text>
+                                  {job?.location || "N/A"}
+                                </Typography.Text>
+                              </div>
 
-                            <div className="job-listing-link">
-                              <div className="post-saved">
-                                Saved 6 hours ago on{" "}
-                                <a
-                                  className="link-text"
-                                  href="https://twitter.com/Hauwa_L/status/1753889114523394418?t=nIKPWZefkzUobE5gv6Xjgw&amp;s=19"
-                                  rel="noopener noreferrer"
-                                  target="_blank"
-                                >
-                                  twitter.com
-                                </a>
+                              <div className="job-listing-link">
+                                <div className="post-saved font-medium">
+                                  Saved {getTimeDifference(job?.createdAt)} on{" "}
+                                  <a
+                                    className="link-text font-medium"
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                  >
+                                    {job?.URL}
+                                  </a>
+                                </div>
+                              </div>
+
+                              <div className="read-only-row-btn-container end">
+                                <Button
+                                  aria-label="Edit job post information"
+                                  type="link"
+                                  size="large"
+                                  icon={<EditOutlined />}
+                                  onClick={() => setModalOpen(true)}
+                                  className="edit-btn gold-text"
+                                />
                               </div>
                             </div>
-
-                            <div className="read-only-row-btn-container end">
-                              <Button
-                                aria-label="Edit job post information"
-                                type="link"
-                                size="large"
-                                icon={<EditOutlined />}
-                                onClick={() => setModalOpen(true)}
-                                className="edit-btn gold-text"
-                              />
-                            </div>
-                          </div>
+                          ))}
                         </Space>
                       </div>
                       <StyleProvider layer>
                         <EditJobModal
                           modalOpen={modalOpen}
                           setModalOpen={setModalOpen}
+                          jobs={jobs}
                         />
                       </StyleProvider>
                     </div>
@@ -645,10 +696,10 @@ const JobTrackerSectionOne = () => {
                   </div>
 
                   <div className="job-listing-drawer-item _job-listing-toolbar_q9krx_1">
-                    <JobListingDrawer setActiveTab={setActiveTab}/>
+                    <JobListingDrawer setActiveTab={setActiveTab} />
                   </div>
 
-                  <AntdTracker activeTab={activeTab}/>
+                  <AntdTracker activeTab={activeTab} />
                 </div>
               </div>
             </div>
