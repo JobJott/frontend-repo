@@ -85,6 +85,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Reset form data and errors when the modal is closed
@@ -120,11 +121,15 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
     e.preventDefault(); // Prevent page reload
 
     if (validateForm()) {
+      setIsSubmitting(true);
+      const trimmedData = Object.fromEntries(
+        Object.entries(formData).map(([key, value]) => [key, value.trim()])
+      );
       try {
         const token = localStorage.getItem("authtoken");
         const response = await axios.post(
           "http://localhost:8080/api/jobs/add",
-          formData,
+          trimmedData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -143,7 +148,12 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
         navigate("/dashboard/my-applications/job-tracker-section-one");
       } catch (error) {
         console.log("Error creating job:", error);
-        message.error("Something went wrong. Please try again.");
+        message.error(
+          error.response?.data?.message ||
+            "Something went wrong. Please try again."
+        );
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -261,8 +271,9 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
             <button
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-bold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 focus-visible:ring-primary h-10 px-4 py-2 rounded-md"
               type="submit"
+              disabled={isSubmitting}
             >
-              Save Job
+              {isSubmitting ? "Saving..." : "Save Job"}
             </button>
           </div>
         </form>

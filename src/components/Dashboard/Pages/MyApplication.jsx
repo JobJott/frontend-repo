@@ -1,35 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/MyApplications.css";
 // import JobTrackerSectionTwo from "./MyApplication/JobTrackerSectionTwo";
 import { StyleProvider } from "@ant-design/cssinjs";
 import AntJobModal from "./MyApplication/ActionButtons/AntJobModal";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { message } from "antd";
+import { addJobToAPI, fetchJobsFromAPI } from "../../../utils/api/jobService";
 
 const MyApplication = () => {
   const [jobs, setJobs] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const fetchedJobs = await fetchJobsFromAPI();
+        setJobs(fetchedJobs);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        message.error("Unable to fetch jobs. Please try again later.");
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   const handleNewJob = async (newJob) => {
     try {
-      const response = await fetch("/api/jobs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newJob),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to save the job to the backend");
-      }
-
-      const savedJob = await response.json();
-      setJobs((prevJobs) => [...prevJobs, savedJob]); // Update state with backend response
-      localStorage.setItem("jobs", JSON.stringify([...jobs, savedJob])); // Save to localStorage
-      navigate("job-tracker-section-one");
+      const savedJob = await addJobToAPI(newJob); // Save new job to backend
+      setJobs((prevJobs) => [savedJob, ...prevJobs]);
+      message.success("Job added successfully!");
     } catch (error) {
-      console.error("Error adding job:", error);
+      console.error("Error adding new job:", error);
+      message.error("Error adding new job. Please try again.");
     }
   };
 

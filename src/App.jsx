@@ -80,6 +80,15 @@ function App() {
             </Suspense>
           }
         />
+        <Route
+          path="supportcenter"
+          element={
+            <Suspense fallback={<Loader />}>
+              <SupportCenter />
+            </Suspense>
+          }
+        />
+
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
@@ -91,9 +100,8 @@ function App() {
             }
           >
             <Route index element={<Overview />} />
-            <Route path="my-applications/*" element={<MyApplication />}/>
+            <Route path="my-applications/*" element={<MyApplication />} />
             <Route path="contacts" element={<Contact />} />
-            <Route path="supportcenter" element={<SupportCenter />} />
             <Route path="account" element={<Account />} />
           </Route>
         </Route>

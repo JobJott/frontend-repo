@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
-import { Button, Space, Typography, Radio } from "antd";
+import { Button, Space, Typography, Radio, Skeleton, message } from "antd";
 import {
   LeftCircleOutlined,
   EditOutlined,
@@ -35,29 +35,6 @@ const columnData = [
 const JobTrackerSectionOne = () => {
   const { jobs, setJobs } = useOutletContext();
 
-  useEffect(() => {
-    // Check if there's a saved jobs list in localStorage and update state
-    const storedJobs = JSON.parse(localStorage.getItem("jobs")) || [];
-
-    // If storedJobs exist, update state
-    if (storedJobs.length > 0) {
-      setJobs(storedJobs); // Update context state with stored jobs
-    } else {
-      // Fetch jobs from backend if localStorage is empty
-      fetch("/api/jobs") // Replace with your API endpoint
-        .then((response) => response.json())
-        .then((data) => {
-          setJobs(data);
-          saveJobsToLocalStorage(data); // Save fetched jobs to localStorage
-        })
-        .catch((error) => console.error("Error fetching jobs:", error));
-    }
-  }, [setJobs]);
-
-  useEffect(() => {
-    console.log("Jobs in Section 1:", jobs); // To confirm jobs are passed down
-  }, [jobs]);
-
   const getTimeDifference = (createdAt) => {
     const now = new Date();
     const savedDate = new Date(createdAt);
@@ -75,38 +52,6 @@ const JobTrackerSectionOne = () => {
 
     const diffInHours = Math.floor(diffInMinutes / 60);
     return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
-  };
-
-  // Function to save jobs to localStorage
-  const saveJobsToLocalStorage = (updatedJobs) => {
-    localStorage.setItem("jobs", JSON.stringify(updatedJobs));
-  };
-
-  // Handle job addition or update
-  const addJob = async (newJob) => {
-    try {
-      // Send the new job to the backend
-      const response = await fetch("/api/jobs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newJob),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to save the job to the backend");
-      }
-
-      const savedJob = await response.json();
-
-      // Update state and localStorage with the saved job from the backend
-      const updatedJobs = [...jobs, savedJob];
-      setJobs(updatedJobs);
-      saveJobsToLocalStorage(updatedJobs);
-    } catch (error) {
-      console.error("Error adding job:", error);
-    }
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -545,7 +490,7 @@ const JobTrackerSectionOne = () => {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    {job?.URL}
+                                    {job.URL || "Job Listing"}
                                   </a>
                                 </div>
                               </div>
