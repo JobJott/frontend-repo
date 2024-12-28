@@ -81,7 +81,7 @@ function App() {
           }
         />
         <Route
-          path="supportcenter"
+          path="/dashboard/supportcenter"
           element={
             <Suspense fallback={<Loader />}>
               <SupportCenter />

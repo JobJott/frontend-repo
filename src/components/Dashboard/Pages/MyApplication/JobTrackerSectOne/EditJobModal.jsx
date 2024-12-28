@@ -72,30 +72,31 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit, jobs }) => {
+const EditJobModal = ({
+  modalOpen,
+  setModalOpen,
+  selectedJob,
+  onJobUpdate,
+}) => {
   const [formData, setFormData] = useState({
-    jobTitle: "",
-    URL: "",
-    companyName: "",
-    location: "",
-    jobDescription: "",
+    jobTitle: selectedJob?.jobTitle || "",
+    URL: selectedJob?.URL || "",
+    companyName: selectedJob?.companyName || "",
+    location: selectedJob?.location || "",
+    jobDescription: selectedJob?.jobDescription || "",
   });
 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Reset form data and errors when the modal is closed
-    if (!modalOpen) {
-      setFormData({
-        jobTitle: "",
-        URL: "",
-        companyName: "",
-        location: "",
-        jobDescription: "",
-      });
-      setErrors({});
-    }
-  }, [modalOpen]);
+    setFormData({
+      jobTitle: selectedJob?.jobTitle || "",
+      URL: selectedJob?.URL || "",
+      companyName: selectedJob?.companyName || "",
+      location: selectedJob?.location || "",
+      jobDescription: selectedJob?.jobDescription || "",
+    });
+  }, [selectedJob]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -113,10 +114,10 @@ const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit, jobs }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
     if (validateForm()) {
-      onFormSubmit(formData); // Save the data and pass it to the mainboard
+      await onJobUpdate({ ...selectedJob, ...formData }); // Merge form data with selectedJob
       setModalOpen(false); // Close the modal after saving
     }
   };

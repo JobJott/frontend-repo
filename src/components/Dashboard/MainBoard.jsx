@@ -5,7 +5,7 @@ import MyApplication from "./Pages/MyApplication";
 import Contact from "./Pages/Contact";
 import Account from "./Pages/Account/Account";
 import Overview from "./Pages/Overview/Overview";
-import SupportCenter from "./Pages/SupportCenter";
+// import SupportCenter from "./Pages/SupportCenter";
 const JobTrackerSection0 = lazy(() =>
   import("./Pages/MyApplication/JobTrackerSection0")
 );

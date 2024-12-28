@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
 import { Button, Space, Typography, Radio, Skeleton, message } from "antd";
 import {
@@ -33,8 +33,143 @@ const columnData = [
 ];
 
 const JobTrackerSectionOne = () => {
-  const { jobs, setJobs } = useOutletContext();
+  // Context and State
+  const { jobs, loadingJobs, handleJobUpdate } = useOutletContext();
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [activeTab, setActiveTab] = useState("job-info");
+  const [isChecked, setIsChecked] = useState(false);
+  const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
+  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
 
+  // Checked Items
+  const [checkedItems, setCheckedItems] = useState({
+    setOne: [],
+    setTwo: [],
+    setThree: [],
+  });
+
+  // Selected Items
+  const [selectedItem, setSelectedItem] = useState("Get Referral");
+  const [secondSelectedItem, setSecondSelectedItem] =
+    useState("Research & Prepare");
+  const [thirdSelectedItem, setThirdSelectedItem] = useState(
+    "Research your Targets"
+  );
+  const [isItemSelected, setIsItemSelected] = useState(false);
+
+  // Constants
+  const totalItems = {
+    setOne: 5,
+    setTwo: 4,
+    setThree: 3,
+  };
+
+  const progressPercentage = {
+    setOne: (checkedItems.setOne.length / totalItems.setOne) * 100,
+    setTwo: (checkedItems.setTwo.length / totalItems.setTwo) * 100,
+    setThree: Math.ceil(
+      (checkedItems.setThree.length / totalItems.setThree) * 100
+    ),
+  };
+
+  // Effect: Select Initial Job
+  useEffect(() => {
+    if (jobs && jobs.length > 0) {
+      setSelectedJob(jobs[0]);
+    }
+  }, [jobs]);
+
+  // Effect: Expand Section on Item Selection
+  useEffect(() => {
+    if (isItemSelected) {
+      setIsExpanded(true);
+      setIsItemSelected(false);
+    }
+  }, [isItemSelected]);
+
+  // Effect: Collapse Section on Full Completion
+  useEffect(() => {
+    if (checkedItems.setOne.length === totalItems.setOne) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setOne]);
+
+  useEffect(() => {
+    if (checkedItems.setTwo.length === totalItems.setTwo) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setTwo]);
+
+  useEffect(() => {
+    if (checkedItems.setThree.length === totalItems.setThree) {
+      setIsExpanded(false);
+    }
+  }, [checkedItems.setThree]);
+
+  // Handlers
+  const handleJobSelect = (job) => {
+    console.log("Selected Job:", job);
+    setSelectedJob(job);
+  };
+
+  const handleToggle = () => {
+    setIsExpanded((prev) => !prev);
+  };
+
+  const handleDeleteJobClick = () => setDeleteModalOpen(true);
+
+  const handleStatusChange = (e) => {
+    const { value } = e.target;
+    setSelectedStatus(value);
+    setIsAccepted(
+      value ===
+        statusOptions.find((option) => option.label === "Accepted").value
+    );
+  };
+
+  // Centralized function to update checked items, Checkbox Handlers
+  const updateCheckedItems = (setKey, item, isChecked) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [setKey]: isChecked
+        ? [...prev[setKey], item]
+        : prev[setKey].filter((checkedItem) => checkedItem !== item),
+    }));
+    setIsExpanded(true);
+  };
+
+  const handleBoxChecked = (setKey) => (e, item) => {
+    updateCheckedItems(setKey, item, e.target.checked);
+  };
+
+  const handleBoxCheckedOne = handleBoxChecked("setOne");
+  const handleBoxCheckedTwo = handleBoxChecked("setTwo");
+  const handleBoxCheckedThree = handleBoxChecked("setThree");
+
+  // Item Selection Handlers
+  const handleItemSelectedOne = (item, e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    setSelectedItem(item); // Set the selected item
+    setIsItemSelected(true); // Keep the section expanded when an item is selected
+  };
+
+  const handleItemSelectedTwo = (item, e) => {
+    e.stopPropagation();
+    setSecondSelectedItem(item);
+    setIsItemSelected(true);
+  };
+
+  const handleItemSelectedThree = (item, e) => {
+    e.stopPropagation();
+    setThirdSelectedItem(item);
+    setIsItemSelected(true);
+  };
+
+  // Utility Functions
   const getTimeDifference = (createdAt) => {
     const now = new Date();
     const savedDate = new Date(createdAt);
@@ -54,131 +189,7 @@ const JobTrackerSectionOne = () => {
     return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
-  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isAccepted, setIsAccepted] = useState(false);
-  const [activeTab, setActiveTab] = useState("job-info");
-  const [isChecked, setIsChecked] = useState(false);
-  const [checkedItems, setCheckedItems] = useState({
-    setOne: [],
-    setTwo: [],
-    setThree: [],
-  });
-  const [selectedItem, setSelectedItem] = useState("Get Referral");
-  const [secondSelectedItem, setSecondSelectedItem] =
-    useState("Research & Prepare");
-  const [thirdSelectedItem, setThirdSelectedItem] = useState(
-    "Research your Targets"
-  );
-  const [isItemSelected, setIsItemSelected] = useState(false);
-
-  const totalItems = {
-    setOne: 5,
-    setTwo: 4,
-    setThree: 3,
-  };
-
-  const progressPercentage = {
-    setOne: (checkedItems.setOne.length / totalItems.setOne) * 100,
-    setTwo: (checkedItems.setTwo.length / totalItems.setTwo) * 100,
-    setThree: Math.ceil(
-      (checkedItems.setThree.length / totalItems.setThree) * 100
-    ),
-  };
-
-  const handleToggle = () => {
-    setIsExpanded((prev) => !prev);
-  };
-  const handleDeleteJobClick = () => setDeleteModalOpen(true);
-
-  const statusOptions = [
-    { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
-    { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
-    { label: "Applied", value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
-    { label: "Interviewing", value: "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2" },
-    { label: "Negotiating", value: "079cebfd-0e2e-458a-8782-58ea19a5af6d" },
-    { label: "Accepted", value: "21b7fdb7-4260-430b-a648-3cab1eb83288" },
-  ];
-
-  const handleStatusChange = (e) => {
-    const { value } = e.target;
-    setSelectedStatus(value);
-    setIsAccepted(
-      value ===
-        statusOptions.find((option) => option.label === "Accepted").value
-    );
-  };
-
-  // Centralized function to update checked items
-  const updateCheckedItems = (setKey, item, isChecked) => {
-    setCheckedItems((prev) => ({
-      ...prev,
-      [setKey]: isChecked
-        ? [...prev[setKey], item]
-        : prev[setKey].filter((checkedItem) => checkedItem !== item),
-    }));
-    setIsExpanded(true);
-  };
-
-  // Handle checkbox change
-  const handleBoxChecked = (setKey) => (e, item) => {
-    updateCheckedItems(setKey, item, e.target.checked);
-  };
-
-  const handleBoxCheckedOne = handleBoxChecked("setOne");
-  const handleBoxCheckedTwo = handleBoxChecked("setTwo");
-  const handleBoxCheckedThree = handleBoxChecked("setThree");
-
-  // Handle item selection for setOne
-  const handleItemSelectedOne = (item, e) => {
-    e.stopPropagation(); // Prevent event bubbling
-    setSelectedItem(item); // Set the selected item
-    setIsItemSelected(true); // Keep the section expanded when an item is selected
-  };
-
-  // Handle item selection for setTwo
-  const handleItemSelectedTwo = (item, e) => {
-    e.stopPropagation();
-    setSecondSelectedItem(item);
-    setIsItemSelected(true);
-  };
-
-  // Handle item selection for setThree
-  const handleItemSelectedThree = (item, e) => {
-    e.stopPropagation();
-    setThirdSelectedItem(item);
-    setIsItemSelected(true);
-  };
-
-  useEffect(() => {
-    // Only update the expanded state if an item is selected
-    if (isItemSelected) {
-      setIsExpanded(true); // Ensure the section stays expanded
-      setIsItemSelected(false); // Reset the item selected flag
-    }
-  }, [isItemSelected]);
-
-  useEffect(() => {
-    if (checkedItems.setOne.length === totalItems.setOne) {
-      setIsExpanded(false);
-    }
-  }, [checkedItems.setOne]);
-
-  useEffect(() => {
-    if (checkedItems.setTwo.length === totalItems.setTwo) {
-      setIsExpanded(false);
-    }
-  }, [checkedItems.setTwo]);
-
-  useEffect(() => {
-    if (checkedItems.setThree.length === totalItems.setThree) {
-      setIsExpanded(false);
-    }
-  }, [checkedItems.setThree]);
-
+  // Render Extended Section
   const renderExtendedSection = () => {
     switch (selectedStatus) {
       case "f89e69f7-f859-4863-b63e-36c247bac3d5":
@@ -229,6 +240,7 @@ const JobTrackerSectionOne = () => {
     }
   };
 
+  // Progress Text
   const getProgressText = () => {
     switch (selectedStatus) {
       case "f89e69f7-f859-4863-b63e-36c247bac3d5":
@@ -245,6 +257,16 @@ const JobTrackerSectionOne = () => {
         return "Other Steps";
     }
   };
+
+  // Status Options
+  const statusOptions = [
+    { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
+    { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
+    { label: "Applied", value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
+    { label: "Interviewing", value: "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2" },
+    { label: "Negotiating", value: "079cebfd-0e2e-458a-8782-58ea19a5af6d" },
+    { label: "Accepted", value: "21b7fdb7-4260-430b-a648-3cab1eb83288" },
+  ];
 
   return (
     <div className="job-tracker-section drawer-visible" data-projection-id="3">
@@ -329,73 +351,85 @@ const JobTrackerSectionOne = () => {
                 role="rowgroup"
                 style={{ paddingTop: "0px", paddingBottom: "0px" }}
               >
-                {jobs.map((job, index) => (
-                  <div
-                    key={index}
-                    className={`tabulator-row tabulator-selectable ${
-                      index % 2 === 0 ? "tabulator-row-odd" : ""
-                    }`}
-                    role="row"
-                  >
+                {loadingJobs ? (
+                  <Skeleton active paragraph={{ rows: 4 }} />
+                ) : (
+                  jobs.map((job, index) => (
                     <div
-                      className="tabulator-cell role-cell"
-                      role="gridcell"
-                      data-tabulator-field="role"
-                      style={{ height: "56px", width: "280px" }}
+                      key={index}
+                      className={`tabulator-row tabulator-selectable ${
+                        index % 2 === 0
+                          ? "tabulator-row-odd"
+                          : "tabulator-row-even"
+                      }`}
+                      role="row"
                     >
-                      <div className="formatterCell">
-                        <div
-                          className="invisible-button selected"
-                          role="button"
-                          tabIndex="0"
-                        >
-                          <div className="job-content">
-                            <div className="job-role">{job.jobTitle}</div>
-                            <div className="job-company">{job.companyName}</div>
+                      <div
+                        className="tabulator-cell role-cell"
+                        role="gridcell"
+                        data-tabulator-field="role"
+                        style={{ height: "56px", width: "280px" }}
+                      >
+                        <div className="formatterCell">
+                          <div
+                            className={`invisible-button ${
+                              selectedJob?._id === job._id ? "selected" : ""
+                            }`}
+                            role="button"
+                            tabIndex="0"
+                            aria-selected={selectedJob?._id === job._id}
+                            onClick={() => handleJobSelect(job)} // Select job on click
+                          >
+                            <div className="job-content">
+                              <div className="job-role">{job.jobTitle}</div>
+                              <div className="job-company">
+                                {job.companyName}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div
-                      className="tabulator-cell"
-                      role="gridcell"
-                      data-tabulator-field="added_at"
-                      style={{ display: "none", height: "56px" }}
-                    >
-                      <span
-                        className="tabulator-cell-line-clamp tabulator-cell-full-background"
-                        style={{ background: "" }}
+                      <div
+                        className="tabulator-cell"
+                        role="gridcell"
+                        data-tabulator-field="added_at"
+                        style={{ display: "none", height: "56px" }}
                       >
-                        {job.createdAt}
-                      </span>
+                        <span
+                          className="tabulator-cell-line-clamp tabulator-cell-full-background"
+                          style={{ background: "" }}
+                        >
+                          {job.createdAt}
+                        </span>
+                      </div>
+                      <div
+                        className="tabulator-cell"
+                        role="gridcell"
+                        data-tabulator-field="posted_at"
+                        style={{ display: "none", height: "56px" }}
+                      >
+                        {job.postedAt || "&nbsp;"}
+                      </div>
+                      <div
+                        className="tabulator-cell"
+                        role="gridcell"
+                        data-tabulator-field="applied_at"
+                        style={{ display: "none", height: "56px" }}
+                      >
+                        {job.appliedAt || "&nbsp;"}
+                      </div>
+                      <div
+                        className="tabulator-cell"
+                        role="gridcell"
+                        data-tabulator-field="follow_up_at"
+                        style={{ display: "none", height: "56px" }}
+                      >
+                        {job.followUpAt || "&nbsp;"}
+                      </div>
                     </div>
-                    <div
-                      className="tabulator-cell"
-                      role="gridcell"
-                      data-tabulator-field="posted_at"
-                      style={{ display: "none", height: "56px" }}
-                    >
-                      {job.postedAt || "&nbsp;"}
-                    </div>
-                    <div
-                      className="tabulator-cell"
-                      role="gridcell"
-                      data-tabulator-field="applied_at"
-                      style={{ display: "none", height: "56px" }}
-                    >
-                      {job.appliedAt || "&nbsp;"}
-                    </div>
-                    <div
-                      className="tabulator-cell"
-                      role="gridcell"
-                      data-tabulator-field="follow_up_at"
-                      style={{ display: "none", height: "56px" }}
-                    >
-                      {job.followUpAt || "&nbsp;"}
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -457,65 +491,90 @@ const JobTrackerSectionOne = () => {
                 <div className="drawer-content">
                   <div className="job-listing-drawer-item job-listing-fields">
                     <div className="job-listing-fields-row">
-                      <div className="job-listing-fields-secondary">
-                        {/* Add Salary Range Section */}
-                        <AddSalaryRange />
-                      </div>
-
-                      <div className="read-only-row end">
-                        <Space direction="vertical" style={{ width: "100%" }}>
-                          {jobs.map((job) => (
-                            <div
-                              className="read-row-container"
-                              style={{ display: "block" }}
-                            >
-                              <Typography.Title level={2}>
-                                {job?.jobTitle}
-                              </Typography.Title>
-                              <div className="job-detail-row">
-                                <Typography.Text strong>
-                                  {job?.companyName}
-                                </Typography.Text>
-                                <Typography.Text> — </Typography.Text>
-                                <Typography.Text>
-                                  {job?.location || "N/A"}
-                                </Typography.Text>
-                              </div>
-
-                              <div className="job-listing-link">
-                                <div className="post-saved font-medium">
-                                  Saved {getTimeDifference(job?.createdAt)} on{" "}
-                                  <a
-                                    className="link-text font-medium"
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                  >
-                                    {job.URL || "Job Listing"}
-                                  </a>
-                                </div>
-                              </div>
-
-                              <div className="read-only-row-btn-container end">
-                                <Button
-                                  aria-label="Edit job post information"
-                                  type="link"
-                                  size="large"
-                                  icon={<EditOutlined />}
-                                  onClick={() => setModalOpen(true)}
-                                  className="edit-btn gold-text"
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </Space>
-                      </div>
-                      <StyleProvider layer>
-                        <EditJobModal
-                          modalOpen={modalOpen}
-                          setModalOpen={setModalOpen}
-                          jobs={jobs}
+                      {loadingJobs ? (
+                        <Skeleton
+                          active
+                          paragraph={{ rows: 4 }}
+                          style={{ width: "100%" }}
                         />
-                      </StyleProvider>
+                      ) : (
+                        <>
+                          <div className="job-listing-fields-secondary">
+                            {/* Add Salary Range Section */}
+                            <AddSalaryRange selectedJobId={selectedJob?._id} />
+                          </div>
+
+                          <div className="read-only-row end">
+                            <Space
+                              direction="vertical"
+                              style={{ width: "100%" }}
+                            >
+                              {selectedJob ? (
+                                <div
+                                  className="read-row-container"
+                                  style={{ display: "block" }}
+                                >
+                                  <Typography.Title level={2}>
+                                    {selectedJob.jobTitle}
+                                  </Typography.Title>
+                                  <div className="job-detail-row">
+                                    <Typography.Text strong>
+                                      {selectedJob.companyName}
+                                    </Typography.Text>
+                                    <Typography.Text> — </Typography.Text>
+                                    <Typography.Text>
+                                      {selectedJob.location || "N/A"}
+                                    </Typography.Text>
+                                  </div>
+
+                                  <div className="job-listing-link">
+                                    <div className="post-saved font-medium">
+                                      Saved{" "}
+                                      {getTimeDifference(selectedJob.createdAt)}{" "}
+                                      on{" "}
+                                      <a
+                                        className="link-text font-medium"
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                      >
+                                        {selectedJob.URL || "Job Listing"}
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  <Tooltip
+                                    title="Edit job post information"
+                                    className="font-medium font-sans"
+                                  >
+                                    <div className="read-only-row-btn-container end">
+                                      <Button
+                                        aria-label="Edit job post information"
+                                        type="link"
+                                        size="large"
+                                        icon={<EditOutlined />}
+                                        onClick={() => setModalOpen(true)}
+                                        className="edit-btn gold-text"
+                                      />
+                                    </div>
+                                  </Tooltip>
+                                </div>
+                              ) : (
+                                <Typography.Text strong italic>
+                                  Select a job to view details
+                                </Typography.Text>
+                              )}
+                            </Space>
+                          </div>
+                          <StyleProvider layer>
+                            <EditJobModal
+                              modalOpen={modalOpen}
+                              setModalOpen={setModalOpen}
+                              selectedJob={selectedJob}
+                              onJobUpdate={handleJobUpdate}
+                            />
+                          </StyleProvider>
+                        </>
+                      )}
                     </div>
 
                     <Radio.Group

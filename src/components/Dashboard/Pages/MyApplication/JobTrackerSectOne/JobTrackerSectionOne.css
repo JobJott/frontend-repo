@@ -235,6 +235,7 @@
   .job-content {
   width: 100%;
   color: #0006;
+  font-weight: 500;
 }
 
 .job-tracker-container
@@ -507,6 +508,11 @@ strong {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.tabulator .tabulator-row.tabulator-group,
+.tabulator .tabulator-row ~ .tabulator-row:not(.tabulator-group) {
+  border-top: 1px solid #dcdcdc;
 }
 
 .job-listing-fields .job-listing-link .link-text {
@@ -1413,6 +1419,10 @@ html [type="button"],
   color: #111313;
 }
 
+.tabulator-row.tabulator-row-even {
+  background-color: #efefef;
+}
+
 .job-listing-drawer .job-keywords-and-description {
   margin-bottom: 3rem;
 }
@@ -1466,6 +1476,48 @@ html [type="button"],
 }
 ._close-button_1pqaz_1 {
   --btn-color: #171717;
+}
+
+.read-only-row.start {
+  justify-content: flex-end;
+}
+
+.compensation-edit-salary-range--container .read-only-row {
+  margin-right: 0 !important;
+  padding: 0;
+}
+.read-only-row > span {
+  flex: 1;
+}
+.compensation-header {
+  display: inline;
+  font-variant-numeric: normal;
+  font-feature-settings: normal;
+}
+
+.job-listing-fields
+  .job-listing-fields-row
+  .job-listing-fields-secondary
+  .compensation-header {
+  color: #111313;
+  margin-bottom: 0;
+}
+
+.read-only-row .read-only-row-btn-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  padding: 8px;
+}
+
+.read-only-row .read-only-row-btn-container.start {
+  left: 0;
+}
+
+.read-only-row-btn-container.start .ant-btn.ant-btn-lg:not(.ant-btn-round) {
+  padding: 0;
+  border: none;
 }
 
 @media (min-width: 480px) {

@@ -10,6 +10,9 @@ module.exports = {
     fontSize: {
       base: "16px",
     },
+    fontFamily: {
+      sans: ["Montserrat", " sans-serif"],
+    },
     zIndex: {
       1001: "1001",
     },

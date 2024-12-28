@@ -74,7 +74,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const AntJobModal = ({ modalOpen, setModalOpen, setJobs }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",
@@ -139,10 +139,11 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
 
         message.success("Job added successfully!");
 
-        // Call the parent callback to update job details
-        if (onFormSubmit) {
-          onFormSubmit(response.data);
-        }
+        // // Call the parent callback to update job details
+        // if (onFormSubmit) {
+        //   onFormSubmit(response.data);
+        // }
+        setJobs((prevJobs) => [response.data, ...prevJobs]);
 
         setModalOpen(false);
         navigate("/dashboard/my-applications/job-tracker-section-one");
