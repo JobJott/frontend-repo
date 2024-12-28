@@ -81,6 +81,34 @@ const AddSalaryRange = () => {
           <PlusCircleOutlined style={{ marginRight: 8 }} />
           Add Salary Range
         </Typography.Text>
+
+        {/* <div className="read-only-row start">
+          <span>
+            <div>
+              <Typography.Title level={2} className="compensation-header">
+                {salaryRange?.currency} {salaryRange?.minSalary} -{" "}
+                {salaryRange?.currency} {salaryRange?.maxSalary}
+              </Typography.Title>
+              <span> /{salaryRange?.payPeriod} </span>
+            </div>
+          </span>
+
+          <div className="read-only-row-btn-container start">
+            <Tooltip
+              title="Edit Salary Range"
+              className="font-medium font-sans"
+            >
+              <Button
+                aria-label="Edit Salary Range"
+                type="button"
+                size="large"
+                icon={<EditOutlined />}
+                onClick={() => setIsModalVisible(true)}
+                className="edit-btn gold-text"
+              />
+            </Tooltip>
+          </div>
+        </div> */}
       </div>
 
       <Modal
@@ -104,7 +132,7 @@ const AddSalaryRange = () => {
             initialValues={{
               minSalary: "",
               maxSalary: "",
-              currency: "USD",
+              currency: "NGN",
               payPeriod: "Monthly",
             }}
           >
@@ -184,6 +212,7 @@ const AddSalaryRange = () => {
               <Button
                 type="button"
                 className="ant-btn ant-btn-link ant-btn-sm mr-1"
+                onClick={handleCancel}
               >
                 <span>Cancel</span>
               </Button>

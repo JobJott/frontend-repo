@@ -74,7 +74,8 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AntJobModal = ({ modalOpen, setModalOpen, setJobs }) => {
+const AntJobModal
+ = ({ modalOpen, setModalOpen, setJobs }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",
