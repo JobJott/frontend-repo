@@ -7,32 +7,34 @@ import {
   Select,
   Button,
   Spin,
+  Tooltip,
 } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 import "./AddSalaryRange.css";
 
 const { Option } = Select;
 
-const AddSalaryRange = () => {
+const AddSalaryRange = ({ selectedJobId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [salaryRange, setSalaryRange] = useState(null); // To store salary details
+  const [currencies, setCurrencies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const showModal = () => {
     setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    // Add functionality for form submission if necessary
-    console.log("Submitted");
-    setIsModalVisible(false);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  const [currencies, setCurrencies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const handleSave = (values) => {
+    // Save the salary range details
+    setSalaryRange(values);
+    setIsModalVisible(false);
+    console.log(values);
+  };
 
   useEffect(() => {
     // Fetch currencies from REST API
@@ -68,79 +70,80 @@ const AddSalaryRange = () => {
   return (
     <>
       <div
-        className="compensation-add-salary-range--container"
+        className={
+          salaryRange
+            ? "compensation-edit-salary-range--container"
+            : "compensation-add-salary-range--container"
+        }
         role="button"
         tabIndex={0}
         style={{ cursor: "pointer" }}
-        onClick={showModal}
+        onClick={!salaryRange ? showModal : null}
       >
-        <Typography.Text
-          className="compensation-add-salary-range"
-          type="secondary"
-        >
-          <PlusCircleOutlined style={{ marginRight: 8 }} />
-          Add Salary Range
-        </Typography.Text>
+        {!salaryRange ? (
+          <Typography.Text
+            className="compensation-add-salary-range"
+            type="secondary"
+          >
+            <PlusCircleOutlined style={{ marginRight: 8 }} />
+            Add Salary Range
+          </Typography.Text>
+        ) : (
+          <div className="read-only-row start">
+            <span>
+              <div>
+                <Typography.Title level={2} className="compensation-header">
+                  {salaryRange?.currency} {salaryRange?.minSalary} -{" "}
+                  {salaryRange?.currency} {salaryRange?.maxSalary}
+                </Typography.Title>
+                <span> /{salaryRange?.payPeriod} </span>
+              </div>
+            </span>
 
-        {/* <div className="read-only-row start">
-          <span>
-            <div>
-              <Typography.Title level={2} className="compensation-header">
-                {salaryRange?.currency} {salaryRange?.minSalary} -{" "}
-                {salaryRange?.currency} {salaryRange?.maxSalary}
-              </Typography.Title>
-              <span> /{salaryRange?.payPeriod} </span>
+            <div className="read-only-row-btn-container start">
+              <Tooltip
+                title="Edit Salary Range"
+                className="font-medium font-sans"
+              >
+                <Button
+                  aria-label="Edit Salary Range"
+                  type="button"
+                  size="large"
+                  icon={<EditOutlined />}
+                  onClick={showModal}
+                  className="edit-btn gold-text"
+                />
+              </Tooltip>
             </div>
-          </span>
-
-          <div className="read-only-row-btn-container start">
-            <Tooltip
-              title="Edit Salary Range"
-              className="font-medium font-sans"
-            >
-              <Button
-                aria-label="Edit Salary Range"
-                type="button"
-                size="large"
-                icon={<EditOutlined />}
-                onClick={() => setIsModalVisible(true)}
-                className="edit-btn gold-text"
-              />
-            </Tooltip>
           </div>
-        </div> */}
+        )}
       </div>
 
       <Modal
         open={isModalVisible}
-        onOk={handleOk}
         onCancel={handleCancel}
         className="job-tracker-job-compensation-modal"
         width={520}
         maskClosable={true}
         destroyOnClose
-        okText="Save"
-        cancelText="Cancel"
         footer={null}
       >
         {/* Modal Body */}
         <div className="job-compensation-form-container">
-          <h3>Edit Salary</h3>
+          <h3>{salaryRange ? "Edit Salary" : "Add Salary"}</h3>
           <Form
             id="job-compensation"
             layout="vertical"
-            initialValues={{
-              minSalary: "",
-              maxSalary: "",
-              currency: "NGN",
-              payPeriod: "Monthly",
-            }}
+            initialValues={
+              salaryRange || { currency: "NGN", payPeriod: "Monthly" }
+            }
+            onFinish={handleSave}
           >
             {/* Min Salary */}
             <Form.Item
               label="Min. Salary"
               name="minSalary"
-              rules={[{ message: "Please input min salary!" }]}
+              rules={[{ required: true, message: "Please input min salary!" }]}
             >
               <InputNumber
                 className="compensation-input"
@@ -153,7 +156,7 @@ const AddSalaryRange = () => {
             <Form.Item
               label="Max. Salary"
               name="maxSalary"
-              rules={[{ message: "Please input max salary!" }]}
+              rules={[{ required: true, message: "Please input max salary!" }]}
             >
               <InputNumber
                 className="compensation-input"
@@ -166,7 +169,7 @@ const AddSalaryRange = () => {
             <Form.Item
               label="Currency"
               name="currency"
-              rules={[{ message: "Please select a currency!" }]}
+              rules={[{ required: true, message: "Please select a currency!" }]}
               className="full-width"
             >
               <Select
@@ -198,7 +201,7 @@ const AddSalaryRange = () => {
             <Form.Item
               label="Salary Pay Period"
               name="payPeriod"
-              rules={[{ message: "Please select pay period!" }]} // to make any of them required add required: true,
+              rules={[{ required: true, message: "Please select pay period!" }]} // to make any of them required add required: true,
               className="full-width"
             >
               <Select placeholder="Select Pay Period">
@@ -216,7 +219,11 @@ const AddSalaryRange = () => {
               >
                 <span>Cancel</span>
               </Button>
-              <Button type="submit" className="ant-btn ant-btn-primary">
+              <Button
+                type="submit"
+                htmlType="submit"
+                className="ant-btn ant-btn-primary"
+              >
                 <span>Save</span>
               </Button>
             </Form.Item>
