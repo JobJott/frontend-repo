@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
-import { Button, Space, Typography, Radio, Skeleton, message } from "antd";
+import { Button, Space, Typography, Radio, Skeleton, Tooltip } from "antd";
 import {
   LeftCircleOutlined,
   EditOutlined,
