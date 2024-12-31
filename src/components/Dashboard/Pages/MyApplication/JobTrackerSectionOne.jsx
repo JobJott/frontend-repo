@@ -34,8 +34,9 @@ const columnData = [
 
 const JobTrackerSectionOne = () => {
   // Context and State
-  const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
+  const { jobs, loadingJobs, handleJobUpdate } = useOutletContext();
   const [selectedJob, setSelectedJob] = useState(null);
+  const selectedJobFromList = jobs.find((job) => job._id === selectedJob?._id);
   const [loadingSalary, setLoadingSalary] = useState(false);
   const [localLoadingJobs, setLocalLoadingJobs] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -124,6 +125,30 @@ const JobTrackerSectionOne = () => {
       setIsExpanded(false);
     }
   }, [checkedItems.setThree]);
+
+  // // Log only when selectedJob is available
+  // useEffect(() => {
+  //   if (selectedJob) {
+  //     console.log("Selected Job:", selectedJob);
+  //     console.log("Selected Job ID for AddSalaryRange:", selectedJob._id);
+  //   }
+  // }, [selectedJob]); // Runs only when selectedJob changes
+
+  // // Check if selectedJobFromList exists, if so log the found job
+  // useEffect(() => {
+  //   if (selectedJobFromList) {
+  //     console.log("Selected Job from jobs list:", selectedJobFromList);
+  //   }
+  // }, [selectedJobFromList]); // Runs only when selectedJobFromList changes
+
+  const getDomainFromUrl = (url) => {
+    try {
+      const { hostname } = new URL(url);
+      return hostname.replace("www.", ""); // Remove 'www.' if present
+    } catch (error) {
+      return null; // Return null if the URL is invalid
+    }
+  };
 
   // Handlers
   const handleJobSelect = (job) => {
@@ -526,10 +551,7 @@ const JobTrackerSectionOne = () => {
                             {/* Add Salary Range Section */}
                             {selectedJob && (
                               <AddSalaryRange
-                                selectedJobId={selectedJob?._id}
-                                selectedJob={selectedJob}
-                                jobs={jobs}
-                                setJobs={setJobs}
+                                selectedJobId={selectedJobFromList?._id}
                                 loadingSalary={loadingSalary}
                                 setLoadingSalary={setLoadingSalary}
                               />
@@ -565,11 +587,12 @@ const JobTrackerSectionOne = () => {
                                       {getTimeDifference(selectedJob.createdAt)}{" "}
                                       on{" "}
                                       <a
-                                        className="link-text font-medium"
+                                        className="link-text !font-medium"
                                         rel="noopener noreferrer"
                                         target="_blank"
                                       >
-                                        {selectedJob.URL || "Job Listing"}
+                                        {getDomainFromUrl(selectedJob.URL) ||
+                                          "Job Listing"}
                                       </a>
                                     </div>
                                   </div>

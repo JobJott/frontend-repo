@@ -4,7 +4,7 @@ import { getValidToken } from "../../utils/tokenHelper";
 let activityTimeout;
 let lastInteractionTime = Date.now();
 
-const resetActivityTimeout = (timeoutDuration = 60 * 60 * 1000) => {
+const resetActivityTimeout = async (timeoutDuration = 60 * 60 * 1000) => {
   const now = Date.now();
 
   // Update last interaction time
@@ -13,7 +13,8 @@ const resetActivityTimeout = (timeoutDuration = 60 * 60 * 1000) => {
   // Clear any existing timeout
   if (activityTimeout) clearTimeout(activityTimeout);
 
-  getValidToken();
+  const token = await getValidToken(); // Add token check here
+  if (!token) return; // If no valid token, stop resetting the timeout
 
   // Set logout timeout to 1 hour
   activityTimeout = setTimeout(() => {

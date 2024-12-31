@@ -485,7 +485,7 @@ h6,
   font-family: "Montserrat", sans-serif !important;
 }
 strong {
-  font-weight: 700;
+  font-weight: 700 !important;
   font-family: "Montserrat", sans-serif !important;
 }
 
@@ -519,6 +519,10 @@ strong {
   font-weight: 400;
   color: #111313;
   text-decoration: underline;
+}
+
+.job-listing-fields .job-listing-link .link-text:hover {
+  text-decoration: none;
 }
 
 .read-only-row:not(.no-hover):hover {
@@ -1518,6 +1522,11 @@ html [type="button"],
 .read-only-row-btn-container.start .ant-btn.ant-btn-lg:not(.ant-btn-round) {
   padding: 0;
   border: none;
+}
+
+.bgfm .ant-select-selection-item {
+  color: #111313;
+  font-weight: 450;
 }
 
 @media (min-width: 480px) {

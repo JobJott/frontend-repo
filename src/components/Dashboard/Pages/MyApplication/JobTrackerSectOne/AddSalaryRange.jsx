@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Modal,
   Typography,
@@ -9,7 +9,6 @@ import {
   Spin,
   Tooltip,
   message,
-  Skeleton,
 } from "antd";
 import { PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
@@ -20,68 +19,30 @@ const { Option } = Select;
 
 const AddSalaryRange = ({
   selectedJobId,
-  selectedJob,
   loadingSalary,
   setLoadingSalary,
+  fallbackSymbol = "¤",
 }) => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [salaryRange, setSalaryRange] = useState(null); // To hold the fetched salary range
+  const isFetchingRef = useRef(false);
   const [form] = Form.useForm(); // Ant Design form instance
 
   // Fetch salary range for selected job on mount or when selectedJobId changes
   useEffect(() => {
-    if (selectedJobId && selectedJob) {
-      const cachedSalaryRange = localStorage.getItem(
-        `salaryRange_${selectedJobId}`
-      );
-      if (cachedSalaryRange) {
-        setSalaryRange(JSON.parse(cachedSalaryRange));
-      } else {
-        fetchJobWithSalaryRange();
-      }
+    if (selectedJobId) {
+      fetchSalaryRange();
     }
-  }, [selectedJobId, selectedJob]);
-
-  useEffect(() => {
-    // Fetch currencies from REST API
-    const fetchCurrencies = async () => {
-      setLoadingCurrencies(true);
-      try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=currencies"
-        );
-        const data = await response.json();
-
-        const currencySet = new Set();
-        data.forEach((country) => {
-          if (country.currencies) {
-            Object.keys(country.currencies).forEach((currencyCode) => {
-              const currencyName = country.currencies[currencyCode]?.name;
-              if (currencyName) {
-                currencySet.add(`${currencyCode} - ${currencyName}`);
-              }
-            });
-          }
-        });
-
-        const currencyArray = Array.from(currencySet).sort();
-        setCurrencies(currencyArray);
-      } catch (error) {
-        console.error("Error fetching currencies:", error);
-      } finally {
-        setLoadingCurrencies(false);
-      }
-    };
-
-    fetchCurrencies();
-  }, []);
+  }, [selectedJobId]);
 
   // Fetch salary range for editing
-  const fetchJobWithSalaryRange = async () => {
+  const fetchSalaryRange = async () => {
     try {
+      if (isFetchingRef.current) return; // Prevent multiple fetches
+      isFetchingRef.current = true;
       setLoadingSalary(true);
 
       const response = await axios.get(
@@ -93,20 +54,22 @@ const AddSalaryRange = ({
         }
       );
 
-      // Check if the response contains a salary range
-      if (response.data) {
-        setSalaryRange(response.data); // Store the single salary range for rendering
+      // If no salary range is found, the backend responds with a message
+      if (response.data.message === "No salary details found for this job") {
+        setSalaryRange(null); // No salary range found, so the user can add a new one
+      } else {
+        const salaryData = response.data.savedSalaryRange || response.data;
+        setSalaryRange(salaryData); // Store the single salary range for rendering
         localStorage.setItem(
           `salaryRange_${selectedJobId}`,
-          JSON.stringify(response.data)
+          JSON.stringify(salaryData)
         );
-      } else {
-        setSalaryRange(null); // No salary range found
       }
     } catch (error) {
       console.error("Failed to fetch salary range:", error);
       setSalaryRange(null);
     } finally {
+      isFetchingRef.current = false; // Mark fetching as false
       setLoadingSalary(false);
     }
   };
@@ -135,11 +98,9 @@ const AddSalaryRange = ({
       message.success(
         `Salary range ${salaryRange ? "updated" : "added"} successfully!`
       );
-      setSalaryRange(response.data);
-      localStorage.setItem(
-        `salaryRange_${selectedJobId}`,
-        JSON.stringify(response.data)
-      );
+      // Update state and re-fetch to ensure consistency
+      setSalaryRange(response.data.savedSalaryRange || response.data);
+      fetchSalaryRange();
     } catch (error) {
       console.error("Failed to save salary range:", error);
       message.error("Failed to save salary range.");
@@ -149,6 +110,56 @@ const AddSalaryRange = ({
       setIsEditModalVisible(false);
     }
   };
+
+  useEffect(() => {
+    // Fetch currencies from REST API
+    const fetchCurrencies = async () => {
+      setLoadingCurrencies(true);
+      try {
+        const response = await fetch(
+          "https://restcountries.com/v3.1/all?fields=currencies"
+        );
+        const data = await response.json();
+
+        const currencyMap = [];
+        const uniqueCurrencies = new Set();
+
+        data.forEach((country) => {
+          if (country.currencies) {
+            Object.keys(country.currencies).forEach((currencyCode) => {
+              const currencySymbol = country.currencies[currencyCode]?.symbol;
+              const currencyName = country.currencies[currencyCode]?.name;
+
+              // Add currency only if it hasn't been added before
+              if (
+                currencyName &&
+                currencySymbol &&
+                !uniqueCurrencies.has(currencyName)
+              ) {
+                uniqueCurrencies.add(currencyName);
+                currencyMap.push({
+                  name: currencyName,
+                  symbol: currencySymbol,
+                  code: currencyCode,
+                });
+              }
+            });
+          }
+        });
+
+        const sortedCurrencies = currencyMap.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setCurrencies(sortedCurrencies);
+      } catch (error) {
+        console.error("Error fetching currencies:", error);
+      } finally {
+        setLoadingCurrencies(false);
+      }
+    };
+
+    fetchCurrencies();
+  }, []);
 
   const initializeForm = () => {
     form.setFieldsValue({
@@ -172,7 +183,7 @@ const AddSalaryRange = ({
   // Fetch salary range when the modal is opened for editing
   const showEditModal = () => {
     setIsEditModalVisible(true);
-    fetchJobWithSalaryRange(); // Fetch existing salary range if editing
+    fetchSalaryRange();
   };
 
   const handleCancel = () => {
@@ -183,16 +194,17 @@ const AddSalaryRange = ({
 
   // Function to format numbers with commas
   const formatNumber = (value) => {
-    if (value == null || typeof value !== "number") return value;
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (value == null || isNaN(value)) return value;
+    return Number(value)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const extractCurrencySymbol = (currency) => {
-    if (currency.includes("(")) {
-      return currency.split("(")[1].replace(")", "");
-    }
-    const parts = currency.split(" ");
-    return parts.length > 1 ? parts[0] : "$"; // Fallback to "$" for unsupported cases
+  const extractCurrencySymbol = (currencyName) => {
+    const matchedCurrency = currencies.find(
+      (currency) => currency.name === currencyName
+    );
+    return matchedCurrency ? matchedCurrency.symbol : fallbackSymbol; // Fallback symbol
   };
 
   const getPayPeriodAbbreviation = (payPeriod) => {
@@ -293,7 +305,7 @@ const AddSalaryRange = ({
               rules={[{ required: true, message: "Please input min salary!" }]}
             >
               <InputNumber
-                className="compensation-input"
+                className="compensation-input text-[#111313] font-medium"
                 placeholder="Min. Salary"
                 style={{ width: "100%" }}
                 formatter={formatNumber}
@@ -307,7 +319,7 @@ const AddSalaryRange = ({
               rules={[{ required: true, message: "Please input max salary!" }]}
             >
               <InputNumber
-                className="compensation-input"
+                className="compensation-input text-[#111313] font-medium"
                 placeholder="Max. Salary"
                 style={{ width: "100%" }}
                 formatter={formatNumber}
@@ -323,7 +335,7 @@ const AddSalaryRange = ({
             >
               <Select
                 placeholder="Select Currency"
-                className="compensation-input compensation-currency-select"
+                className="compensation-input compensation-currency-select bgfm"
                 showSearch
                 style={{ width: "100%" }}
                 loading={loadingCurrencies}
@@ -341,8 +353,8 @@ const AddSalaryRange = ({
                   </Option>
                 ) : (
                   currencies.map((currency, index) => (
-                    <Option key={index} value={currency}>
-                      {currency}
+                    <Option key={index} value={currency.name}>
+                      {currency.name}
                     </Option>
                   ))
                 )}
@@ -356,7 +368,7 @@ const AddSalaryRange = ({
               rules={[{ required: true, message: "Please select pay period!" }]}
               className="full-width"
             >
-              <Select placeholder="Select Pay Period">
+              <Select placeholder="Select Pay Period" className="bgfm">
                 <Option value="Monthly">Monthly</Option>
                 <Option value="Yearly">Yearly</Option>
                 <Option value="Weekly">Weekly</Option>

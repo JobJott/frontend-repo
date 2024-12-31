@@ -29,22 +29,20 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response && error.response.status === 403) {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) {
+        throw new Error("No refresh token found");
+      }
+
       try {
         // Attempt to refresh the token
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-          throw new Error("No refresh token found");
+        const newToken = await getValidToken();
+        if (!newToken) {
+          throw new Error("Failed to refresh token");
         }
 
-        // Send refresh token request
-        const res = await axiosInstance.post(
-          "http://localhost:8080/api/auth/refresh-token",
-          { token: refreshToken }
-        );
-        localStorage.setItem("authtoken", res.data.token);
-
         // Retry the failed request with the new token
-        error.config.headers.Authorization = `Bearer ${res.data.token}`;
+        error.config.headers.Authorization = `Bearer ${newToken}`;
         return axiosInstance.request(error.config);
       } catch (err) {
         console.error("Token refresh failed:", err);
