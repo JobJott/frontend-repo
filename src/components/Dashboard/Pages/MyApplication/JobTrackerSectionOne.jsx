@@ -34,8 +34,10 @@ const columnData = [
 
 const JobTrackerSectionOne = () => {
   // Context and State
-  const { jobs, loadingJobs, handleJobUpdate } = useOutletContext();
+  const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
   const [selectedJob, setSelectedJob] = useState(null);
+  const [loadingSalary, setLoadingSalary] = useState(false);
+  const [localLoadingJobs, setLocalLoadingJobs] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -79,7 +81,20 @@ const JobTrackerSectionOne = () => {
   // Effect: Select Initial Job
   useEffect(() => {
     if (jobs && jobs.length > 0) {
-      setSelectedJob(jobs[0]);
+      const savedJobId = localStorage.getItem("selectedJobId");
+      if (savedJobId) {
+        // If a job ID is stored in localStorage, find that job in the list
+        const job = jobs.find((job) => job._id === savedJobId);
+        if (job) {
+          setSelectedJob(job);
+        } else {
+          // Fallback to the first job if no match is found
+          setSelectedJob(jobs[0]);
+        }
+      } else {
+        // If no saved job ID, set the first job as selected
+        setSelectedJob(jobs[0]);
+      }
     }
   }, [jobs]);
 
@@ -113,7 +128,15 @@ const JobTrackerSectionOne = () => {
   // Handlers
   const handleJobSelect = (job) => {
     console.log("Selected Job:", job);
-    setSelectedJob(job);
+    setLocalLoadingJobs(true); // Start local loading state
+    setSelectedJob(null);
+    localStorage.setItem("selectedJobId", job._id);
+
+    // Simulate async job detail fetching
+    setTimeout(() => {
+      setSelectedJob(job); // Set the new selected job
+      setLocalLoadingJobs(false); // End local loading state
+    }, 500); // Adjust timeout duration as needed
   };
 
   const handleToggle = () => {
@@ -351,7 +374,7 @@ const JobTrackerSectionOne = () => {
                 role="rowgroup"
                 style={{ paddingTop: "0px", paddingBottom: "0px" }}
               >
-                {loadingJobs ? (
+                {localLoadingJobs || loadingJobs ? (
                   <Skeleton active paragraph={{ rows: 4 }} />
                 ) : (
                   jobs.map((job, index) => (
@@ -491,7 +514,7 @@ const JobTrackerSectionOne = () => {
                 <div className="drawer-content">
                   <div className="job-listing-drawer-item job-listing-fields">
                     <div className="job-listing-fields-row">
-                      {loadingJobs ? (
+                      {localLoadingJobs || loadingJobs || loadingSalary ? (
                         <Skeleton
                           active
                           paragraph={{ rows: 4 }}
@@ -501,7 +524,16 @@ const JobTrackerSectionOne = () => {
                         <>
                           <div className="job-listing-fields-secondary">
                             {/* Add Salary Range Section */}
-                            <AddSalaryRange selectedJobId={selectedJob?._id} />
+                            {selectedJob && (
+                              <AddSalaryRange
+                                selectedJobId={selectedJob?._id}
+                                selectedJob={selectedJob}
+                                jobs={jobs}
+                                setJobs={setJobs}
+                                loadingSalary={loadingSalary}
+                                setLoadingSalary={setLoadingSalary}
+                              />
+                            )}
                           </div>
 
                           <div className="read-only-row end">
