@@ -24,6 +24,7 @@ import JobListingDrawer, {
 import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
 import { useOutletContext } from "react-router-dom";
+import axios from "axios";
 
 const columnData = [
   { title: "Date Saved", field: "added_at" },
@@ -34,9 +35,9 @@ const columnData = [
 
 const JobTrackerSectionOne = () => {
   // Context and State
-  const { jobs, loadingJobs, handleJobUpdate } = useOutletContext();
+  const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
   const [selectedJob, setSelectedJob] = useState(null);
-  const selectedJobFromList = jobs.find((job) => job._id === selectedJob?._id);
+  const selectedJobFromList = jobs?.find((job) => job._id === selectedJob?._id);
   const [loadingSalary, setLoadingSalary] = useState(false);
   const [localLoadingJobs, setLocalLoadingJobs] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -234,7 +235,12 @@ const JobTrackerSectionOne = () => {
     }
 
     const diffInHours = Math.floor(diffInMinutes / 60);
-    return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    if (diffInHours < 24) {
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    }
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
   };
 
   // Render Extended Section
@@ -399,7 +405,7 @@ const JobTrackerSectionOne = () => {
                 role="rowgroup"
                 style={{ paddingTop: "0px", paddingBottom: "0px" }}
               >
-                {localLoadingJobs || loadingJobs ? (
+                {localLoadingJobs || loadingJobs || loadingSalary ? (
                   <Skeleton active paragraph={{ rows: 4 }} />
                 ) : (
                   jobs.map((job, index) => (

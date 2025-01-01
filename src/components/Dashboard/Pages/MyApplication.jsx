@@ -68,6 +68,7 @@ const MyApplication = () => {
                 jobs,
                 setJobs,
                 loadingJobs,
+                setLoadingJobs,
                 handleJobUpdate,
               }}
             />

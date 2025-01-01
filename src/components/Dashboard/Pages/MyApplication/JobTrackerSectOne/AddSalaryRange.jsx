@@ -27,26 +27,35 @@ const AddSalaryRange = ({
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
-  const [salaryRange, setSalaryRange] = useState(null); // To hold the fetched salary range
+  const [salaryRanges, setSalaryRanges] = useState([]); // To hold all fetched salary ranges
+  const [salaryRange, setSalaryRange] = useState(null); // To hold the selected salary range
   const isFetchingRef = useRef(false);
   const [form] = Form.useForm(); // Ant Design form instance
 
-  // Fetch salary range for selected job on mount or when selectedJobId changes
+  // Fetch all salary ranges on mount
+  useEffect(() => {
+    fetchAllSalaryRanges();
+  }, []);
+
+  // Update salary range when selectedJobId changes
   useEffect(() => {
     if (selectedJobId) {
-      fetchSalaryRange();
+      const selected = salaryRanges.find(
+        (range) => range.jobId === selectedJobId
+      );
+      setSalaryRange(selected || null);
     }
-  }, [selectedJobId]);
+  }, [selectedJobId, salaryRanges]);
 
-  // Fetch salary range for editing
-  const fetchSalaryRange = async () => {
+  // Fetch all salary ranges
+  const fetchAllSalaryRanges = async () => {
     try {
       if (isFetchingRef.current) return; // Prevent multiple fetches
       isFetchingRef.current = true;
       setLoadingSalary(true);
 
       const response = await axios.get(
-        `http://localhost:8080/api/jobs/salary-range/${selectedJobId}`,
+        "http://localhost:8080/api/jobs/salary-ranges",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
@@ -54,20 +63,9 @@ const AddSalaryRange = ({
         }
       );
 
-      // If no salary range is found, the backend responds with a message
-      if (response.data.message === "No salary details found for this job") {
-        setSalaryRange(null); // No salary range found, so the user can add a new one
-      } else {
-        const salaryData = response.data.savedSalaryRange || response.data;
-        setSalaryRange(salaryData); // Store the single salary range for rendering
-        localStorage.setItem(
-          `salaryRange_${selectedJobId}`,
-          JSON.stringify(salaryData)
-        );
-      }
+      setSalaryRanges(response.data);
     } catch (error) {
-      console.error("Failed to fetch salary range:", error);
-      setSalaryRange(null);
+      console.error("Failed to fetch salary ranges:", error);
     } finally {
       isFetchingRef.current = false; // Mark fetching as false
       setLoadingSalary(false);
@@ -77,13 +75,14 @@ const AddSalaryRange = ({
   const handleSave = async (values) => {
     try {
       setLoadingSalary(true);
-      const apiUrl = salaryRange
+      const isUpdate = !!salaryRange;
+      const url = isUpdate
         ? `http://localhost:8080/api/jobs/salary-range/${selectedJobId}`
         : `http://localhost:8080/api/jobs/salary-range/add`;
 
-      const method = salaryRange ? "put" : "post";
+      const method = isUpdate ? "put" : "post";
       const response = await axios[method](
-        apiUrl,
+        url,
         {
           jobId: selectedJobId,
           ...values,
@@ -96,11 +95,19 @@ const AddSalaryRange = ({
       );
 
       message.success(
-        `Salary range ${salaryRange ? "updated" : "added"} successfully!`
+        `Salary range ${isUpdate ? "updated" : "added"} successfully!`
       );
-      // Update state and re-fetch to ensure consistency
-      setSalaryRange(response.data.savedSalaryRange || response.data);
-      fetchSalaryRange();
+
+      // Update salaryRanges state
+      const updatedRange = response.data.savedSalaryRange || response.data;
+      setSalaryRanges((prevRanges) =>
+        isUpdate
+          ? prevRanges.map((range) =>
+              range.jobId === selectedJobId ? updatedRange : range
+            )
+          : [...prevRanges, updatedRange]
+      );
+      setSalaryRange(updatedRange);
     } catch (error) {
       console.error("Failed to save salary range:", error);
       message.error("Failed to save salary range.");
@@ -180,10 +187,8 @@ const AddSalaryRange = ({
     setIsAddModalVisible(true);
   };
 
-  // Fetch salary range when the modal is opened for editing
   const showEditModal = () => {
     setIsEditModalVisible(true);
-    fetchSalaryRange();
   };
 
   const handleCancel = () => {
@@ -233,7 +238,9 @@ const AddSalaryRange = ({
         style={{ cursor: "pointer" }}
         onClick={salaryRange ? showEditModal : showAddModal}
       >
-        {salaryRange ? (
+        {loadingSalary ? (
+          <Spin />
+        ) : salaryRange ? (
           <div className="read-only-row start">
             <span>
               <div>
