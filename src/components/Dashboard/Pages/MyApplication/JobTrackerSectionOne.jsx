@@ -46,8 +46,9 @@ const JobTrackerSectionOne = () => {
   const [isAccepted, setIsAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("job-info");
   const [isChecked, setIsChecked] = useState(false);
-  const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
-  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
+  // const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Checked Items
   const [checkedItems, setCheckedItems] = useState({
@@ -161,6 +162,7 @@ const JobTrackerSectionOne = () => {
     // Simulate async job detail fetching
     setTimeout(() => {
       setSelectedJob(job); // Set the new selected job
+      setSelectedStatus(job.status || "f89e69f7-f859-4863-b63e-36c247bac3d5"); // Default if no status
       setLocalLoadingJobs(false); // End local loading state
     }, 500); // Adjust timeout duration as needed
   };
@@ -171,13 +173,48 @@ const JobTrackerSectionOne = () => {
 
   const handleDeleteJobClick = () => setDeleteModalOpen(true);
 
-  const handleStatusChange = (e) => {
-    const { value } = e.target;
-    setSelectedStatus(value);
+  const handleStatusChange = async (e) => {
+    const newStatus = e.target.value;
     setIsAccepted(
-      value ===
+      newStatus ===
         statusOptions.find((option) => option.label === "Accepted").value
     );
+    setSelectedStatus(newStatus);
+    setLoading(true);
+
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem("authtoken");
+
+    // Prepare the headers with the authorization token
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      // Update status in backend
+      const response = await axios.patch(
+        `http://localhost:8080/api/jobs/${selectedJob._id}/status`,
+        {
+          status: newStatus,
+        },
+        config
+      );
+
+      if (response.status === 200) {
+        // Update local job list
+        const updatedJobs = jobs.map((job) =>
+          job._id === selectedJob._id ? { ...job, status: newStatus } : job
+        );
+        setJobs(updatedJobs);
+      }
+    } catch (error) {
+      console.error("Failed to update job status:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Centralized function to update checked items, Checkbox Handlers
@@ -638,43 +675,47 @@ const JobTrackerSectionOne = () => {
                       )}
                     </div>
 
-                    <Radio.Group
-                      value={selectedStatus}
-                      onChange={handleStatusChange}
-                      buttonStyle="solid"
-                      data-testid="status-progress-bar"
-                      className="status-progress-bar"
-                    >
-                      {statusOptions.map((status) => (
-                        <Radio.Button
-                          key={status.value}
-                          value={status.value}
-                          onClick={() =>
-                            status.label === "Accepted" && setIsAccepted(true)
-                          }
-                        >
-                          {status.label}{" "}
-                          {status.value !==
-                            "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
-                            <CheckOutlined style={{ marginLeft: 2 }} />
-                          )}
-                        </Radio.Button>
-                      ))}
-
-                      <Button
-                        id="archiveDropdown"
-                        type="button"
-                        size="small"
-                        className="delete-job-btn"
-                        onClick={handleDeleteJobClick}
+                    {selectedJob && (
+                      <Radio.Group
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        buttonStyle="solid"
+                        data-testid="status-progress-bar"
+                        className="status-progress-bar"
                       >
-                        Delete Job
-                      </Button>
-                      <DeleteJobModal
-                        deleteModalOpen={deleteModalOpen}
-                        setDeleteModalOpen={setDeleteModalOpen}
-                      />
-                    </Radio.Group>
+                        {statusOptions.map((status) => (
+                          <Radio.Button
+                            key={status.value}
+                            value={status.value}
+                            onClick={() =>
+                              status.label === "Accepted" && setIsAccepted(true)
+                            }
+                          >
+                            {status.label}{" "}
+                            {status.value !==
+                              "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
+                              <CheckOutlined style={{ marginLeft: 2 }} />
+                            )}
+                          </Radio.Button>
+                        ))}
+
+                        <Button
+                          id="archiveDropdown"
+                          type="button"
+                          size="small"
+                          className="delete-job-btn"
+                          onClick={handleDeleteJobClick}
+                        >
+                          Delete Job
+                        </Button>
+                        <DeleteJobModal
+                          selectedJobId={selectedJobFromList?._id}
+                          setJobs={setJobs}
+                          deleteModalOpen={deleteModalOpen}
+                          setDeleteModalOpen={setDeleteModalOpen}
+                        />
+                      </Radio.Group>
+                    )}
 
                     <div
                       className="_box_1rxfg_1 _guidance_1qsov_1"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Checkbox, Modal } from "antd";
 import styled from "styled-components";
+import axios from "axios";
 
 const StyledDeleteModal = styled(Modal)`
   .ant-modal-content {
@@ -58,12 +59,35 @@ const StyledDeleteModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const DeleteJobModal = ({ deleteModalOpen, setDeleteModalOpen }) => {
-  const handleDeleteClick = () => {
-    // Add custom logic for "Delete Job"
-    console.log("Job Deleted");
+export const DeleteJobModal = ({
+  deleteModalOpen,
+  setDeleteModalOpen,
+  selectedJobId,
+  setJobs,
+}) => {
+  const handleDeleteClick = async () => {
+    if (!selectedJobId) {
+      console.error("No job selected for deletion.");
+      return;
+    }
 
-    setDeleteModalOpen(false); // Close dropdown
+    const token = localStorage.getItem("authtoken");
+
+    try {
+      await axios.delete(`http://localhost:8080/api/jobs/${selectedJobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
+
+      setJobs((prevJobs) =>
+        prevJobs.filter((job) => job._id !== selectedJobId)
+      ); // Update state after successful deletion
+      console.log("Job Deleted");
+      setDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Failed to delete the job", error);
+    }
   };
 
   return (

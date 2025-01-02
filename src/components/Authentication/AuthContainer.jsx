@@ -6,7 +6,8 @@ import "./Forms.css";
 
 const SignUpForm = React.lazy(() => import("./SignUpForm"));
 const SignInForm = React.lazy(() => import("./SignInForm"));
-const ResetPasswordForm = React.lazy(() => import("./ResetPassword"));
+const ForgetPasswordForm = React.lazy(() => import("./ForgetPassword"));
+const ResetPassword = React.lazy(() => import("./ResetPassword"));
 
 const AuthContainer = ({ formType }) => {
   const renderForm = () => {
@@ -15,8 +16,10 @@ const AuthContainer = ({ formType }) => {
         return <SignUpForm />;
       case "signin":
         return <SignInForm />;
+      case "forget-password":
+        return <ForgetPasswordForm />;
       case "reset-password":
-        return <ResetPasswordForm />;
+        return <ResetPassword />;
       default:
         return <SignInForm />;
     }

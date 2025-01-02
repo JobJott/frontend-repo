@@ -142,7 +142,7 @@ const SignInForm = () => {
             </div>
           </div>
           <div className="fp">
-            <Link to="/auth/reset-password" className="forgot-password">
+            <Link to="/auth/forget-password" className="forgot-password">
               Forgot your password?
             </Link>
           </div>
