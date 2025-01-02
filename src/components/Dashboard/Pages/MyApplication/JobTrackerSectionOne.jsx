@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
 import { Button, Space, Typography, Radio, Skeleton, Tooltip } from "antd";
 import {
@@ -37,7 +37,10 @@ const JobTrackerSectionOne = () => {
   // Context and State
   const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
   const [selectedJob, setSelectedJob] = useState(null);
-  const selectedJobFromList = jobs?.find((job) => job._id === selectedJob?._id);
+  const selectedJobFromList = useMemo(
+    () => jobs?.find((job) => job._id === selectedJob?._id),
+    [jobs, selectedJob]
+  );
   const [loadingSalary, setLoadingSalary] = useState(false);
   const [localLoadingJobs, setLocalLoadingJobs] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,8 +49,10 @@ const JobTrackerSectionOne = () => {
   const [isAccepted, setIsAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("job-info");
   const [isChecked, setIsChecked] = useState(false);
-  // const INITIAL_STATUS = "f89e69f7-f859-4863-b63e-36c247bac3d5";
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const INITIAL_STATUS =
+    localStorage.getItem("selectedStatus") ||
+    "f89e69f7-f859-4863-b63e-36c247bac3d5";
+  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
   const [loading, setLoading] = useState(false);
 
   // Checked Items
@@ -158,6 +163,10 @@ const JobTrackerSectionOne = () => {
     setLocalLoadingJobs(true); // Start local loading state
     setSelectedJob(null);
     localStorage.setItem("selectedJobId", job._id);
+    localStorage.setItem(
+      "selectedStatus",
+      job.status || "f89e69f7-f859-4863-b63e-36c247bac3d5"
+    ); // Save status
 
     // Simulate async job detail fetching
     setTimeout(() => {

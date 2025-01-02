@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { message } from "antd";
 import axios from "axios";
 import "./Forms.css";
 
@@ -7,10 +8,11 @@ const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsButtonDisabled(true);
 
     if (!email) {
       setError("Please enter your email address.");
@@ -36,12 +38,12 @@ const ForgetPassword = () => {
 
       if (response.status === 200) {
         setSuccess(true); // Show success message
-        const resetToken = response.data.token; // Assuming the backend sends the token
-        navigate(`/auth/reset-password/${resetToken}`); // Redirect to reset-password page
+        message.success("Reset link sent to your email.");
       }
       console.log("Reset link sent to:", email); // For testing
     } catch (error) {
       setError("An error occurred while sending the reset link.");
+      setIsButtonDisabled(false); // Re-enable button on error
       console.error(error);
     }
   };
@@ -61,9 +63,6 @@ const ForgetPassword = () => {
           autoComplete="on"
         >
           {error && <p className="error-message">{error}</p>}
-          {success && (
-            <p className="success-message">Email sent successfully!</p>
-          )}
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -73,8 +72,8 @@ const ForgetPassword = () => {
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
           />
-          <button className="auth-btn" type="submit">
-            Send Reset Link
+          <button className="auth-btn" type="submit" disabled={isButtonDisabled}>
+          {isButtonDisabled ? "Reset Link Sent" : "Send Reset Link"}
           </button>
         </form>
         <div className="links-div">
