@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import AddSalaryRange from "./JobTrackerSectOne/AddSalaryRange";
+import React, { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { Button, Space, Typography, Radio, Skeleton, Tooltip } from "antd";
 import {
   LeftCircleOutlined,
@@ -18,6 +17,7 @@ import JobListingDrawer, {
   ApplyingExtended,
   BookmarkExtended,
   DeleteJobModal,
+  FullscreenLoader,
   InterviewingExtended,
   NegotiatingExtended,
 } from "./JobTrackerSectOne/ExtendedSections";
@@ -25,6 +25,8 @@ import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
 import { useOutletContext } from "react-router-dom";
 import axios from "axios";
+
+const AddSalaryRange = lazy(() => import("./JobTrackerSectOne/AddSalaryRange"));
 
 const columnData = [
   { title: "Date Saved", field: "added_at" },
@@ -591,7 +593,7 @@ const JobTrackerSectionOne = () => {
                 <div className="drawer-content">
                   <div className="job-listing-drawer-item job-listing-fields">
                     <div className="job-listing-fields-row">
-                      {localLoadingJobs || loadingJobs || loadingSalary ? (
+                      {localLoadingJobs || (loadingJobs && loadingSalary) ? (
                         <Skeleton
                           active
                           paragraph={{ rows: 4 }}
@@ -600,14 +602,20 @@ const JobTrackerSectionOne = () => {
                       ) : (
                         <>
                           <div className="job-listing-fields-secondary">
-                            {/* Add Salary Range Section */}
-                            {selectedJob && (
-                              <AddSalaryRange
-                                selectedJobId={selectedJobFromList?._id}
-                                loadingSalary={loadingSalary}
-                                setLoadingSalary={setLoadingSalary}
-                              />
-                            )}
+                            <Suspense
+                              fallback={
+                                <Skeleton active paragraph={{ rows: 1 }} />
+                              }
+                            >
+                              {/* Add Salary Range Section */}
+                              {selectedJob && (
+                                <AddSalaryRange
+                                  selectedJobId={selectedJobFromList?._id}
+                                  loadingSalary={loadingSalary}
+                                  setLoadingSalary={setLoadingSalary}
+                                />
+                              )}
+                            </Suspense>
                           </div>
 
                           <div className="read-only-row end">
@@ -684,47 +692,54 @@ const JobTrackerSectionOne = () => {
                       )}
                     </div>
 
-                    {selectedJob && (
-                      <Radio.Group
-                        value={selectedStatus}
-                        onChange={handleStatusChange}
-                        buttonStyle="solid"
-                        data-testid="status-progress-bar"
-                        className="status-progress-bar"
-                      >
-                        {statusOptions.map((status) => (
-                          <Radio.Button
-                            key={status.value}
-                            value={status.value}
-                            onClick={() =>
-                              status.label === "Accepted" && setIsAccepted(true)
-                            }
-                          >
-                            {status.label}{" "}
-                            {status.value !==
-                              "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
-                              <CheckOutlined style={{ marginLeft: 2 }} />
-                            )}
-                          </Radio.Button>
-                        ))}
-
-                        <Button
-                          id="archiveDropdown"
-                          type="button"
-                          size="small"
-                          className="delete-job-btn"
-                          onClick={handleDeleteJobClick}
+                    <>
+                      <FullscreenLoader
+                        spinning={loading}
+                        text="Updating Status..."
+                      />
+                      {selectedJob && (
+                        <Radio.Group
+                          value={selectedStatus}
+                          onChange={handleStatusChange}
+                          buttonStyle="solid"
+                          data-testid="status-progress-bar"
+                          className="status-progress-bar"
                         >
-                          Delete Job
-                        </Button>
-                        <DeleteJobModal
-                          selectedJobId={selectedJobFromList?._id}
-                          setJobs={setJobs}
-                          deleteModalOpen={deleteModalOpen}
-                          setDeleteModalOpen={setDeleteModalOpen}
-                        />
-                      </Radio.Group>
-                    )}
+                          {statusOptions.map((status) => (
+                            <Radio.Button
+                              key={status.value}
+                              value={status.value}
+                              onClick={() =>
+                                status.label === "Accepted" &&
+                                setIsAccepted(true)
+                              }
+                            >
+                              {status.label}{" "}
+                              {status.value !==
+                                "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
+                                <CheckOutlined style={{ marginLeft: 2 }} />
+                              )}
+                            </Radio.Button>
+                          ))}
+
+                          <Button
+                            id="archiveDropdown"
+                            type="button"
+                            size="small"
+                            className="delete-job-btn"
+                            onClick={handleDeleteJobClick}
+                          >
+                            Delete Job
+                          </Button>
+                          <DeleteJobModal
+                            selectedJobId={selectedJobFromList?._id}
+                            setJobs={setJobs}
+                            deleteModalOpen={deleteModalOpen}
+                            setDeleteModalOpen={setDeleteModalOpen}
+                          />
+                        </Radio.Group>
+                      )}
+                    </>
 
                     <div
                       className="_box_1rxfg_1 _guidance_1qsov_1"

@@ -238,8 +238,10 @@ const AddSalaryRange = ({
         style={{ cursor: "pointer" }}
         onClick={salaryRange ? showEditModal : showAddModal}
       >
-        {loadingSalary ? (
-          <Spin />
+        {loadingSalary || !salaryRange ? (
+          <div className="linear-loader">
+            <div className="linear-loader-bar" />
+          </div>
         ) : salaryRange ? (
           <div className="read-only-row start">
             <span>

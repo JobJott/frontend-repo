@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { Checkbox, Modal } from "antd";
+import { Checkbox, Modal, Spin, Typography } from "antd";
 import styled from "styled-components";
 import axios from "axios";
+
+export const FullscreenLoader = ({ spinning, text }) => {
+  return (
+    <div className={`fullscreen-loader ${spinning ? "show" : ""}`}>
+      <Spin size="default" />
+      <Typography.Text className="loading-text">
+        {text || "Loading..."}
+      </Typography.Text>
+    </div>
+  );
+};
 
 const StyledDeleteModal = styled(Modal)`
   .ant-modal-content {
@@ -439,15 +450,11 @@ export const ApplyingExtended = ({
                     "--wrap": "wrap",
                   }}
                 >
-                  <label className="ant-checkbox-wrapper">
-                    <Checkbox
-                      className="ant-checkbox-input"
-                      checked={checkedItems.setOne.includes(item)}
-                      onChange={(e) => handleBoxCheckedOne(e, item)}
-                    >
-                      {item}
-                    </Checkbox>
-                  </label>
+                  <Checkbox
+                    checked={checkedItems.setOne.includes(item)}
+                    onChange={(e) => handleBoxCheckedOne(e, item)}
+                  />
+                  {item}
                 </div>
               </button>
             </li>
