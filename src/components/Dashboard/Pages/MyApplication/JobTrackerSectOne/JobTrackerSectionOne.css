@@ -838,7 +838,6 @@ ul li:not(.bulleted) {
   #btn-click {
     color: #111313;
     text-decoration: underline;
-    color: #056464;
   }
 }
 
@@ -854,7 +853,10 @@ ul li:not(.bulleted) {
   #btn-click {
     color: #111313;
     text-decoration: underline;
-    color: #056464;
+  }
+
+  a:hover {
+    text-decoration: none;
   }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Checkbox, Modal, Spin, Typography } from "antd";
+// import { format } from "date-fns";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -178,9 +179,7 @@ export const BookmarkExtended = ({
                   "--wrap": "wrap",
                 }}
               >
-                <label className="ant-checkbox-wrapper">
-                  <Checkbox onChange={handleBoxChecked} checked={isChecked} />
-                </label>
+                <Checkbox onChange={handleBoxChecked} checked={isChecked} />
                 Review the Job Position details
               </div>
             </button>
@@ -277,7 +276,12 @@ const StyledAppModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const ApplicationModal = ({ modalOpenApp, setModalOpenApp }) => {
+export const ApplicationModal = ({
+  modalOpenApp,
+  setModalOpenApp,
+  handleStatusChange,
+  selectedJob,
+}) => {
   return (
     <StyledAppModal
       open={modalOpenApp}
@@ -301,7 +305,12 @@ export const ApplicationModal = ({ modalOpenApp, setModalOpenApp }) => {
         <button
           type="button"
           className="ant-btn ant-btn-default ant-btn-dangerous"
-          onClick={() => setModalOpenApp(false)}
+          onClick={() => {
+            handleStatusChange({
+              target: { value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
+            });
+            setModalOpenApp(false);
+          }}
         >
           <span>Yes, Update status</span>
         </button>
@@ -316,8 +325,12 @@ export const ApplyingExtended = ({
   selectedItem,
   handleBoxCheckedOne,
   handleItemSelectedOne,
+  selectedJob,
+  handleStatusChange,
 }) => {
   const [modalOpenApp, setModalOpenApp] = useState(false);
+  const companyName = selectedJob.companyName;
+  const companyURL = selectedJob.URL;
 
   const handleSuggestionBoxClick = (e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -332,12 +345,10 @@ export const ApplyingExtended = ({
     "Get Referral": [
       {
         type: "link",
-        content: "Check if you know anyone at Sails hub on LinkedIn",
-        href: 'https://www.linkedin.com/search/results/people/?keywords=Sails%20hub&network=["F"]&amp;sid=_ZI',
-      },
-      {
-        type: "button",
-        content: "Ask a contact for an introduction to a person at Sails hub",
+        content: `Check if you know anyone at ${companyName} on LinkedIn`,
+        href: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(
+          companyName
+        )}&network=["F"]&amp;sid=_ZI`,
       },
       {
         type: "link",
@@ -355,9 +366,8 @@ export const ApplyingExtended = ({
         content: "Review job post keywords to include in your application",
       },
       {
-        type: "link",
+        type: "text",
         content: "Include job post title in your resume",
-        href: "",
       },
       {
         type: "text",
@@ -374,7 +384,7 @@ export const ApplyingExtended = ({
       {
         type: "link",
         content: "Check if the application requires a cover letter",
-        href: "",
+        href: `${companyURL}`,
       },
       {
         type: "link",
@@ -384,31 +394,34 @@ export const ApplyingExtended = ({
       {
         type: "link",
         content: "Search Google News to learn more about the company",
-        href: "",
+        href: `https://news.google.com/search?q=${encodeURIComponent(
+          companyName
+        )}&hl=en-NG&gl=NG&ceid=NG:en`,
       },
       {
         type: "link",
         content: "Use Grammarly for free to check for typos and grammar",
-        href: "",
+        href: "https://www.grammarly.com/?affiliateNetwork=sas&affiliateID=2893507",
       },
     ],
     "Identify the Recruiter or Hiring Manager": [
       {
         type: "link",
         content: "Find recruiter details on LinkedIn",
-        href: "https://www.linkedin.com",
+        href: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(
+          companyName
+        )}&network=[%22F%22]&sid=_ZI`,
       },
       {
-        type: "link",
+        type: "text",
         content: "Send a message to the recruiter or hiring manager",
-        href: "https://www.linkedin.com",
       },
     ],
     "Submit Application": [
       { type: "text", content: "Double-check for typos and formatting issues" },
       {
         type: "button",
-        content: "Save application confirmation for your records",
+        content: `Move job to "Applied" stage on your job tracker`,
         onClick: handleModalClick,
         id: "btn-click",
       },
@@ -505,15 +518,41 @@ export const ApplyingExtended = ({
       <ApplicationModal
         modalOpenApp={modalOpenApp}
         setModalOpenApp={setModalOpenApp}
+        handleStatusChange={handleStatusChange} // Pass the function to modal
+        selectedJob={selectedJob}
       />
     </div>
   );
 };
 
-export const AppliedExtended = ({ isChecked, setIsChecked }) => {
+export const AppliedExtended = ({ isChecked, setIsChecked, selectedJob }) => {
   const handleBoxChecked = (e) => {
     setIsChecked(e.target.checked);
   };
+
+  // Calculate follow-up dates based on job's creation date
+  const followUpDates = selectedJob?.createdAt
+    ? [
+        format(
+          new Date(selectedJob.createdAt).setDate(
+            new Date(selectedJob.createdAt).getDate() + 7
+          ),
+          "MM/dd/yyyy"
+        ),
+        format(
+          new Date(selectedJob.createdAt).setDate(
+            new Date(selectedJob.createdAt).getDate() + 14
+          ),
+          "MM/dd/yyyy"
+        ),
+        format(
+          new Date(selectedJob.createdAt).setDate(
+            new Date(selectedJob.createdAt).getDate() + 21
+          ),
+          "MM/dd/yyyy"
+        ),
+      ]
+    : [];
 
   return (
     <div
@@ -546,9 +585,7 @@ export const AppliedExtended = ({ isChecked, setIsChecked }) => {
                   "--wrap": "wrap",
                 }}
               >
-                <label className="ant-checkbox-wrapper">
-                  <Checkbox onChange={handleBoxChecked} checked={isChecked} />
-                </label>
+                <Checkbox onChange={handleBoxChecked} checked={isChecked} />
                 Follow up on Job Applications
               </div>
             </button>
@@ -586,8 +623,7 @@ export const AppliedExtended = ({ isChecked, setIsChecked }) => {
             </li>
             <li className="bulleted">
               <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Archive job on job tracker if you haven't heard back after 3
-                weeks
+                Archive job if you haven't heard back after 3 weeks
               </button>
             </li>
           </ul>

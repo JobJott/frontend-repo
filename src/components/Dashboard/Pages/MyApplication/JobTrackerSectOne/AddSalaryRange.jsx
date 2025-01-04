@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Typography,
@@ -13,11 +13,16 @@ import {
 import { PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 import "./AddSalaryRange.css";
-import axios from "axios";
+import {
+  addSalaryRangeToAPI,
+  updateSalaryRangeInAPI,
+} from "@/utils/api/jobService";
 
 const { Option } = Select;
 
 const AddSalaryRange = ({
+  selectedJob,
+  setSelectedJob,
   selectedJobId,
   loadingSalary,
   setLoadingSalary,
@@ -27,87 +32,25 @@ const AddSalaryRange = ({
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
-  const [salaryRanges, setSalaryRanges] = useState([]); // To hold all fetched salary ranges
-  const [salaryRange, setSalaryRange] = useState(null); // To hold the selected salary range
-  const isFetchingRef = useRef(false);
   const [form] = Form.useForm(); // Ant Design form instance
 
-  // Fetch all salary ranges on mount
-  useEffect(() => {
-    fetchAllSalaryRanges();
-  }, []);
+  const salaryRange = selectedJob?.salaryRange;
 
-  // Update salary range when selectedJobId changes
-  useEffect(() => {
-    if (selectedJobId) {
-      const selected = salaryRanges.find(
-        (range) => range.jobId === selectedJobId
-      );
-      setSalaryRange(selected || null);
-    }
-  }, [selectedJobId, salaryRanges]);
-
-  // Fetch all salary ranges
-  const fetchAllSalaryRanges = async () => {
+  const handleSave = async () => {
     try {
-      if (isFetchingRef.current) return; // Prevent multiple fetches
-      isFetchingRef.current = true;
+      const values = await form.validateFields();
       setLoadingSalary(true);
-
-      const response = await axios.get(
-        "http://localhost:8080/api/jobs/salary-ranges",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
-          },
-        }
-      );
-
-      setSalaryRanges(response.data);
-    } catch (error) {
-      console.error("Failed to fetch salary ranges:", error);
-    } finally {
-      isFetchingRef.current = false; // Mark fetching as false
-      setLoadingSalary(false);
-    }
-  };
-
-  const handleSave = async (values) => {
-    try {
-      setLoadingSalary(true);
-      const isUpdate = !!salaryRange;
-      const url = isUpdate
-        ? `http://localhost:8080/api/jobs/salary-range/${selectedJobId}`
-        : `http://localhost:8080/api/jobs/salary-range/add`;
-
-      const method = isUpdate ? "put" : "post";
-      const response = await axios[method](
-        url,
-        {
-          jobId: selectedJobId,
-          ...values,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
-          },
-        }
-      );
-
-      message.success(
-        `Salary range ${isUpdate ? "updated" : "added"} successfully!`
-      );
-
-      // Update salaryRanges state
-      const updatedRange = response.data.savedSalaryRange || response.data;
-      setSalaryRanges((prevRanges) =>
-        isUpdate
-          ? prevRanges.map((range) =>
-              range.jobId === selectedJobId ? updatedRange : range
-            )
-          : [...prevRanges, updatedRange]
-      );
-      setSalaryRange(updatedRange);
+      if (salaryRange) {
+        await updateSalaryRangeInAPI(selectedJob._id, values);
+        message.success("Salary range updated successfully!");
+        setSelectedJob({
+          ...selectedJob,
+          salaryRange: { ...salaryRange, ...values },
+        });
+      } else {
+        await addSalaryRangeToAPI(selectedJob._id, values);
+        message.success("Salary range added successfully!");
+      }
     } catch (error) {
       console.error("Failed to save salary range:", error);
       message.error("Failed to save salary range.");
@@ -118,53 +61,52 @@ const AddSalaryRange = ({
     }
   };
 
+  const fetchCurrencies = async () => {
+    setLoadingCurrencies(true);
+    try {
+      const response = await fetch(
+        "https://restcountries.com/v3.1/all?fields=currencies"
+      );
+      const data = await response.json();
+
+      const currencyMap = [];
+      const uniqueCurrencies = new Set();
+
+      data.forEach((country) => {
+        if (country.currencies) {
+          Object.keys(country.currencies).forEach((currencyCode) => {
+            const currencySymbol = country.currencies[currencyCode]?.symbol;
+            const currencyName = country.currencies[currencyCode]?.name;
+
+            // Add currency only if it hasn't been added before
+            if (
+              currencyName &&
+              currencySymbol &&
+              !uniqueCurrencies.has(currencyName)
+            ) {
+              uniqueCurrencies.add(currencyName);
+              currencyMap.push({
+                name: currencyName,
+                symbol: currencySymbol,
+                code: currencyCode,
+              });
+            }
+          });
+        }
+      });
+
+      const sortedCurrencies = currencyMap.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setCurrencies(sortedCurrencies);
+    } catch (error) {
+      console.error("Error fetching currencies:", error);
+    } finally {
+      setLoadingCurrencies(false);
+    }
+  };
+
   useEffect(() => {
-    // Fetch currencies from REST API
-    const fetchCurrencies = async () => {
-      setLoadingCurrencies(true);
-      try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=currencies"
-        );
-        const data = await response.json();
-
-        const currencyMap = [];
-        const uniqueCurrencies = new Set();
-
-        data.forEach((country) => {
-          if (country.currencies) {
-            Object.keys(country.currencies).forEach((currencyCode) => {
-              const currencySymbol = country.currencies[currencyCode]?.symbol;
-              const currencyName = country.currencies[currencyCode]?.name;
-
-              // Add currency only if it hasn't been added before
-              if (
-                currencyName &&
-                currencySymbol &&
-                !uniqueCurrencies.has(currencyName)
-              ) {
-                uniqueCurrencies.add(currencyName);
-                currencyMap.push({
-                  name: currencyName,
-                  symbol: currencySymbol,
-                  code: currencyCode,
-                });
-              }
-            });
-          }
-        });
-
-        const sortedCurrencies = currencyMap.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-        setCurrencies(sortedCurrencies);
-      } catch (error) {
-        console.error("Error fetching currencies:", error);
-      } finally {
-        setLoadingCurrencies(false);
-      }
-    };
-
     fetchCurrencies();
   }, []);
 
@@ -181,7 +123,7 @@ const AddSalaryRange = ({
     if (isAddModalVisible || isEditModalVisible) {
       initializeForm();
     }
-  }, [salaryRange, form, isAddModalVisible, isEditModalVisible]);
+  }, [salaryRange, isAddModalVisible, isEditModalVisible]);
 
   const showAddModal = () => {
     setIsAddModalVisible(true);
@@ -238,7 +180,7 @@ const AddSalaryRange = ({
         style={{ cursor: "pointer" }}
         onClick={salaryRange ? showEditModal : showAddModal}
       >
-        {loadingSalary || !salaryRange ? (
+        {loadingSalary ? (
           <div className="linear-loader">
             <div className="linear-loader-bar" />
           </div>
@@ -311,7 +253,13 @@ const AddSalaryRange = ({
             <Form.Item
               label="Min. Salary"
               name="minSalary"
-              rules={[{ required: true, message: "Please input min salary!" }]}
+              rules={[
+                {
+                  type: "number",
+                  min: 0,
+                  message: "Min salary must be a positive number!",
+                },
+              ]}
             >
               <InputNumber
                 className="compensation-input text-[#111313] font-medium"
@@ -325,7 +273,13 @@ const AddSalaryRange = ({
             <Form.Item
               label="Max. Salary"
               name="maxSalary"
-              rules={[{ required: true, message: "Please input max salary!" }]}
+              rules={[
+                {
+                  type: "number",
+                  min: 0,
+                  message: "Max salary must be a positive number!",
+                },
+              ]}
             >
               <InputNumber
                 className="compensation-input text-[#111313] font-medium"

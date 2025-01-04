@@ -3,6 +3,7 @@ import { Modal, message } from "antd";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { addJobToAPI } from "../../../../../utils/api/jobService";
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
@@ -74,8 +75,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AntJobModal
- = ({ modalOpen, setModalOpen, setJobs }) => {
+const AntJobModal = ({ modalOpen, setModalOpen, setJobs }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",
@@ -126,34 +126,16 @@ const AntJobModal
       const trimmedData = Object.fromEntries(
         Object.entries(formData).map(([key, value]) => [key, value.trim()])
       );
+
       try {
-        const token = localStorage.getItem("authtoken");
-        const response = await axios.post(
-          "http://localhost:8080/api/jobs/add",
-          trimmedData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const newJob = await addJobToAPI(trimmedData);
+        setJobs((prevJobs) => [newJob, ...prevJobs]);
         message.success("Job added successfully!");
-
-        // // Call the parent callback to update job details
-        // if (onFormSubmit) {
-        //   onFormSubmit(response.data);
-        // }
-        setJobs((prevJobs) => [response.data, ...prevJobs]);
-
         setModalOpen(false);
         navigate("/dashboard/my-applications/job-tracker-section-one");
       } catch (error) {
         console.log("Error creating job:", error);
-        message.error(
-          error.response?.data?.message ||
-            "Something went wrong. Please try again."
-        );
+        message.error("Failed to add job. Please try again.");
       } finally {
         setIsSubmitting(false);
       }

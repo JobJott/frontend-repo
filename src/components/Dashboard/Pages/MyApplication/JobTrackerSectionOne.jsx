@@ -25,6 +25,7 @@ import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
 import { useOutletContext } from "react-router-dom";
 import axios from "axios";
+import { updateJobStatusInAPI } from "../../../../utils/api/jobService";
 
 const AddSalaryRange = lazy(() => import("./JobTrackerSectOne/AddSalaryRange"));
 
@@ -36,14 +37,14 @@ const columnData = [
 ];
 
 const JobTrackerSectionOne = () => {
-  // Context and State
+  // Extracts the current job listings, a function to update them, loading state, and an update handler from the context provided by the parent component.
   const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null); // State to track the currently selected job.
   const selectedJobFromList = useMemo(
     () => jobs?.find((job) => job._id === selectedJob?._id),
     [jobs, selectedJob]
-  );
-  const [loadingSalary, setLoadingSalary] = useState(false);
+  ); // Memoized value to find the currently selected job from the job list based on the selected job's ID.
+  const [loadingSalary, setLoadingSalary] = useState(false); // State to track whether the salary data is being loaded.
   const [localLoadingJobs, setLocalLoadingJobs] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -88,7 +89,8 @@ const JobTrackerSectionOne = () => {
     ),
   };
 
-  // Effect: Select Initial Job
+  // Effect hook to initialize the selected job from localStorage or the first job in the list when the jobs data changes.
+
   useEffect(() => {
     if (jobs && jobs.length > 0) {
       const savedJobId = localStorage.getItem("selectedJobId");
@@ -193,28 +195,11 @@ const JobTrackerSectionOne = () => {
     setSelectedStatus(newStatus);
     setLoading(true);
 
-    // Retrieve the token from localStorage
-    const token = localStorage.getItem("authtoken");
-
-    // Prepare the headers with the authorization token
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
-
     try {
       // Update status in backend
-      const response = await axios.patch(
-        `http://localhost:8080/api/jobs/${selectedJob._id}/status`,
-        {
-          status: newStatus,
-        },
-        config
-      );
-
-      if (response.status === 200) {
+      const updatedJob = await updateJobStatusInAPI(selectedJob._id, newStatus);    
+      
+      if (updatedJob) {
         // Update local job list
         const updatedJobs = jobs.map((job) =>
           job._id === selectedJob._id ? { ...job, status: newStatus } : job
@@ -310,6 +295,8 @@ const JobTrackerSectionOne = () => {
             selectedItem={selectedItem}
             handleBoxCheckedOne={handleBoxCheckedOne}
             handleItemSelectedOne={handleItemSelectedOne}
+            selectedJob={selectedJob}
+            handleStatusChange={handleStatusChange}
           />
         );
       case "5689f93d-a084-489c-9a6a-7d74b155b49a":
@@ -593,7 +580,7 @@ const JobTrackerSectionOne = () => {
                 <div className="drawer-content">
                   <div className="job-listing-drawer-item job-listing-fields">
                     <div className="job-listing-fields-row">
-                      {localLoadingJobs || (loadingJobs && loadingSalary) ? (
+                      {localLoadingJobs || loadingJobs || loadingSalary ? (
                         <Skeleton
                           active
                           paragraph={{ rows: 4 }}
@@ -610,6 +597,8 @@ const JobTrackerSectionOne = () => {
                               {/* Add Salary Range Section */}
                               {selectedJob && (
                                 <AddSalaryRange
+                                  selectedJob={selectedJob}
+                                  setSelectedJob={setSelectedJob}
                                   selectedJobId={selectedJobFromList?._id}
                                   loadingSalary={loadingSalary}
                                   setLoadingSalary={setLoadingSalary}
