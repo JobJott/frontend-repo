@@ -82,11 +82,11 @@ export const fetchJobByIdFromAPI = async (jobId) => {
 };
 
 // Update job status
-export const updateJobStatusInAPI = async (jobId, status) => {
+export const updateJobStatusInAPI = async (jobId, newStatus) => {
   const token = localStorage.getItem("authtoken");
   const response = await axios.patch(
     `${API_URL}/${jobId}/status`,
-    { status },
+    { status: newStatus },
     {
       headers: { Authorization: `Bearer ${token}` },
     }

@@ -52,10 +52,7 @@ const JobTrackerSectionOne = () => {
   const [isAccepted, setIsAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("job-info");
   const [isChecked, setIsChecked] = useState(false);
-  const INITIAL_STATUS =
-    localStorage.getItem("selectedStatus") ||
-    "f89e69f7-f859-4863-b63e-36c247bac3d5";
-  const [selectedStatus, setSelectedStatus] = useState(INITIAL_STATUS);
+  const [selectedStatus, setSelectedStatus] = useState("Bookmarked");
   const [loading, setLoading] = useState(false);
 
   // Checked Items
@@ -90,22 +87,25 @@ const JobTrackerSectionOne = () => {
   };
 
   // Effect hook to initialize the selected job from localStorage or the first job in the list when the jobs data changes.
-
   useEffect(() => {
     if (jobs && jobs.length > 0) {
       const savedJobId = localStorage.getItem("selectedJobId");
+      const savedStatus = localStorage.getItem("selectedStatus");
       if (savedJobId) {
         // If a job ID is stored in localStorage, find that job in the list
         const job = jobs.find((job) => job._id === savedJobId);
         if (job) {
           setSelectedJob(job);
+          setSelectedStatus(savedStatus || job.status);
         } else {
           // Fallback to the first job if no match is found
           setSelectedJob(jobs[0]);
+          setSelectedStatus(jobs[0].status);
         }
       } else {
         // If no saved job ID, set the first job as selected
         setSelectedJob(jobs[0]);
+        setSelectedStatus(jobs[0].status);
       }
     }
   }, [jobs]);
@@ -167,15 +167,12 @@ const JobTrackerSectionOne = () => {
     setLocalLoadingJobs(true); // Start local loading state
     setSelectedJob(null);
     localStorage.setItem("selectedJobId", job._id);
-    localStorage.setItem(
-      "selectedStatus",
-      job.status || "f89e69f7-f859-4863-b63e-36c247bac3d5"
-    ); // Save status
+    localStorage.setItem("selectedStatus", job.status || "Bookmarked");
 
     // Simulate async job detail fetching
     setTimeout(() => {
       setSelectedJob(job); // Set the new selected job
-      setSelectedStatus(job.status || "f89e69f7-f859-4863-b63e-36c247bac3d5"); // Default if no status
+      setSelectedStatus(job.status || "Bookmarked");
       setLocalLoadingJobs(false); // End local loading state
     }, 500); // Adjust timeout duration as needed
   };
@@ -188,17 +185,14 @@ const JobTrackerSectionOne = () => {
 
   const handleStatusChange = async (e) => {
     const newStatus = e.target.value;
-    setIsAccepted(
-      newStatus ===
-        statusOptions.find((option) => option.label === "Accepted").value
-    );
+    setIsAccepted(newStatus === "Accepted");
     setSelectedStatus(newStatus);
     setLoading(true);
 
     try {
       // Update status in backend
-      const updatedJob = await updateJobStatusInAPI(selectedJob._id, newStatus);    
-      
+      const updatedJob = await updateJobStatusInAPI(selectedJob._id, newStatus);
+
       if (updatedJob) {
         // Update local job list
         const updatedJobs = jobs.map((job) =>
@@ -279,7 +273,7 @@ const JobTrackerSectionOne = () => {
   // Render Extended Section
   const renderExtendedSection = () => {
     switch (selectedStatus) {
-      case "f89e69f7-f859-4863-b63e-36c247bac3d5":
+      case "Bookmarked":
         return (
           <BookmarkExtended
             isChecked={isChecked}
@@ -287,7 +281,7 @@ const JobTrackerSectionOne = () => {
             setIsExpanded={setIsExpanded}
           />
         );
-      case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
+      case "Applying":
         return (
           <ApplyingExtended
             checkedItems={checkedItems}
@@ -299,11 +293,12 @@ const JobTrackerSectionOne = () => {
             handleStatusChange={handleStatusChange}
           />
         );
-      case "5689f93d-a084-489c-9a6a-7d74b155b49a":
+      case "Applied":
         return (
           <AppliedExtended isChecked={isChecked} setIsChecked={setIsChecked} />
         );
-      case "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2":
+
+      case "Interviewing":
         return (
           <InterviewingExtended
             checkedItems={checkedItems}
@@ -313,7 +308,7 @@ const JobTrackerSectionOne = () => {
             handleItemSelectedTwo={handleItemSelectedTwo}
           />
         );
-      case "079cebfd-0e2e-458a-8782-58ea19a5af6d":
+      case "Negotiating":
         return (
           <NegotiatingExtended
             checkedItems={checkedItems}
@@ -332,15 +327,15 @@ const JobTrackerSectionOne = () => {
   // Progress Text
   const getProgressText = () => {
     switch (selectedStatus) {
-      case "f89e69f7-f859-4863-b63e-36c247bac3d5":
+      case "Bookmarked":
         return `Bookmarked Steps: ${isChecked ? "100%" : "0%"} Complete`;
-      case "38b09bef-2c24-48b0-984a-fa0e5b0c060a":
+      case "Applying":
         return `Applying Steps: ${progressPercentage.setOne}% Complete`;
-      case "5689f93d-a084-489c-9a6a-7d74b155b49a":
+      case "Applied":
         return `Applied Steps: ${isChecked ? "100%" : "0%"} Complete`;
-      case "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2":
+      case "Interviewing":
         return `Interviewing Steps: ${progressPercentage.setTwo}% Complete`;
-      case "079cebfd-0e2e-458a-8782-58ea19a5af6d":
+      case "Negotiating":
         return `Negotiating Steps: ${progressPercentage.setThree}% Complete`;
       default:
         return "Other Steps";
@@ -349,12 +344,12 @@ const JobTrackerSectionOne = () => {
 
   // Status Options
   const statusOptions = [
-    { label: "Bookmarked", value: "f89e69f7-f859-4863-b63e-36c247bac3d5" },
-    { label: "Applying", value: "38b09bef-2c24-48b0-984a-fa0e5b0c060a" },
-    { label: "Applied", value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
-    { label: "Interviewing", value: "1c8934df-8fb9-4cdc-955c-e998c8d7a1b2" },
-    { label: "Negotiating", value: "079cebfd-0e2e-458a-8782-58ea19a5af6d" },
-    { label: "Accepted", value: "21b7fdb7-4260-430b-a648-3cab1eb83288" },
+    { label: "Bookmarked", value: "Bookmarked" },
+    { label: "Applying", value: "Applying" },
+    { label: "Applied", value: "Applied" },
+    { label: "Interviewing", value: "Interviewing" },
+    { label: "Negotiating", value: "Negotiating" },
+    { label: "Accepted", value: "Accepted" },
   ];
 
   return (
@@ -704,8 +699,7 @@ const JobTrackerSectionOne = () => {
                               }
                             >
                               {status.label}{" "}
-                              {status.value !==
-                                "f89e69f7-f859-4863-b63e-36c247bac3d5" && (
+                              {status.value !== "Bookmarked" && (
                                 <CheckOutlined style={{ marginLeft: 2 }} />
                               )}
                             </Radio.Button>

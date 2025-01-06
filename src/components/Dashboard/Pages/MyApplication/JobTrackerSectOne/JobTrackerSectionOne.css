@@ -28,7 +28,7 @@
   .job-tracker-table-container.shared-table-container
   .table-column-wrapper {
   display: none;
-  width: 280px;
+  width: 270px;
   margin-left: 1rem;
 }
 
@@ -548,17 +548,13 @@ strong {
 .ant-btn.ant-btn-link.gold-text {
   color: #be9369;
 }
-
 .read-only-row-btn-container .anticon {
   color: #be9369;
 }
-
 .ant-btn-variant-link.gold-text:not(:disabled):not(.ant-btn-disabled):hover {
   color: #be9369;
-
   background: transparent;
 }
-
 .read-only-row .read-only-row-btn-container .edit-btn,
 .read-only-row .read-only-row-btn-container .add-btn,
 .read-only-row .read-only-row-btn-container .delete-btn {

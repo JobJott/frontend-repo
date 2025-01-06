@@ -123,16 +123,21 @@ const AntJobModal = ({ modalOpen, setModalOpen, setJobs }) => {
 
     if (validateForm()) {
       setIsSubmitting(true);
-      const trimmedData = Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [key, value.trim()])
-      );
+      const trimmedData = {
+        ...Object.fromEntries(
+          Object.entries(formData).map(([key, value]) => [key, value.trim()])
+        ),
+        status: "Bookmarked",
+      };
 
       try {
         const newJob = await addJobToAPI(trimmedData);
         setJobs((prevJobs) => [newJob, ...prevJobs]);
         message.success("Job added successfully!");
         setModalOpen(false);
-        navigate("/dashboard/my-applications/job-tracker-section-one");
+        localStorage.setItem("selectedJobId", newJob._id);
+        localStorage.setItem("selectedStatus", "Bookmarked");
+        navigate("/dashboard/my-applications/job-trackerv1");
       } catch (error) {
         console.log("Error creating job:", error);
         message.error("Failed to add job. Please try again.");

@@ -37,7 +37,7 @@ const MainBoard = ({ isSideDashOpen }) => {
         <Route path="my-applications/*" element={<MyApplication />}>
           <Route index element={<JobTrackerSection0 />} />
           <Route
-            path="job-tracker-section-one"
+            path="job-trackerv1"
             element={<JobTrackerSectionOne />}
           />
         </Route>

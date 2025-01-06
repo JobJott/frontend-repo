@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MainBoard from "./MainBoard";
 import SideDash from "./SideDash";
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
 import { startActivityTracker, stopActivityTracker } from "./ActivityTracker";
 import "./styles/Dashboard.css";
 
