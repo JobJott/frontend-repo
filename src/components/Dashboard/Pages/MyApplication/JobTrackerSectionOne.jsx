@@ -96,7 +96,7 @@ const JobTrackerSectionOne = () => {
         const job = jobs.find((job) => job._id === savedJobId);
         if (job) {
           setSelectedJob(job);
-          setSelectedStatus(savedStatus || job.status);
+          // setSelectedStatus(savedStatus || job.status);
         } else {
           // Fallback to the first job if no match is found
           setSelectedJob(jobs[0]);
@@ -184,6 +184,7 @@ const JobTrackerSectionOne = () => {
   const handleDeleteJobClick = () => setDeleteModalOpen(true);
 
   const handleStatusChange = async (e) => {
+    // console.log(e.target.value);
     const newStatus = e.target.value;
     setIsAccepted(newStatus === "Accepted");
     setSelectedStatus(newStatus);
@@ -198,6 +199,8 @@ const JobTrackerSectionOne = () => {
         const updatedJobs = jobs.map((job) =>
           job._id === selectedJob._id ? { ...job, status: newStatus } : job
         );
+        localStorage.setItem("selectedStatus", newStatus);
+        // console.log(updatedJobs);
         setJobs(updatedJobs);
       }
     } catch (error) {
