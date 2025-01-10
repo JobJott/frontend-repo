@@ -230,7 +230,7 @@ const SupportCenter = () => {
     <PageContainer>
     
       <Header>
-        <h1>Welcome to Jobdott Support Center!</h1>
+        <h1>Welcome to JobJott Support Center!</h1>
       </Header>
 
       <SearchBarContainer>
@@ -292,7 +292,7 @@ const SupportCenter = () => {
       </Section>
 
       <Footer>
-        Jobdott &copy; 2024
+        JobJott &copy; 2024
       </Footer>
     </PageContainer>
   );

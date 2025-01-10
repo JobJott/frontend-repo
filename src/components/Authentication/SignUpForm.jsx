@@ -16,7 +16,7 @@ const SignUpForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { firstName, lastName, email, password } = formData;
@@ -37,6 +37,14 @@ const SignUpForm = () => {
     }
 
     setError("");
+    try{
+      let newUser = await signupUser({firstName,lastName,email,password})
+      console.log(newUser)
+    }
+    catch(err){
+      console.log(err)
+      setError("There is an error with your name")
+    }
     console.log("Registration successful with:", formData); // For testing
   };
 

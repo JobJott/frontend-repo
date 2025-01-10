@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import "./styles/Mainboard.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 import MyApplication from "./Pages/MyApplication";
+import Overview from "./Pages/Overview/Overview"
 
-import Overview from "./Pages/Overview/Overview";
+import Contact from "./Pages/Contact"
+import Account from "./Pages/Account/Account"
 
-import Contact from "./Pages/Contact";
-import Account from "./Pages/Account/Account";
 
 const MainBoard = ({ isSideDashOpen }) => {
   const location = useLocation();
