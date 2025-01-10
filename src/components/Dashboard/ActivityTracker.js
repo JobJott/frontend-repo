@@ -1,59 +1,59 @@
-import { logoutUser } from "../../utils/tokenManager";
-import { getValidToken } from "../../utils/tokenHelper";
+// import { logoutUser } from "../../utils/tokenManager";
+// import { getValidToken } from "../../utils/tokenHelper";
 
-let activityTimeout;
-let lastInteractionTime = Date.now();
+// let activityTimeout;
+// let lastInteractionTime = Date.now();
 
-const resetActivityTimeout = async (timeoutDuration = 60 * 60 * 1000) => {
-  const now = Date.now();
+// const resetActivityTimeout = async (timeoutDuration = 60 * 60 * 1000) => {
+//   const now = Date.now();
 
-  // Update last interaction time
-  lastInteractionTime = now;
+//   // Update last interaction time
+//   lastInteractionTime = now;
 
-  // Clear any existing timeout
-  if (activityTimeout) clearTimeout(activityTimeout);
-
-  const token = await getValidToken(); // Add token check here
-  if (!token) return; // If no valid token, stop resetting the timeout
-
-  // Set logout timeout to 1 hour
-  activityTimeout = setTimeout(() => {
-    const timeElapsed = Date.now() - lastInteractionTime;
-
-    if (timeElapsed >= timeoutDuration) {
-      logoutUser();
-    }
-  }, timeoutDuration); // 1 hour
-};
-
-const startActivityTracker = () => {
-  ["click", "mousemove", "keydown", "scroll"].forEach((event) => {
-    window.addEventListener(event, resetActivityTimeout);
-  });
-
-  resetActivityTimeout(); // Initialize timeout
-};
-
-const stopActivityTracker = () => {
-  ["click", "mousemove", "keydown", "scroll"].forEach((event) => {
-    window.removeEventListener(event, resetActivityTimeout);
-  });
-
-  if (activityTimeout) clearTimeout(activityTimeout); // Clear timeout on unmount
-};
-
-export { startActivityTracker, stopActivityTracker };
-
-// let warningTimeout;
-// const resetActivityTimeout = () => {
+//   // Clear any existing timeout
 //   if (activityTimeout) clearTimeout(activityTimeout);
-//   if (warningTimeout) clearTimeout(warningTimeout);
 
-//   warningTimeout = setTimeout(() => {
-//     alert('You will be logged out due to inactivity.');
-//   }, 59 * 60 * 1000); // Show warning 1 minute before logout
+//   const token = await getValidToken(); // Add token check here
+//   if (!token) return; // If no valid token, stop resetting the timeout
 
+//   // Set logout timeout to 1 hour
 //   activityTimeout = setTimeout(() => {
-//     logoutUser();
-//   }, 60 * 60 * 1000); // Log out after 1 hour
-// }; not needed for now
+//     const timeElapsed = Date.now() - lastInteractionTime;
+
+//     if (timeElapsed >= timeoutDuration) {
+//       logoutUser();
+//     }
+//   }, timeoutDuration); // 1 hour
+// };
+
+// const startActivityTracker = () => {
+//   ["click", "mousemove", "keydown", "scroll"].forEach((event) => {
+//     window.addEventListener(event, resetActivityTimeout);
+//   });
+
+//   resetActivityTimeout(); // Initialize timeout
+// };
+
+// const stopActivityTracker = () => {
+//   ["click", "mousemove", "keydown", "scroll"].forEach((event) => {
+//     window.removeEventListener(event, resetActivityTimeout);
+//   });
+
+//   if (activityTimeout) clearTimeout(activityTimeout); // Clear timeout on unmount
+// };
+
+// export { startActivityTracker, stopActivityTracker };
+
+// // let warningTimeout;
+// // const resetActivityTimeout = () => {
+// //   if (activityTimeout) clearTimeout(activityTimeout);
+// //   if (warningTimeout) clearTimeout(warningTimeout);
+
+// //   warningTimeout = setTimeout(() => {
+// //     alert('You will be logged out due to inactivity.');
+// //   }, 59 * 60 * 1000); // Show warning 1 minute before logout
+
+// //   activityTimeout = setTimeout(() => {
+// //     logoutUser();
+// //   }, 60 * 60 * 1000); // Log out after 1 hour
+// // }; not needed for now

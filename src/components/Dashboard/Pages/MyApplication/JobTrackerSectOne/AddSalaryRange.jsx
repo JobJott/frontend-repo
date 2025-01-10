@@ -23,7 +23,6 @@ const { Option } = Select;
 const AddSalaryRange = ({
   selectedJob,
   setSelectedJob,
-  selectedJobId,
   loadingSalary,
   setLoadingSalary,
   fallbackSymbol = "¤",
@@ -50,6 +49,11 @@ const AddSalaryRange = ({
       } else {
         await addSalaryRangeToAPI(selectedJob._id, values);
         message.success("Salary range added successfully!");
+
+        setSelectedJob({
+          ...selectedJob,
+          salaryRange: values,
+        });
       }
     } catch (error) {
       console.error("Failed to save salary range:", error);

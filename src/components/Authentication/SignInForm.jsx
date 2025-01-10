@@ -43,12 +43,12 @@ const SignInForm = () => {
       console.log("Response:", response);
 
       if (response.status === 200) {
-        const { token, refreshToken, user } = response.data;
+        const { token, user } = response.data;
         console.log("Token received:", token);
 
-        if (token && refreshToken && user?.firstName) {
+        if (token && user?.firstName) {
           localStorage.setItem("authtoken", token);
-          localStorage.setItem("refreshToken", refreshToken);
+          // localStorage.setItem("refreshToken", refreshToken);
 
           notification.success({
             message: "Welcome Back!",
@@ -61,10 +61,6 @@ const SignInForm = () => {
           console.log(
             "Token stored after sign-in:",
             localStorage.getItem("authtoken")
-          );
-          console.log(
-            "Refresh Token stored after sign-in:",
-            localStorage.getItem("refreshToken")
           );
           navigate("/dashboard"); // Redirect to the dashboard
         } else {
