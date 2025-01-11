@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo, lazy, Suspense } from "react";
-import { Button, Space, Typography, Radio, Skeleton, Tooltip } from "antd";
+import {
+  Button,
+  Space,
+  Typography,
+  Radio,
+  Skeleton,
+  Tooltip,
+  Dropdown,
+} from "antd";
 import {
   LeftCircleOutlined,
   EditOutlined,
@@ -24,8 +32,10 @@ import JobListingDrawer, {
 import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
 import { useOutletContext } from "react-router-dom";
-import axios from "axios";
-import { updateJobStatusInAPI } from "../../../../utils/api/jobService";
+import {
+  updateJobStatusInAPI,
+  updateProgressInAPI,
+} from "../../../../utils/api/jobService";
 
 const AddSalaryRange = lazy(() => import("./JobTrackerSectOne/AddSalaryRange"));
 
@@ -54,6 +64,7 @@ const JobTrackerSectionOne = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Bookmarked");
   const [loading, setLoading] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   // Checked Items
   const [checkedItems, setCheckedItems] = useState({
@@ -96,7 +107,7 @@ const JobTrackerSectionOne = () => {
         const job = jobs.find((job) => job._id === savedJobId);
         if (job) {
           setSelectedJob(job);
-          // setSelectedStatus(savedStatus || job.status);
+          setSelectedStatus(savedStatus || job.status);
         } else {
           // Fallback to the first job if no match is found
           setSelectedJob(jobs[0]);
@@ -180,8 +191,6 @@ const JobTrackerSectionOne = () => {
   const handleToggle = () => {
     setIsExpanded((prev) => !prev);
   };
-
-  const handleDeleteJobClick = () => setDeleteModalOpen(true);
 
   const handleStatusChange = async (e) => {
     // console.log(e.target.value);
@@ -353,6 +362,34 @@ const JobTrackerSectionOne = () => {
     { label: "Interviewing", value: "Interviewing" },
     { label: "Negotiating", value: "Negotiating" },
     { label: "Accepted", value: "Accepted" },
+  ];
+
+  const handleMenuClick = (key) => {
+    console.log(`Clicked on: ${key}`);
+    if (key === "5") {
+      // Add custom logic for "Delete Job"
+      setDeleteModalOpen(true);
+
+      console.log("Job Deleted");
+    }
+    setDropdownVisible(false); // Close dropdown
+  };
+
+  const menuItems = [
+    {
+      key: "1",
+      label: "I Withdrew",
+      onClick: () => handleMenuClick("1"),
+    },
+    { key: "2", label: "Not Selected", onClick: () => handleMenuClick("2") },
+    { key: "3", label: "No Response 👻", onClick: () => handleMenuClick("3") },
+    { key: "4", label: "Archived", onClick: () => handleMenuClick("4") },
+    { key: "divider", type: "divider" },
+    {
+      key: "5",
+      label: <span className="delete-job-btn">Delete Job</span>,
+      onClick: () => handleMenuClick("5"),
+    },
   ];
 
   return (
@@ -631,16 +668,23 @@ const JobTrackerSectionOne = () => {
                                   <div className="job-listing-link">
                                     <div className="post-saved font-medium">
                                       Saved{" "}
-                                      {getTimeDifference(selectedJob.createdAt)}{" "}
-                                      on{" "}
-                                      <a
-                                        className="link-text !font-medium"
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                      >
-                                        {getDomainFromUrl(selectedJob.URL) ||
-                                          "Job Listing"}
-                                      </a>
+                                      {getTimeDifference(selectedJob.createdAt)}
+                                      {selectedJob.URL && (
+                                        <>
+                                          {" "}
+                                          on{" "}
+                                          <a
+                                            className="link-text !font-medium"
+                                            href={selectedJob.URL}
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                          >
+                                            {getDomainFromUrl(
+                                              selectedJob.URL
+                                            ) || "Job Listing"}
+                                          </a>
+                                        </>
+                                      )}
                                     </div>
                                   </div>
 
@@ -707,16 +751,23 @@ const JobTrackerSectionOne = () => {
                               )}
                             </Radio.Button>
                           ))}
-
-                          <Button
-                            id="archiveDropdown"
-                            type="button"
-                            size="small"
-                            className="delete-job-btn"
-                            onClick={handleDeleteJobClick}
+                          <Dropdown
+                            menu={{ items: menuItems }}
+                            open={dropdownVisible}
+                            onOpenChange={(flag) => setDropdownVisible(flag)}
+                            trigger={["click"]}
+                            placement="bottomRight"
                           >
-                            Delete Job
-                          </Button>
+                            <Button
+                              id="archiveDropdown"
+                              type="default"
+                              size="small"
+                              className="status-progress-bar-archive-dropdown border !border-[#dcdcdc] !border-l-0 !rounded-r !rounded-l-none hover:!bg-[#f3f7f8] font-sans"
+                            >
+                              Close Job
+                            </Button>
+                          </Dropdown>
+
                           <DeleteJobModal
                             selectedJobId={selectedJobFromList?._id}
                             setJobs={setJobs}

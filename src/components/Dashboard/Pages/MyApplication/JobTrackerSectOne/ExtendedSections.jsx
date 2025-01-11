@@ -280,7 +280,6 @@ export const ApplicationModal = ({
   modalOpenApp,
   setModalOpenApp,
   handleStatusChange,
-  selectedJob,
 }) => {
   return (
     <StyledAppModal
@@ -307,7 +306,7 @@ export const ApplicationModal = ({
           className="ant-btn ant-btn-default ant-btn-dangerous"
           onClick={() => {
             handleStatusChange({
-              target: { value: "5689f93d-a084-489c-9a6a-7d74b155b49a" },
+              target: { value: "Applied" },
             });
             setModalOpenApp(false);
           }}

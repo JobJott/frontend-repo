@@ -1,3 +1,4 @@
+import { Progress } from "antd";
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/jobs";
@@ -92,4 +93,25 @@ export const updateJobStatusInAPI = async (jobId, newStatus) => {
     }
   );
   return response.data;
+};
+
+export const updateProgressInAPI = async (jobId, progressUpdate) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/${jobId}/progress`,
+      {
+        progress: progressUpdate,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating progress:", error);
+    throw error;
+  }
 };

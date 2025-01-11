@@ -209,3 +209,33 @@
   padding-top: 0.5rem;
   gap: 1rem;
 }
+
+.sidebar.closed .side-nav-item-label,
+.mobile-header .side-nav-item-label {
+  margin-left: 0.5rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.sidebar.closed .side-nav-item-label.selected,
+.mobile-header .side-nav-item-label.selected {
+  font-weight: 600;
+}
+
+.sidebar.closed .sidebar-container .side-nav-item-label {
+  position: absolute;
+  left: 4rem;
+  padding: 0.6875rem 1rem;
+  background: #111313;
+  border-radius: 1.125rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+.sidebar.closed
+  .sidebar-container
+  .side-nav-menu-item:hover
+  .side-nav-item-label {
+  visibility: visible;
+  opacity: 1;
+}
