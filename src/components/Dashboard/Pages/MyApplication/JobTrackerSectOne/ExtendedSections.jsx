@@ -136,13 +136,9 @@ export const DeleteJobModal = ({
 
 export const BookmarkExtended = ({
   isChecked,
-  setIsChecked,
+  handleCheckboxChange,
   setIsExpanded,
 }) => {
-  const handleBoxChecked = (e) => {
-    setIsChecked(e.target.checked);
-  };
-
   const handleSuggestionBoxClick = (e) => {
     e.stopPropagation(); // Prevent event bubbling
     setIsExpanded(true); // Keep the section expanded
@@ -179,7 +175,7 @@ export const BookmarkExtended = ({
                   "--wrap": "wrap",
                 }}
               >
-                <Checkbox onChange={handleBoxChecked} checked={isChecked} />
+                <Checkbox onChange={handleCheckboxChange} checked={isChecked} />
                 Review the Job Position details
               </div>
             </button>
@@ -328,8 +324,8 @@ export const ApplyingExtended = ({
   handleStatusChange,
 }) => {
   const [modalOpenApp, setModalOpenApp] = useState(false);
-  const companyName = selectedJob.companyName;
-  const companyURL = selectedJob.URL;
+  const companyName = selectedJob?.companyName;
+  const companyURL = selectedJob?.URL;
 
   const handleSuggestionBoxClick = (e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -524,11 +520,11 @@ export const ApplyingExtended = ({
   );
 };
 
-export const AppliedExtended = ({ isChecked, setIsChecked, selectedJob }) => {
-  const handleBoxChecked = (e) => {
-    setIsChecked(e.target.checked);
-  };
-
+export const AppliedExtended = ({
+  isChecked,
+  handleCheckboxChange,
+  selectedJob,
+}) => {
   // Calculate follow-up dates based on job's creation date
   const followUpDates = selectedJob?.createdAt
     ? [
@@ -584,7 +580,7 @@ export const AppliedExtended = ({ isChecked, setIsChecked, selectedJob }) => {
                   "--wrap": "wrap",
                 }}
               >
-                <Checkbox onChange={handleBoxChecked} checked={isChecked} />
+                <Checkbox onChange={handleCheckboxChange} checked={isChecked} />
                 Follow up on Job Applications
               </div>
             </button>

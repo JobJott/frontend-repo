@@ -61,13 +61,14 @@ const JobTrackerSectionOne = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccepted, setIsAccepted] = useState(false);
   const [activeTab, setActiveTab] = useState("job-info");
-  const [isChecked, setIsChecked] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("Bookmarked");
   const [loading, setLoading] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   // Checked Items
   const [checkedItems, setCheckedItems] = useState({
+    bookmarkedChecked: false,
+    appliedChecked: false,
     setOne: [],
     setTwo: [],
     setThree: [],
@@ -120,6 +121,12 @@ const JobTrackerSectionOne = () => {
       }
     }
   }, [jobs]);
+
+  useEffect(() => {
+    if (selectedJob) {
+      setCheckedItems(selectedJob.progress);
+    }
+  }, [selectedJob]);
 
   // Effect: Expand Section on Item Selection
   useEffect(() => {
@@ -174,9 +181,12 @@ const JobTrackerSectionOne = () => {
 
   // Handlers
   const handleJobSelect = (job) => {
+    if (!job || job._id === selectedJob?._id) return; // Avoid unnecessary updates
+
     console.log("Selected Job:", job);
     setLocalLoadingJobs(true); // Start local loading state
     setSelectedJob(null);
+
     localStorage.setItem("selectedJobId", job._id);
     localStorage.setItem("selectedStatus", job.status || "Bookmarked");
 
@@ -220,23 +230,77 @@ const JobTrackerSectionOne = () => {
   };
 
   // Centralized function to update checked items, Checkbox Handlers
-  const updateCheckedItems = (setKey, item, isChecked) => {
-    setCheckedItems((prev) => ({
-      ...prev,
-      [setKey]: isChecked
-        ? [...prev[setKey], item]
-        : prev[setKey].filter((checkedItem) => checkedItem !== item),
-    }));
+  // const updateCheckedItems = (setKey, item, isChecked) => {
+  //   setCheckedItems((prev) => ({
+  //     ...prev,
+  //     [setKey]: isChecked
+  //       ? [...prev[setKey], item]
+  //       : prev[setKey].filter((checkedItem) => checkedItem !== item),
+  //   }));
+  //   setIsExpanded(true);
+  // };
+
+  // const handleBoxChecked = (setKey) => (e, item) => {
+  //   updateCheckedItems(setKey, item, e.target.checked);
+  // };
+
+  const handleBoxChecked = (statusKey) => async (e) => {
+    const isChecked = e.target.checked;
+
+    const updatedProgress = {
+      ...checkedItems,
+      [statusKey]: isChecked,
+    };
     setIsExpanded(true);
+
+    try {
+      await updateProgressInAPI(selectedJob._id, updatedProgress);
+      setCheckedItems(updatedProgress);
+
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job._id === selectedJob._id
+            ? { ...job, progress: updatedProgress }
+            : job
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update progress:", error);
+    }
   };
 
-  const handleBoxChecked = (setKey) => (e, item) => {
-    updateCheckedItems(setKey, item, e.target.checked);
+  const handleBoxCheckedMulti = (setKey) => async (e, item) => {
+    const isChecked = e.target.checked;
+
+    const updatedSet = isChecked
+      ? [...checkedItems[setKey], item]
+      : checkedItems[setKey].filter((checkedItem) => checkedItem !== item);
+    setIsExpanded(true);
+
+    const updatedProgress = {
+      ...checkedItems,
+      [setKey]: updatedSet,
+    };
+
+    try {
+      await updateProgressInAPI(selectedJob._id, updatedProgress);
+      setCheckedItems(updatedProgress);
+
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job._id === selectedJob._id
+            ? { ...job, progress: updatedProgress }
+            : job
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update progress:", error);
+    }
   };
 
-  const handleBoxCheckedOne = handleBoxChecked("setOne");
-  const handleBoxCheckedTwo = handleBoxChecked("setTwo");
-  const handleBoxCheckedThree = handleBoxChecked("setThree");
+  const handleBoxCheckedOne = handleBoxCheckedMulti("setOne");
+  const handleBoxCheckedTwo = handleBoxCheckedMulti("setTwo");
+  const handleBoxCheckedThree = handleBoxCheckedMulti("setThree");
 
   // Item Selection Handlers
   const handleItemSelectedOne = (item, e) => {
@@ -288,8 +352,8 @@ const JobTrackerSectionOne = () => {
       case "Bookmarked":
         return (
           <BookmarkExtended
-            isChecked={isChecked}
-            setIsChecked={setIsChecked}
+            isChecked={checkedItems.bookmarkedChecked}
+            handleCheckboxChange={handleBoxChecked("bookmarkedChecked")}
             setIsExpanded={setIsExpanded}
           />
         );
@@ -307,7 +371,10 @@ const JobTrackerSectionOne = () => {
         );
       case "Applied":
         return (
-          <AppliedExtended isChecked={isChecked} setIsChecked={setIsChecked} />
+          <AppliedExtended
+            isChecked={checkedItems.appliedChecked}
+            handleCheckboxChange={handleBoxChecked("appliedChecked")}
+          />
         );
 
       case "Interviewing":
@@ -340,11 +407,15 @@ const JobTrackerSectionOne = () => {
   const getProgressText = () => {
     switch (selectedStatus) {
       case "Bookmarked":
-        return `Bookmarked Steps: ${isChecked ? "100%" : "0%"} Complete`;
+        return `Bookmarked Steps: ${
+          checkedItems.bookmarkedChecked ? "100%" : "0%"
+        } Complete`;
       case "Applying":
         return `Applying Steps: ${progressPercentage.setOne}% Complete`;
       case "Applied":
-        return `Applied Steps: ${isChecked ? "100%" : "0%"} Complete`;
+        return `Applied Steps: ${
+          checkedItems.appliedChecked ? "100%" : "0%"
+        } Complete`;
       case "Interviewing":
         return `Interviewing Steps: ${progressPercentage.setTwo}% Complete`;
       case "Negotiating":
