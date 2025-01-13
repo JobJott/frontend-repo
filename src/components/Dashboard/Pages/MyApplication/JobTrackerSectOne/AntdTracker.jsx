@@ -6,11 +6,12 @@ import {
   DownCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+import { updateJobDates } from "../../../../../utils/api/jobService";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
 
-const AntdTracker = ({ activeTab }) => {
+const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
   const onOk = (value) => {
     console.log("onOk: ", value);
   };
@@ -77,6 +78,27 @@ const AntdTracker = ({ activeTab }) => {
     setIsEditingNote(true);
   };
 
+  const handleDateChange = async (date, dateString, dateType) => {
+    if (!selectedJob) return;
+
+    // Prepare the dates object for the backend
+    const updatedDates = {
+      [dateType]: dateString || null, // If date is cleared, set it to null
+    };
+
+    try {
+      // Update job dates in the backend
+      const updatedJob = await updateJobDates(selectedJob._id, updatedDates);
+
+      // Update the local job state
+      if (updatedJob) {
+        handleJobUpdate(updatedJob);
+      }
+    } catch (error) {
+      console.error(`Failed to update ${dateType} date:`, error);
+    }
+  };
+
   return (
     <div className="ant-row ant-row-no-wrap scroll-parent">
       {activeTab === "job-info" && (
@@ -100,16 +122,27 @@ const AntdTracker = ({ activeTab }) => {
 
             {!isDatesCollapsed && (
               <div className="module-body">
-                <Row gutter={[16, 16]} className="job-tracker-dates">
-                  {["Posted", "Saved", "Deadline", "Applied", "Follow Up"].map(
+                <Row
+                  gutter={[16, 16]}
+                  className="job-tracker-dates"
+                  style={{ marginLeft: 0 }}
+                >
+                  {["Applied", "Saved", "Deadline", "Follow Up"].map(
                     (label, index) => (
-                      <Col className="w-full md:w-1/5" key={index}>
+                      <Col className="w-full md:w-1/4" key={index}>
                         <label htmlFor={label.toLowerCase()}>
                           <span className="label">{label}</span>
                           <DatePicker
                             id={label.toLowerCase()}
                             placeholder={`Add ${label.toLowerCase()} date`}
                             suffixIcon={<CalendarOutlined />}
+                            onChange={(date, dateString) =>
+                              handleDateChange(
+                                date,
+                                dateString,
+                                label.toLowerCase()
+                              )
+                            } 
                           />
                         </label>
                       </Col>

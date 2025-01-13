@@ -33,6 +33,7 @@ import AntdTracker from "./JobTrackerSectOne/AntdTracker";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
 import { useOutletContext } from "react-router-dom";
 import {
+  updateJobDates,
   updateJobStatusInAPI,
   updateProgressInAPI,
 } from "../../../../utils/api/jobService";
@@ -214,6 +215,12 @@ const JobTrackerSectionOne = () => {
       const updatedJob = await updateJobStatusInAPI(selectedJob._id, newStatus);
 
       if (updatedJob) {
+        // Automatically update the "Applied" date if status is "Applied"
+        if (newStatus === "Applied") {
+          const appliedDate = new Date().toISOString();
+          await updateJobDates(selectedJob._id, { applied: appliedDate });
+        }
+
         // Update local job list
         const updatedJobs = jobs.map((job) =>
           job._id === selectedJob._id ? { ...job, status: newStatus } : job
@@ -251,7 +258,10 @@ const JobTrackerSectionOne = () => {
       ...checkedItems,
       [statusKey]: isChecked,
     };
-    setIsExpanded(true);
+
+    if (isChecked) {
+      setIsExpanded(true);
+    }
 
     try {
       await updateProgressInAPI(selectedJob._id, updatedProgress);
@@ -937,7 +947,11 @@ const JobTrackerSectionOne = () => {
                     <JobListingDrawer setActiveTab={setActiveTab} />
                   </div>
 
-                  <AntdTracker activeTab={activeTab} />
+                  <AntdTracker
+                    activeTab={activeTab}
+                    selectedJob={selectedJob}
+                    handleJobUpdate={handleJobUpdate}
+                  />
                 </div>
               </div>
             </div>

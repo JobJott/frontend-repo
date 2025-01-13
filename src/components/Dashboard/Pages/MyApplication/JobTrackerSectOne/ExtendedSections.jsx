@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox, Modal, Spin, Typography } from "antd";
-// import { format } from "date-fns";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -525,29 +524,24 @@ export const AppliedExtended = ({
   handleCheckboxChange,
   selectedJob,
 }) => {
-  // Calculate follow-up dates based on job's creation date
-  const followUpDates = selectedJob?.createdAt
-    ? [
-        format(
-          new Date(selectedJob.createdAt).setDate(
-            new Date(selectedJob.createdAt).getDate() + 7
-          ),
-          "MM/dd/yyyy"
-        ),
-        format(
-          new Date(selectedJob.createdAt).setDate(
-            new Date(selectedJob.createdAt).getDate() + 14
-          ),
-          "MM/dd/yyyy"
-        ),
-        format(
-          new Date(selectedJob.createdAt).setDate(
-            new Date(selectedJob.createdAt).getDate() + 21
-          ),
-          "MM/dd/yyyy"
-        ),
-      ]
-    : [];
+  const [followUpDates, setFollowUpDates] = useState([]);
+
+  useEffect(() => {
+    if (selectedJob?.createdAt) {
+      // Create follow-up dates based on the date the job was applied
+      const dates = [];
+      const appliedDate = new Date(selectedJob.createdAt); // Assume selectedJob has 'dateApplied'
+
+      // Generate 3 follow-up dates, 7 days apart
+      for (let i = 1; i <= 3; i++) {
+        const followUpDate = new Date(appliedDate);
+        followUpDate.setDate(appliedDate.getDate() + i * 7); // Add 7 days for each follow-up
+        dates.push(followUpDate);
+      }
+
+      setFollowUpDates(dates);
+    }
+  }, [selectedJob]);
 
   return (
     <div
@@ -603,17 +597,17 @@ export const AppliedExtended = ({
           <ul>
             <li className="bulleted">
               <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 1st follow up on 12/24/2024
+                Send 1st follow up 1 week after the application date
               </button>
             </li>
             <li className="bulleted">
               <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 2nd follow up on 12/31/2024
+                Send 2nd follow up 2 weeks after the application date
               </button>
             </li>
             <li className="bulleted">
               <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 3rd follow up on 1/7/2025
+                Send 3rd follow up 3 weeks after the application date
               </button>
             </li>
             <li className="bulleted">

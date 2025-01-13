@@ -115,3 +115,18 @@ export const updateProgressInAPI = async (jobId, progressUpdate) => {
     throw error;
   }
 };
+
+// Update job dates by job ID
+export const updateJobDates = async (jobId, dates) => {
+  try {
+    const response = await axios.put(`${API_URL}/dates/${jobId}`, dates, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating job dates:", error);
+    throw error;
+  }
+};
