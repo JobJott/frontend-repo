@@ -8,7 +8,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 export const SideDashData = [
   {
     id: 1,
-    title: "Overview",
+    title: "Home",
     icon: <HomeIcon />,
     path: "/dashboard",
   },

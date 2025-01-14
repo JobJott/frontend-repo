@@ -49,8 +49,14 @@ const columnData = [
 
 const JobTrackerSectionOne = () => {
   // Extracts the current job listings, a function to update them, loading state, and an update handler from the context provided by the parent component.
-  const { jobs, setJobs, loadingJobs, handleJobUpdate } = useOutletContext();
-  const [selectedJob, setSelectedJob] = useState(null); // State to track the currently selected job.
+  const {
+    jobs,
+    setJobs,
+    loadingJobs,
+    handleJobUpdate,
+    selectedJob,
+    setSelectedJob,
+  } = useOutletContext();
   const selectedJobFromList = useMemo(
     () => jobs?.find((job) => job._id === selectedJob?._id),
     [jobs, selectedJob]
@@ -216,18 +222,30 @@ const JobTrackerSectionOne = () => {
 
       if (updatedJob) {
         // Automatically update the "Applied" date if status is "Applied"
-        if (newStatus === "Applied") {
+        let updatedDates = { ...selectedJob.dates };
+        if (newStatus === "Applied" && !updatedDates.applied) {
           const appliedDate = new Date().toISOString();
-          await updateJobDates(selectedJob._id, { applied: appliedDate });
+          updatedDates.applied = appliedDate;
+
+          await updateJobDates(selectedJob._id, {
+            dateType: "applied",
+            dateValue: appliedDate,
+          });
         }
 
         // Update local job list
         const updatedJobs = jobs.map((job) =>
-          job._id === selectedJob._id ? { ...job, status: newStatus } : job
+          job._id === selectedJob._id
+            ? { ...job, status: newStatus, dates: updatedDates }
+            : job
         );
-        localStorage.setItem("selectedStatus", newStatus);
-        // console.log(updatedJobs);
         setJobs(updatedJobs);
+        setSelectedJob((prevJob) => ({
+          ...prevJob,
+          status: newStatus,
+          dates: updatedDates,
+        }));
+        localStorage.setItem("selectedStatus", newStatus);
       }
     } catch (error) {
       console.error("Failed to update job status:", error);
@@ -476,7 +494,7 @@ const JobTrackerSectionOne = () => {
   return (
     <div className="job-tracker-section drawer-visible" data-projection-id="3">
       <div className="job-tracker-table-container hide-x-overflow shared-table-container ">
-        <div className="table-column-wrapper">
+        <div className="table-column-wrapper">  
           <div
             data-instance="tabulator-1734223037678-7874267"
             className="job-tracker-table tabulator"
@@ -949,7 +967,9 @@ const JobTrackerSectionOne = () => {
 
                   <AntdTracker
                     activeTab={activeTab}
+                    setJobs={setJobs}
                     selectedJob={selectedJob}
+                    setSelectedJob={setSelectedJob}
                     handleJobUpdate={handleJobUpdate}
                   />
                 </div>

@@ -12,6 +12,9 @@ const JobTrackerSection0 = lazy(() =>
 const JobTrackerSectionOne = lazy(() =>
   import("./Pages/MyApplication/JobTrackerSectionOne")
 );
+const JobTrackerSectionTwo = lazy(() =>
+  import("./Pages/MyApplication/JobTrackerSectionTwo")
+);
 
 const MainBoard = ({ isSideDashOpen }) => {
   const location = useLocation();
@@ -36,10 +39,8 @@ const MainBoard = ({ isSideDashOpen }) => {
         {/* <Route path="resume-builder" element={<ResumeBuilder />} />  */}
         <Route path="my-applications/*" element={<MyApplication />}>
           <Route index element={<JobTrackerSection0 />} />
-          <Route
-            path="job-trackerv1"
-            element={<JobTrackerSectionOne />}
-          />
+          <Route path="job-trackerv1" element={<JobTrackerSectionOne />} />
+          <Route path="job-trackerv2" element={<JobTrackerSectionTwo />} />
         </Route>
         <Route path="contacts" element={<Contact />} />
         {/* <Route path="supportcenter" element={<SupportCenter />} /> */}

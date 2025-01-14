@@ -1,4 +1,3 @@
-import { Progress } from "antd";
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/jobs";
@@ -117,16 +116,70 @@ export const updateProgressInAPI = async (jobId, progressUpdate) => {
 };
 
 // Update job dates by job ID
-export const updateJobDates = async (jobId, dates) => {
+export const updateJobDates = async (jobId, { dateType, dateValue }) => {
   try {
-    const response = await axios.put(`${API_URL}/dates/${jobId}`, dates, {
+    const response = await axios.put(
+      `${API_URL}/dates/${jobId}`,
+      { dateType, dateValue },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating job dates:", error);
+    throw error;
+  }
+};
+
+export const updateInterviewDetails = async (jobId, interviewDetails) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/interview/${jobId}`,
+      interviewDetails,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to update interview details"
+    );
+  }
+};
+
+export const fetchInterviewDetails = async (jobId) => {
+  try {
+    const response = await axios.get(`${API_URL}/interview/${jobId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error updating job dates:", error);
-    throw error;
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch interview details"
+    );
+  }
+};
+
+// Delete interview details
+export const deleteInterviewDetails = async (jobId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/interview/${jobId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete interview details"
+    );
   }
 };

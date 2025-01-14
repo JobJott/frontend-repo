@@ -1047,10 +1047,6 @@ html [type="button"],
   border-top: 1px solid #ece4db;
 }
 
-.action-wrapper .module-body > *:last-child {
-  padding-bottom: var(--content-margin-y);
-}
-
 .job-tracker-dates .label {
   font-weight: 600;
   font-size: 12px;

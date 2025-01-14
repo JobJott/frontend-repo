@@ -1,69 +1,56 @@
-import React, { useState } from "react";
-import { Row, Col, DatePicker, Button, Select, Input, Typography } from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Row,
+  Col,
+  DatePicker,
+  Button,
+  Select,
+  Typography,
+  message,
+} from "antd";
 import {
   PlusCircleOutlined,
   CalendarOutlined,
   DownCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import { updateJobDates } from "../../../../../utils/api/jobService";
+import dayjs from "dayjs";
+import {
+  deleteInterviewDetails,
+  fetchInterviewDetails,
+  updateInterviewDetails,
+  updateJobDates,
+} from "../../../../../utils/api/jobService";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
 
-const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
+const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
   const onOk = (value) => {
     console.log("onOk: ", value);
   };
 
   const [isDatesCollapsed, setDatesCollapsed] = useState(true);
   const [isInterviewsCollapsed, setInterviewsCollapsed] = useState(true);
-  const [isJobDescriptionCollapsed, setJobDescriptionCollapsed] =
-    useState(true);
   const [interviewDate, setInterviewDate] = useState(null);
   const [interviewType, setInterviewType] = useState(null);
   const [interviewFormat, setInterviewFormat] = useState(null);
-  const [relationshipType, setRelationshipType] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [jobDescription, setJobDescription] = useState(
-    "I am a software engineer"
-  );
-  const [originalDescription, setOriginalDescription] = useState(
-    "I am a software engineer"
-  );
   const [showContacts, setShowContacts] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [notes, setNotes] = useState("Add your notes here...");
   const [richText, setRichText] = useState("");
+  const [jobDates, setJobDates] = useState({});
+  const dateFields = [
+    { label: "Applied", key: "applied" },
+    { label: "Saved", key: "saved" },
+    { label: "Deadline", key: "deadline" },
+    { label: "Follow Up", key: "followUp" },
+  ];
 
   const toggleDates = () => setDatesCollapsed(!isDatesCollapsed);
   const toggleInterviews = () => setInterviewsCollapsed(!isInterviewsCollapsed);
-  const toggleJobDescription = () =>
-    setJobDescriptionCollapsed(!isJobDescriptionCollapsed);
-  const handleAddClick = () => {
-    setShowContacts(true);
-  };
-
-  const handleAddContact = () => {
-    setShowContacts(false);
-    setShowForm(true);
-  };
-
-  const handleCancel = () => {
-    setShowForm(false);
-    setShowContacts(false);
-  };
-
-  const handleSaveChanges = () => {
-    setOriginalDescription(jobDescription); // Update the original description
-    setIsEditing(false); // Exit editing mode
-  };
-
-  const handleJobEditCancel = () => {
-    setJobDescription(originalDescription); // Revert to the original description
-    setIsEditing(false); // Exit editing mode
-  };
 
   const handleSaveNote = () => {
     setIsEditingNote(false);
@@ -78,24 +65,117 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
     setIsEditingNote(true);
   };
 
-  const handleDateChange = async (date, dateString, dateType) => {
+  useEffect(() => {
+    if (selectedJob) {
+      setJobDates(selectedJob.dates || {});
+    }
+  }, [selectedJob]);
+
+  const handleDateChange = async (date, dateType) => {
     if (!selectedJob) return;
 
-    // Prepare the dates object for the backend
-    const updatedDates = {
-      [dateType]: dateString || null, // If date is cleared, set it to null
-    };
+    // Convert the date to ISO string or set it to null if cleared
+    const dateValue = date ? date.toISOString() : null;
 
     try {
       // Update job dates in the backend
-      const updatedJob = await updateJobDates(selectedJob._id, updatedDates);
+      const updatedJob = await updateJobDates(selectedJob._id, {
+        dateType,
+        dateValue,
+      });
 
-      // Update the local job state
       if (updatedJob) {
-        handleJobUpdate(updatedJob);
+        // Update local state
+        const updatedDates = {
+          ...jobDates,
+          [dateType]: dateValue,
+        };
+
+        setJobDates(updatedDates);
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job._id === selectedJob._id ? { ...job, dates: updatedDates } : job
+          )
+        );
+
+        // Update the selected job state
+        setSelectedJob((prevJob) => ({
+          ...prevJob,
+          dates: updatedDates,
+        }));
       }
     } catch (error) {
       console.error(`Failed to update ${dateType} date:`, error);
+    }
+  };
+
+  useEffect(() => {
+    const loadInterviewDetails = async () => {
+      if (!selectedJob) return;
+
+      try {
+        const data = await fetchInterviewDetails(selectedJob._id);
+        setInterviewDate(
+          data.interview.interviewDate
+            ? dayjs(data.interview.interviewDate)
+            : null
+        );
+        setInterviewType(data.interview.interviewType || "");
+        setInterviewFormat(data.interview.interviewFormat || "");
+      } catch (error) {
+        message.error("Failed to load interview details: " + error.message);
+      }
+    };
+
+    loadInterviewDetails();
+  }, [selectedJob]);
+
+  const handleSaveDetails = async () => {
+    if (!selectedJob) return;
+
+    try {
+      const interviewDetails = {
+        interviewDate: interviewDate ? interviewDate.toISOString() : null,
+        interviewType,
+        interviewFormat,
+      };
+
+      const updatedJob = await updateInterviewDetails(
+        selectedJob._id,
+        interviewDetails
+      );
+      message.success("Interview details saved successfully!");
+      // setSelectedJob(updatedJob);
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job._id === selectedJob._id
+            ? { ...job, interview: updatedJob.interview }
+            : job
+        )
+      );
+      setSelectedJob((prev) => ({ ...prev, interview: updatedJob.interview }));
+    } catch (error) {
+      message.error("Failed to save interview details: " + error.message);
+    }
+  };
+
+  const handleDeleteInterview = async () => {
+    if (!selectedJob) return;
+
+    try {
+      await deleteInterviewDetails(selectedJob._id);
+      message.success("Interview details deleted successfully!");
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job._id === selectedJob._id ? { ...job, interview: null } : job
+        )
+      );
+      setSelectedJob((prev) => ({ ...prev, interview: null }));
+      setInterviewDate(null);
+      setInterviewType(null);
+      setInterviewFormat(null);
+    } catch (error) {
+      message.error("Failed to delete interview details: " + error.message);
     }
   };
 
@@ -127,27 +207,24 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                   className="job-tracker-dates"
                   style={{ marginLeft: 0 }}
                 >
-                  {["Applied", "Saved", "Deadline", "Follow Up"].map(
-                    (label, index) => (
-                      <Col className="w-full md:w-1/4" key={index}>
-                        <label htmlFor={label.toLowerCase()}>
-                          <span className="label">{label}</span>
-                          <DatePicker
-                            id={label.toLowerCase()}
-                            placeholder={`Add ${label.toLowerCase()} date`}
-                            suffixIcon={<CalendarOutlined />}
-                            onChange={(date, dateString) =>
-                              handleDateChange(
-                                date,
-                                dateString,
-                                label.toLowerCase()
-                              )
-                            } 
-                          />
-                        </label>
-                      </Col>
-                    )
-                  )}
+                  {dateFields.map(({ label, key }) => (
+                    <Col className="w-full md:w-1/4" key={key}>
+                      <label htmlFor={key}>
+                        <span className="label">{label}</span>
+                        <DatePicker
+                          id={key}
+                          placeholder={`Add ${label.toLowerCase()} date`}
+                          suffixIcon={<CalendarOutlined />}
+                          value={
+                            selectedJob?.dates?.[key]
+                              ? dayjs(selectedJob.dates[key])
+                              : null
+                          }
+                          onChange={(date) => handleDateChange(date, key)}
+                        />
+                      </label>
+                    </Col>
+                  ))}
                 </Row>
               </div>
             )}
@@ -196,10 +273,16 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                     <div className="interview-details-header">
                       <span className="title">Details</span>
                       <div className="flex flex-row gap-4">
-                        <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 focus-visible:ring-primary h-9 px-3 rounded-md">
+                        <button
+                          onClick={handleSaveDetails}
+                          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 focus-visible:ring-primary h-9 px-3 rounded-md"
+                        >
                           Save Details
                         </button>
-                        <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 border bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 rounded-md delete-btn border-red-500">
+                        <button
+                          onClick={handleDeleteInterview}
+                          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 border bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 rounded-md delete-btn border-red-500"
+                        >
                           <svg
                             fill="none"
                             height="20"
@@ -234,6 +317,7 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                             format="YYYY-MM-DD HH:mm"
                             placeholder="-"
                             autoComplete="off"
+                            value={interviewDate}
                             onChange={(date) => setInterviewDate(date)}
                             suffixIcon={<CalendarOutlined />}
                             style={{ width: "100%" }}
@@ -246,6 +330,7 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                             <Select
                               id="interview_type"
                               placeholder="-"
+                              value={interviewType}
                               onChange={(value) => setInterviewType(value)}
                               style={{ width: "100%" }}
                             >
@@ -264,6 +349,7 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                             <Select
                               id="interview_format"
                               placeholder="-"
+                              value={interviewFormat}
                               onChange={(value) => setInterviewFormat(value)}
                               style={{ width: "100%" }}
                             >
@@ -276,7 +362,7 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                         </div>
                       </div>
 
-                      <div className="interview-details-interviewers">
+                      {/* <div className="interview-details-interviewers">
                         <p className="title">Interviewers</p>
                         {!showContacts && !showForm && (
                           <div>
@@ -425,111 +511,9 @@ const AntdTracker = ({ activeTab, selectedJob, handleJobUpdate }) => {
                             </div>
                           </div>
                         )}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Interview Tracking Module */}
-          <div className="action-wrapper summary-module-wrapper _job-description-matching_1c9k0_58g">
-            <div
-              className="module-header collapsible"
-              role="button"
-              tabIndex={0}
-              onClick={toggleJobDescription}
-            >
-              <div className="flex items-center gap-2">
-                <h3>Job Description</h3>
-                {!isEditing && (
-                  <button
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 md:hover:bg-accent md:focus-visible:ring-primary h-9 px-3 rounded-md text-primary md:hover:text-primary"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-pencil-line h-4 w-4"
-                    >
-                      <path d="M12 20h9"></path>
-                      <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
-                      <path d="m15 5 3 3"></path>
-                    </svg>
-                    Edit
-                  </button>
-                )}
-              </div>
-              {!isEditing && (
-                <Button
-                  className="toggle-btn"
-                  type="text"
-                  icon={
-                    <DownCircleOutlined rotate={isDatesCollapsed ? 0 : 180} />
-                  }
-                />
-              )}
-            </div>
-
-            {!isJobDescriptionCollapsed && (
-              <div className="module-body">
-                <div className="job-keywords-and-description">
-                  <Row
-                    className="job-description-container"
-                    style={{ marginLeft: "-12px", marginRight: "-12px" }}
-                  >
-                    <Col
-                      xs={{ span: 24, order: 2 }}
-                      sm={{ span: 24, order: 2 }}
-                      md={{ span: 24, order: 2 }}
-                      lg={{ span: 24, order: 1 }}
-                      style={{ paddingLeft: "12px", paddingRight: "12px" }}
-                    >
-                      {isEditing ? (
-                        <div className="flex flex-col gap-3">
-                          <div className="rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:shadow-duotone flex flex-col flex-auto data-[editable=false]:opacity-50">
-                            <textarea
-                              className="tiptap ProseMirror relative cursor-text w-full md:min-w-96 focus-visible:outline-none data-[editable=false]:cursor-default [&_.ProseMirror-selectednode]:bg-primary [&_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child]:before:absolute [&_.is-editor-empty:first-child]:before:text-muted-foreground [&_.is-editor-empty:first-child]:before:pointer-events-none [&_.is-editor-empty:first-child]:before:h-0 [&_h1]:text-xl [&_h2]:text-lg [&_h3]:text-base px-3 py-2 h-48 overflow-y-auto wsc-ignore md:max-h-96 job-description-textarea"
-                              value={jobDescription}
-                              onChange={(e) =>
-                                setJobDescription(e.target.value)
-                              }
-                              rows="4"
-                              placeholder="I am a software engineer"
-                              type="text"
-                              style={{ width: "100%", marginBottom: "1rem" }}
-                            />
-                          </div>
-                          <div className="field-row flex items-center gap-4 mb-2">
-                            <Button
-                              type="primary"
-                              size="small"
-                              onClick={handleSaveChanges} // Save changes
-                            >
-                              Save Changes
-                            </Button>
-                            <Button
-                              type="default"
-                              size="small"
-                              onClick={handleJobEditCancel}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <p>{jobDescription}</p>
-                      )}
-                    </Col>
-                  </Row>
                 </div>
               </div>
             )}

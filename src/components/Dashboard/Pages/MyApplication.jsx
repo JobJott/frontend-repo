@@ -12,6 +12,7 @@ import {
 
 const MyApplication = () => {
   const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null); // State to track the currently selected job.
   const [modalOpen, setModalOpen] = useState(false);
   const [loadingJobs, setLoadingJobs] = useState(true);
 
@@ -70,6 +71,8 @@ const MyApplication = () => {
                 loadingJobs,
                 setLoadingJobs,
                 handleJobUpdate,
+                selectedJob,
+                setSelectedJob,
               }}
             />
           </div>

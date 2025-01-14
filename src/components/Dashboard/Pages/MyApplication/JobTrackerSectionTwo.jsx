@@ -16,8 +16,17 @@ import AntJobModal from "./ActionButtons/AntJobModal";
 import { DeleteJobModal } from "./JobTrackerSectOne/ExtendedSections";
 import "./JobTrackerSectTwo/JobTrackerSectionTwo.css";
 import "./JobTrackerSectOne/JobTrackerSectionOne.css";
+import { useOutletContext } from "react-router-dom";
 
 const JobTrackerSectionTwo = () => {
+  const {
+    jobs,
+    setJobs,
+    loadingJobs,
+    handleJobUpdate,
+    selectedJob,
+    setSelectedJob,
+  } = useOutletContext();
   const [modalOpen, setModalOpen] = useState(false);
   // const [selected, setSelected] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
@@ -47,19 +56,18 @@ const JobTrackerSectionTwo = () => {
 
   const data = [
     {
-      id: 1,
+      id: selectedJob?._id,
       selected: false,
-      role: "Sail Innovation Engineer",
-      company_name: "Sails Hub",
-      applied_at: null,
-      added_at: "12/21/2024",
-      application_deadline: null,
-      posted_at: null,
-      follow_up_at: null,
-      min_salary: "US$0.00",
-      max_salary: "US$0.00",
-      statusName: "Bookmarked",
-      location: "Ikorodu, Lagos",
+      role: selectedJob?.jobTitle,
+      company_name: selectedJob?.companyName,
+      applied_at: selectedJob?.dates.applied,
+      added_at: selectedJob?.dates.saved,
+      application_deadline: selectedJob?.dates.deadline,
+      follow_up_at: selectedJob?.dates.followUp,
+      min_salary: selectedJob?.salaryRange.minSalary,
+      max_salary: selectedJob?.salaryRange.maxSalary,
+      statusName: selectedJob?.status,
+      location: selectedJob?.location,
     },
     //other objexts will be added here
   ];

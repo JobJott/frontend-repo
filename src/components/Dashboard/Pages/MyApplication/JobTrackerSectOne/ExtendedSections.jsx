@@ -70,7 +70,7 @@ const StyledDeleteModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const DeleteJobModal = ({
+export const DeleteJobModal = ({  
   deleteModalOpen,
   setDeleteModalOpen,
   selectedJobId,
@@ -527,10 +527,10 @@ export const AppliedExtended = ({
   const [followUpDates, setFollowUpDates] = useState([]);
 
   useEffect(() => {
-    if (selectedJob?.createdAt) {
+    if (selectedJob?.dates.applied) {
       // Create follow-up dates based on the date the job was applied
       const dates = [];
-      const appliedDate = new Date(selectedJob.createdAt); // Assume selectedJob has 'dateApplied'
+      const appliedDate = new Date(selectedJob.dates.applied); // Assume selectedJob has 'dateApplied'
 
       // Generate 3 follow-up dates, 7 days apart
       for (let i = 1; i <= 3; i++) {
@@ -595,6 +595,7 @@ export const AppliedExtended = ({
           }}
         >
           <ul>
+            
             <li className="bulleted">
               <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
                 Send 1st follow up 1 week after the application date
