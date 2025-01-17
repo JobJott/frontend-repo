@@ -6,9 +6,14 @@ module.exports = {
       boxShadow: {
         duotone: `0px 0px 0px 1px hsl(var(--background)), 0px 0px 0px 2px hsl(var(--jobjott-700)), 0px 0px 0px 4px hsl(var(--teal-700) / 0.25)`,
       },
+      colors: {
+        dangerText: "#c32525",
+        neutralHover: "#0051491a",
+      },
     },
     fontSize: {
       base: "16px",
+      lg: "18px",
     },
     fontFamily: {
       sans: ["Montserrat", " sans-serif"],

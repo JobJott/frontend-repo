@@ -924,6 +924,7 @@ ul li.bulleted {
   --btn-height: 2.5rem;
   --btn-padding: 9px;
   --btn-icon-gap: 10px;
+  --weight-medium: 500;
 }
 
 button,
@@ -1550,6 +1551,81 @@ html [type="button"],
   font-size: 18px;
   font-weight: 500;
   color: #111313;
+}
+
+._button_11uyj_1:hover:not(:disabled) {
+  color: var(--btn-color);
+  background: var(--btn-background-hover);
+  border-color: var(--btn-border, var(--btn-background-hover));
+}
+
+.job-contact-list-container .job-contact-list-item {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #dcdcdc;
+}
+
+.job-contact-list-container .job-contacts-read-only {
+  width: 100%;
+}
+.job-contact-list-container .job-contacts-read-only .h4 {
+  width: 90%;
+  margin-bottom: 0.75rem;
+}
+
+.job-contact-list-container
+  .job-contact-list-item
+  .ant-btn-link.edit-contact-btn,
+.job-contact-list-container
+  .job-contact-list-item
+  .ant-btn-link.delete-contact-btn {
+  position: absolute;
+  top: 0.75rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.job-contact-list-container
+  .job-contact-list-item
+  .ant-btn-link.delete-contact-btn {
+  right: 0.75rem;
+}
+
+.job-listing-drawer .drawer-content .muted-icon {
+  margin-left: 0.25rem;
+}
+
+.job-contact-list-container
+  .job-contact-list-item
+  .ant-btn-link.edit-contact-btn {
+  right: 2.75rem;
+}
+
+.job-contact-list-container
+  .job-contact-list-item:hover
+  .ant-btn-link.edit-contact-btn,
+.job-contact-list-container
+  .job-contact-list-item:hover
+  .ant-btn-link.delete-contact-btn {
+  opacity: 1;
+}
+
+.job-contact-list-container
+  .job-contact-list-item:hover
+  .ant-btn-link.delete-contact-btn:hover {
+  color: #c32525;
+}
+.ant-btn.ant-btn-link:hover::after {
+  opacity: 0.1;
+}
+
+.job-contact-list-item.editing-mode {
+  display: block; /* Or another layout style that works for your design */
 }
 
 @media (min-width: 480px) {

@@ -66,9 +66,9 @@ const JobTrackerSectionOne = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isAccepted, setIsAccepted] = useState(false);
-  const [activeTab, setActiveTab] = useState("job-info");
   const [selectedStatus, setSelectedStatus] = useState("Bookmarked");
+  const [isAccepted, setIsAccepted] = useState(selectedStatus === "Accepted");
+  const [activeTab, setActiveTab] = useState("job-info");
   const [loading, setLoading] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -116,15 +116,18 @@ const JobTrackerSectionOne = () => {
         if (job) {
           setSelectedJob(job);
           setSelectedStatus(savedStatus || job.status);
+          setIsAccepted((savedStatus || job.status) === "Accepted");
         } else {
           // Fallback to the first job if no match is found
           setSelectedJob(jobs[0]);
           setSelectedStatus(jobs[0].status);
+          setIsAccepted(jobs[0].status === "Accepted");
         }
       } else {
         // If no saved job ID, set the first job as selected
         setSelectedJob(jobs[0]);
         setSelectedStatus(jobs[0].status);
+        setIsAccepted(jobs[0].status === "Accepted");
       }
     }
   }, [jobs]);
@@ -201,6 +204,7 @@ const JobTrackerSectionOne = () => {
     setTimeout(() => {
       setSelectedJob(job); // Set the new selected job
       setSelectedStatus(job.status || "Bookmarked");
+      setIsAccepted((job.status || "Bookmarked") === "Accepted");
       setLocalLoadingJobs(false); // End local loading state
     }, 500); // Adjust timeout duration as needed
   };
@@ -400,6 +404,7 @@ const JobTrackerSectionOne = () => {
       case "Applied":
         return (
           <AppliedExtended
+            selectedJob={selectedJob}
             isChecked={checkedItems.appliedChecked}
             handleCheckboxChange={handleBoxChecked("appliedChecked")}
           />
@@ -494,7 +499,7 @@ const JobTrackerSectionOne = () => {
   return (
     <div className="job-tracker-section drawer-visible" data-projection-id="3">
       <div className="job-tracker-table-container hide-x-overflow shared-table-container ">
-        <div className="table-column-wrapper">  
+        <div className="table-column-wrapper">
           <div
             data-instance="tabulator-1734223037678-7874267"
             className="job-tracker-table tabulator"
@@ -877,96 +882,110 @@ const JobTrackerSectionOne = () => {
                       )}
                     </>
 
-                    <div
-                      className="_box_1rxfg_1 _guidance_1qsov_1"
-                      style={{
-                        "--py": "0",
-                        "--px": "0",
-                        "--bg": "#fff",
-                        "--color": "#e5e5e5",
-                        "--rad": "0",
-                        "--style": "solid",
-                        "--width": "0",
-                      }}
-                      onClick={handleToggle}
-                    >
-                      <div className="_stack_lds83_1">
-                        <div style={{ "--stack-space": "0" }}>
-                          <div
-                            className="_cluster_jw67l_1 _header_1qsov_11"
-                            style={{
-                              "--space": "0",
-                              "--align": "center",
-                              "--justify": "space-between",
-                              "--wrap": "wrap",
-                            }}
-                          >
-                            {isAccepted ? (
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  fontSize: "1.2rem",
-                                  fontFamily: "Montserrat, sans-serif",
-                                }}
-                                className="m-auto font-extrabold"
-                              >
-                                Congratulations 🎉
-                              </div>
-                            ) : (
-                              <>
-                                <div
-                                  className="_cluster_jw67l_1 _header-text_1qsov_16"
-                                  style={{
-                                    "--space": "0.375rem",
-                                    "--align": "center",
-                                    "--justify": "flex-start",
-                                    "--wrap": "wrap",
-                                  }}
-                                >
-                                  <span className="text-base">
-                                    <BulbOutlined />
-                                  </span>
-                                  <span>
-                                    <strong>Guidance</strong>
-                                  </span>
-                                  <span>&gt;</span>
-                                  <span className="font-medium">
-                                    {getProgressText()}
-                                  </span>
-                                </div>
-                                <button
-                                  aria-label="toggle guidance"
-                                  className="_btn_mkpcn_1 none _toggle-btn_1qsov_25"
-                                  type="button"
-                                >
-                                  <span
-                                    role="img"
-                                    aria-label={
-                                      isExpanded ? "up-circle" : "down-circle"
-                                    }
-                                  >
-                                    {isExpanded ? (
-                                      <DownCircleOutlined />
-                                    ) : (
-                                      <UpCircleOutlined />
-                                    )}
-                                  </span>
-                                </button>
-                              </>
-                            )}
-                          </div>
-                          {isExpanded && renderExtendedSection()}
-                        </div>
+                    {localLoadingJobs || loadingJobs || loadingSalary ? (
+                      <div className="linear-loader">
+                        <div className="linear-loader-bar" />
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        <div
+                          className="_box_1rxfg_1 _guidance_1qsov_1"
+                          style={{
+                            "--py": "0",
+                            "--px": "0",
+                            "--bg": "#fff",
+                            "--color": "#e5e5e5",
+                            "--rad": "0",
+                            "--style": "solid",
+                            "--width": "0",
+                          }}
+                          onClick={handleToggle}
+                        >
+                          <div className="_stack_lds83_1">
+                            <div style={{ "--stack-space": "0" }}>
+                              <div
+                                className="_cluster_jw67l_1 _header_1qsov_11"
+                                style={{
+                                  "--space": "0",
+                                  "--align": "center",
+                                  "--justify": "space-between",
+                                  "--wrap": "wrap",
+                                }}
+                              >
+                                {isAccepted ? (
+                                  <div
+                                    style={{
+                                      textAlign: "center",
+                                      fontSize: "1.2rem",
+                                      fontFamily: "Montserrat, sans-serif",
+                                    }}
+                                    className="m-auto font-extrabold"
+                                  >
+                                    Congratulations 🎉
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="_cluster_jw67l_1 _header-text_1qsov_16"
+                                      style={{
+                                        "--space": "0.375rem",
+                                        "--align": "center",
+                                        "--justify": "flex-start",
+                                        "--wrap": "wrap",
+                                      }}
+                                    >
+                                      <span className="text-base">
+                                        <BulbOutlined />
+                                      </span>
+                                      <span>
+                                        <strong>Guidance</strong>
+                                      </span>
+                                      <span>&gt;</span>
+                                      <span className="font-medium">
+                                        {getProgressText()}
+                                      </span>
+                                    </div>
+                                    <button
+                                      aria-label="toggle guidance"
+                                      className="_btn_mkpcn_1 none _toggle-btn_1qsov_25"
+                                      type="button"
+                                    >
+                                      <span
+                                        role="img"
+                                        aria-label={
+                                          isExpanded
+                                            ? "up-circle"
+                                            : "down-circle"
+                                        }
+                                      >
+                                        {isExpanded ? (
+                                          <DownCircleOutlined />
+                                        ) : (
+                                          <UpCircleOutlined />
+                                        )}
+                                      </span>
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                              {isExpanded && renderExtendedSection()}
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="job-listing-drawer-item _job-listing-toolbar_q9krx_1">
-                    <JobListingDrawer setActiveTab={setActiveTab} />
+                    <JobListingDrawer
+                      activeTab={activeTab}
+                      setActiveTab={setActiveTab}
+                    />
                   </div>
 
                   <AntdTracker
                     activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                     setJobs={setJobs}
                     selectedJob={selectedJob}
                     setSelectedJob={setSelectedJob}

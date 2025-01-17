@@ -7,12 +7,20 @@ import {
   Select,
   Typography,
   message,
+  Input,
+  Spin,
+  Modal,
 } from "antd";
 import {
   PlusCircleOutlined,
   CalendarOutlined,
   DownCircleOutlined,
   CloseCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import {
@@ -21,11 +29,24 @@ import {
   updateInterviewDetails,
   updateJobDates,
 } from "../../../../../utils/api/jobService";
+import {
+  addContactToAPI,
+  deleteContactFromAPI,
+  fetchContactsFromAPI,
+  updateContactInAPI,
+} from "../../../../../utils/api/contactService";
+import { ContactscreenLoader } from "./ExtendedSections";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
 
-const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
+const AntdTracker = ({
+  activeTab,
+  selectedJob,
+  setJobs,
+  setSelectedJob,
+  setActiveTab,
+}) => {
   const onOk = (value) => {
     console.log("onOk: ", value);
   };
@@ -35,12 +56,19 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
   const [interviewDate, setInterviewDate] = useState(null);
   const [interviewType, setInterviewType] = useState(null);
   const [interviewFormat, setInterviewFormat] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [showContacts, setShowContacts] = useState(false);
+
+  const [coverLetter, setCoverLetter] = useState(true);
+  const [showCoverLetterForm, setShowCoverLetterForm] = useState(false);
+
+  const [showContacts, setShowContacts] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [isEditingNote, setIsEditingNote] = useState(false);
-  const [notes, setNotes] = useState("Add your notes here...");
-  const [richText, setRichText] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editContactId, setEditContactId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [contactToDelete, setContactToDelete] = useState(null);
+  const [errors, setErrors] = useState({});
+
   const [jobDates, setJobDates] = useState({});
   const dateFields = [
     { label: "Applied", key: "applied" },
@@ -48,22 +76,34 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
     { label: "Deadline", key: "deadline" },
     { label: "Follow Up", key: "followUp" },
   ];
+  const [contactFormData, setContactFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    notes: "",
+  });
+  const [coverLetterForm, setCoverLetterForm] = useState({
+    companyName: "",
+    jobTitle: "",
+    insights: "",
+  });
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!contactFormData.firstName.trim())
+      newErrors.firstName = "First name is required.";
+    if (!contactFormData.lastName.trim())
+      newErrors.lastName = "Last name is required.";
+    if (!contactFormData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      newErrors.email = "Enter a valid email.";
+    if (!contactFormData.phoneNumber.match(/^\+?[0-9]{10,15}$/))
+      newErrors.phoneNumber = "Enter a valid phone number (10-15 digits).";
+    return newErrors;
+  };
 
   const toggleDates = () => setDatesCollapsed(!isDatesCollapsed);
   const toggleInterviews = () => setInterviewsCollapsed(!isInterviewsCollapsed);
-
-  const handleSaveNote = () => {
-    setIsEditingNote(false);
-  };
-
-  const handleCancelNote = () => {
-    setIsEditingNote(false);
-    setRichText(notes); // Revert changes
-  };
-
-  const handleEditNote = () => {
-    setIsEditingNote(true);
-  };
 
   useEffect(() => {
     if (selectedJob) {
@@ -176,6 +216,153 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
       setInterviewFormat(null);
     } catch (error) {
       message.error("Failed to delete interview details: " + error.message);
+    }
+  };
+
+  const handleGenerateCoverLetter = () => {
+    setShowCoverLetterForm(true);
+  };
+
+  const handleCoverLetterCancel = () => {
+    setShowCoverLetterForm(false);
+  };
+
+  // Fetch contacts dynamically based on the selected job
+  useEffect(() => {
+    if (activeTab === "contacts" && selectedJob?._id) {
+      loadContacts();
+    }
+  }, [activeTab, selectedJob]);
+
+  const loadContacts = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchContactsFromAPI(selectedJob?._id);
+      setContacts(data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setActiveTab("job-info");
+  };
+
+  const handleAddContact = () => {
+    setShowContacts(false);
+    setShowForm(true);
+  };
+
+  const handleEditContact = (contactId) => {
+    const contact = contacts.find((c) => c._id === contactId);
+    setContactFormData(contact);
+    setEditContactId(contactId);
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setShowContacts(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditContactId(null);
+    setContactFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      notes: "",
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setContactFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSaveContact = async () => {
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setLoading(true);
+    try {
+      const savedContact = await addContactToAPI({
+        ...contactFormData,
+        jobId: selectedJob?._id,
+      });
+      setContacts((prev) => [...prev, savedContact.contact]);
+      setContactFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        notes: "",
+      });
+      message.success({
+        icon: <InfoCircleOutlined />,
+        content: "Contact saved!",
+      });
+      setShowForm(false);
+      setShowContacts(true);
+    } catch (error) {
+      console.error("Error adding contact:", error);
+      message.error("Failed to save contact.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateContact = async (contactId, updatedContactData) => {
+    setLoading(true);
+    try {
+      const updatedContact = await updateContactInAPI(
+        contactId,
+        updatedContactData
+      );
+
+      setContacts((prev) =>
+        prev.map((contact) =>
+          contact._id === contactId ? updatedContact.contact : contact
+        )
+      );
+      message.success({
+        icon: <InfoCircleOutlined />,
+        content: "Contact updated!",
+      });
+      setEditContactId(null);
+      console.log("Contact updated successfully");
+    } catch (error) {
+      console.error("Error updating contact:", error);
+      message.error("Failed to update contact.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteContact = (contactId) => {
+    setContactToDelete(contactId);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteContact = async () => {
+    setLoading(true);
+    try {
+      await deleteContactFromAPI(contactToDelete);
+      setContacts((prev) =>
+        prev.filter((contact) => contact._id !== contactToDelete)
+      );
+      setShowDeleteModal(false);
+      setContactToDelete(null);
+      message.success("Contact deleted!");
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+      message.error("Failed to delete contact.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -361,157 +548,6 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
                           </div>
                         </div>
                       </div>
-
-                      {/* <div className="interview-details-interviewers">
-                        <p className="title">Interviewers</p>
-                        {!showContacts && !showForm && (
-                          <div>
-                            <button
-                              className="add-btn"
-                              type="button"
-                              onClick={handleAddClick}
-                            >
-                              <PlusCircleOutlined />
-                              <span>Add Interview</span>
-                            </button>
-                          </div>
-                        )}
-
-                        {showContacts && (
-                          <div className="interview-contacts-container">
-                            <div>
-                              <Select
-                                showSearch
-                                placeholder="Find an existing contact"
-                                optionFilterProp="children"
-                                style={{ width: "100%" }}
-                              />
-                            </div>
-                            <div className="divider-container">
-                              <div className="divider">
-                                <span>or</span>
-                              </div>
-                            </div>
-                            <div>
-                              <Button
-                                type="primary"
-                                size="small"
-                                className="full-width"
-                                onClick={handleAddContact}
-                              >
-                                <PlusCircleOutlined />
-                                <span>Add a Contact</span>
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-
-                        {showForm && (
-                          <div className="interview-contacts-container">
-                            <div className="add-interview-form">
-                              <div className="field-row">
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-firstName">
-                                    First Name
-                                  </label>
-                                  <Input
-                                    id="interview-firstName"
-                                    placeholder="First Name"
-                                  />
-                                </div>
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-lastName">
-                                    Last Name
-                                  </label>
-                                  <Input
-                                    id="interview-lastName"
-                                    placeholder="Last Name"
-                                  />
-                                </div>
-                              </div>
-                              <div className="field-row">
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-contactEmail">
-                                    Email
-                                  </label>
-                                  <Input
-                                    id="interview-contactEmail"
-                                    placeholder="hello@example.com"
-                                  />
-                                </div>
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-jobTitle">
-                                    Job Title
-                                  </label>
-                                  <Input
-                                    id="interview-jobTitle"
-                                    placeholder="Job Title"
-                                  />
-                                </div>
-                              </div>
-                              <div className="field-row">
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-linkedIn">
-                                    LinkedIn
-                                  </label>
-                                  <Input
-                                    id="interview-linkedIn"
-                                    placeholder="https://www.linkedin.com/in/yourname"
-                                  />
-                                </div>
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-relationship">
-                                    Relationship
-                                  </label>
-                                  <Select
-                                    placeholder="None"
-                                    style={{ width: "100%" }}
-                                    onChange={(value) =>
-                                      setRelationshipType(value)
-                                    }
-                                    id="interview-relationship"
-                                  >
-                                    <Option value="self">Self</Option>
-                                    <Option value="co-worker">Co-Worker</Option>
-                                    <Option value="friend">Friend</Option>
-                                    <Option value="family">Family</Option>
-                                    <Option value="other">Other</Option>
-                                    <Option value="recruiter">Recruiter</Option>
-                                    <Option value="mentor">Mentor</Option>
-                                    <Option value="hiring manager">
-                                      Hiring Manager
-                                    </Option>
-                                  </Select>
-                                </div>
-                              </div>
-                              <div className="field-row">
-                                <div className="job-contacts-input">
-                                  <label htmlFor="interview-contactNotes">
-                                    Notes
-                                  </label>
-                                  <Input.TextArea
-                                    id="interview-contactNotes"
-                                    placeholder="Add notes about this contact"
-                                    rows={4}
-                                  />
-                                </div>
-                              </div>
-                              <div className="field-row">
-                                <Button type="primary" size="small">
-                                  Save
-                                </Button>
-                                <Button
-                                  type="default"
-                                  size="small"
-                                  onClick={handleCancel}
-                                >
-                                  Cancel
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -521,7 +557,108 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
         </div>
       )}
 
-      {activeTab === "notes" && (
+      {activeTab === "cover-letter" && (
+        <div className="ant-col tools-drawer scroll">
+          <div className="action-wrapper summary-module-wrapper _job-listing-tool-content_1pqaz_5">
+            <div className="module-header !block !w-full">
+              {!showCoverLetterForm && (
+                <div>
+                  <Button
+                    type="primary"
+                    size="small"
+                    className="full-width"
+                    onClick={handleGenerateCoverLetter}
+                  >
+                    <PlusCircleOutlined />
+                    <span>Generate a new cover letter </span>
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div className="module-body opened border !border-t-0 !pt-0 !pb-0">
+              {showCoverLetterForm && (
+                <div className="cover-letter-container mb-9">
+                  <div className="generate-cover-letter-form">
+                    <div className="field-row grid grid-cols-2 gap-4">
+                      <div className="cover-letter-input flex flex-col gap-1">
+                        <label htmlFor="companyName" className="font-medium">
+                          Name of Company
+                        </label>
+                        <Input
+                          id="companyName"
+                          type="text"
+                          value={coverLetterForm.companyName}
+                          onChange={handleInputChange}
+                          placeholder="Enter the company name"
+                          className="p-2 border !rounded-md"
+                        />
+                        {/* {errors.companyName && (
+                          <p className="text-red-500 text-sm">
+                            {errors.companyName}
+                          </p>
+                        )} */}
+                      </div>
+                      <div className="cover-letter-input flex flex-col gap-1">
+                        <label htmlFor="jobTitle" className="font-medium">
+                          Job Title
+                        </label>
+                        <Input
+                          id="jobTitle"
+                          placeholder="Enter the job title"
+                          type="text"
+                          value={coverLetterForm.jobTitle}
+                          onChange={handleInputChange}
+                          className="p-2 border !rounded-md"
+                        />
+                        {/* {errors.jobTitle && (
+                          <p className="text-red-500 text-sm">
+                            {errors.jobTitle}
+                          </p>
+                        )} */}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="field-row mt-4">
+                    <div className="cover-letter-input flex flex-col gap-1">
+                      <label htmlFor="insights" className="font-medium">
+                        Insights
+                      </label>
+                      <Input.TextArea
+                        id="insights"
+                        placeholder="Add insights or details for the cover letter"
+                        rows={6}
+                        value={coverLetterForm.insights}
+                        onChange={handleInputChange}
+                        className="border p-2 !rounded-md"
+                      />
+                    </div>
+                  </div>
+                  <div className="field-row flex gap-4 mt-4 ">
+                    <Button
+                      type="primary"
+                      size="small"
+                      // onClick={handleGenerateCoverLetter}
+                    >
+                      Generate
+                    </Button>
+                    <Button
+                      type="default"
+                      size="small"
+                      onClick={handleCoverLetterCancel}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "contacts" && (
         <div className="ant-col tools-drawer scroll">
           <div className="action-wrapper summary-module-wrapper _job-listing-tool-content_1pqaz_5">
             <div className="module-header">
@@ -530,63 +667,426 @@ const AntdTracker = ({ activeTab, selectedJob, setJobs, setSelectedJob }) => {
                   fill="none"
                   stroke="currentColor"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
                   strokeWidth="1.5"
-                  viewBox="0 0 16 20"
+                  viewBox="0 0 20 17"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="!w-6 !h-6"
                 >
-                  <path d="M8.94303 0.832031H1.38184"></path>
-                  <path d="M14.7202 19.1769L14.7202 6.25037"></path>
-                  <path d="M1.27979 19.1766L1.27978 0.831909"></path>
-                  <path d="M8.94336 6.25022L8.94336 0.832031"></path>
-                  <path d="M8.94284 6.25037L14.7202 6.25037"></path>
-                  <path d="M8.94281 0.832129L14.6078 6.12559"></path>
-                  <path d="M14.7205 19.1768L1.27979 19.1768"></path>
+                  <rect height="13" rx="0.5" width="18" x="1" y="2.5"></rect>
+                  <path d="M10 1V4"></path>
+                  <path d="M14 1V4"></path>
+                  <path d="M6 1V4"></path>
+                  <circle cx="9.99998" cy="8.21043" r="1.59764"></circle>
+                  <path d="M12.4727 12.75C12.4727 12.3889 12.4088 12.0313 12.2845 11.6976C12.1602 11.364 11.9781 11.0608 11.7485 10.8055C11.5189 10.5501 11.2463 10.3475 10.9463 10.2093C10.6463 10.0711 10.3247 10 10 10C9.67531 10 9.35377 10.0711 9.05377 10.2093C8.75377 10.3475 8.48119 10.5501 8.25158 10.8055C8.02197 11.0608 7.83983 11.364 7.71557 11.6976C7.5913 12.0313 7.52734 12.3889 7.52734 12.75"></path>
                 </svg>
-                Notes
+                Contacts
               </h3>
               <div className="module-header-action">
                 <button
                   type="button"
-                  className="_button_11uyj_1 _with-icon_11uyj_47 _icon-only_11uyj_51 _round_11uyj_141 _flat_11uyj_95 _medium_11uyj_127 _close-button_1pqaz_1"
-                  onClick={() => console.log("Close drawer action")}
+                  className="_button_11uyj_1 _with-icon_11uyj_47 _icon-only_11uyj_51 _round_11uyj_141 _flat_11uyj_95 _medium_11uyj_127 _close-button_1pqaz_1 !text-red-500 !text-lg"
+                  onClick={handleClose}
                 >
-                  <CloseCircleOutlined />
+                  <CloseCircleOutlined className="!w-5 !h-5" />
                 </button>
               </div>
             </div>
 
             <div className="module-body opened">
-              {isEditing ? (
-                <div className="rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50 has-[:focus-visible]:outline-none has-[:focus-visible]:shadow-duotone flex flex-col flex-auto data-[editable=false]:opacity-50">
-                  <textarea
-                    className="tiptap ProseMirror relative cursor-text w-full md:min-w-96 focus-visible:outline-none data-[editable=false]:cursor-default [&_.ProseMirror-selectednode]:bg-primary [&_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)] [&_.is-editor-empty:first-child]:before:absolute [&_.is-editor-empty:first-child]:before:text-muted-foreground [&_.is-editor-empty:first-child]:before:pointer-events-none [&_.is-editor-empty:first-child]:before:h-0 [&_h1]:text-xl [&_h2]:text-lg [&_h3]:text-base px-3 py-2 h-48 overflow-y-auto wsc-ignore md:max-h-96 job-description-textarea"
-                    value={richText}
-                    onChange={(e) => setRichText(e.target.value)}
-                    placeholder="Add your notes here..."
-                  />
-                  <div className="edit-actions">
-                    <Button type="primary" onClick={handleSaveNote}>
-                      Save
-                    </Button>
-                    <Button onClick={handleCancelNote}>Cancel</Button>
-                  </div>
+              {showContacts ? (
+                <div className="job-contact-list-container">
+                  <ul className="job-contact-list">
+                    <li className="add-new-contact-btn-wrapper">
+                      <div>
+                        <Select
+                          showSearch
+                          placeholder="Find an existing contact"
+                          optionFilterProp="children"
+                          style={{ width: "100%" }}
+                        />
+                      </div>
+                      <div className="divider-container">
+                        <div className="divider">
+                          <span>or</span>
+                        </div>
+                      </div>
+                      <div>
+                        <Button
+                          type="primary"
+                          size="small"
+                          className="full-width"
+                          onClick={handleAddContact}
+                        >
+                          <PlusCircleOutlined />
+                          <span>Add a Contact</span>
+                        </Button>
+                      </div>
+                    </li>
+
+                    {contacts.map((contact) => (
+                      <li
+                        key={contact._id}
+                        className={`job-contact-list-item ${
+                          editContactId === contact._id ? "editing-mode" : ""
+                        }`}
+                      >
+                        {editContactId === contact._id ? (
+                          <div>
+                            {/* Inline Edit Form */}
+                            <div className="edit-contact-form">
+                              <div className="field-row grid grid-cols-2 gap-4">
+                                <div className="job-contacts-input flex flex-col gap-1">
+                                  <label
+                                    htmlFor="firstName"
+                                    className="font-medium"
+                                  >
+                                    First Name
+                                  </label>
+                                  <Input
+                                    id="firstName"
+                                    placeholder="First Name"
+                                    value={contactFormData.firstName}
+                                    onChange={(e) =>
+                                      setContactFormData((prev) => ({
+                                        ...prev,
+                                        firstName: e.target.value,
+                                      }))
+                                    }
+                                    className="p-2 border !rounded-md"
+                                  />
+                                  {errors.firstName && (
+                                    <p className="text-red-500 text-sm">
+                                      {errors.firstName}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="job-contacts-input flex flex-col gap-1">
+                                  <label
+                                    htmlFor="lastName"
+                                    className="font-medium"
+                                  >
+                                    Last Name
+                                  </label>
+                                  <Input
+                                    id="lastName"
+                                    placeholder="Last Name"
+                                    value={contactFormData.lastName}
+                                    onChange={(e) =>
+                                      setContactFormData((prev) => ({
+                                        ...prev,
+                                        lastName: e.target.value,
+                                      }))
+                                    }
+                                    className="p-2 border !rounded-md"
+                                  />
+                                  {errors.lastName && (
+                                    <p className="text-red-500 text-sm">
+                                      {errors.lastName}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="field-row grid grid-cols-2 gap-4 mt-4">
+                                <div className="job-contacts-input flex flex-col gap-1">
+                                  <label
+                                    htmlFor="email"
+                                    className="font-medium"
+                                  >
+                                    Email
+                                  </label>
+                                  <Input
+                                    id="email"
+                                    placeholder="hello@example.com"
+                                    type="email"
+                                    value={contactFormData.email}
+                                    onChange={(e) =>
+                                      setContactFormData((prev) => ({
+                                        ...prev,
+                                        email: e.target.value,
+                                      }))
+                                    }
+                                    className="p-2 border !rounded-md"
+                                  />
+                                  {errors.email && (
+                                    <p className="text-red-500 text-sm">
+                                      {errors.email}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="job-contacts-input flex flex-col gap-1">
+                                  <label
+                                    htmlFor="phoneNumber"
+                                    className="font-medium"
+                                  >
+                                    Phone Number
+                                  </label>
+                                  <Input
+                                    id="phoneNumber"
+                                    placeholder="+234 80X XXXXXXX"
+                                    value={contactFormData.phoneNumber}
+                                    onChange={(e) =>
+                                      setContactFormData((prev) => ({
+                                        ...prev,
+                                        phoneNumber: e.target.value,
+                                      }))
+                                    }
+                                    className="border p-2 !rounded-md"
+                                  />
+                                  {errors.phoneNumber && (
+                                    <p className="text-red-500 text-sm">
+                                      {errors.phoneNumber}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="field-row mt-4">
+                                <div className="job-contacts-input flex flex-col gap-1">
+                                  <label
+                                    htmlFor="notes"
+                                    className="font-medium"
+                                  >
+                                    Notes
+                                  </label>
+                                  <Input.TextArea
+                                    id="notes"
+                                    placeholder="Add notes about this contact"
+                                    rows={4}
+                                    value={contactFormData.notes}
+                                    onChange={(e) =>
+                                      setContactFormData((prev) => ({
+                                        ...prev,
+                                        notes: e.target.value,
+                                      }))
+                                    }
+                                    className="border p-2 !rounded-md"
+                                  />
+                                </div>
+                              </div>
+                              <div className="field-row flex gap-4 mt-4 mb-5">
+                                <Button
+                                  type="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleUpdateContact(
+                                      contact._id,
+                                      contactFormData
+                                    )
+                                  }
+                                >
+                                  Save
+                                </Button>
+                                <Button
+                                  type="default"
+                                  size="small"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <ContactscreenLoader
+                              setLoading={setLoading}
+                              loading={loading}
+                            />
+                            <div className="job-contacts-read-only">
+                              <div className="h4 read-only-name text-lg">
+                                <span>
+                                  {contact.firstName} {contact.lastName}
+                                </span>
+                              </div>
+                              <div className="read-only-contact-info email flex items-center">
+                                <MailOutlined className="mr-2" />
+                                <span>
+                                  <a
+                                    href={`mailto:${contact.email}`}
+                                    rel="noopener noreferrer"
+                                    className="font-normal text-[#111313] underline hover:no-underline"
+                                  >
+                                    {contact.email}
+                                  </a>
+                                </span>
+                              </div>
+                              <div className="read-only-contact-info phone flex items-center">
+                                <PhoneOutlined className="mr-2" />
+                                <span>{contact.phoneNumber}</span>
+                              </div>
+                              <div className="read-only-contact-info notes mt-3">
+                                <span className="label font-semibold">
+                                  Notes:
+                                </span>
+                                <div className="notes-container max-h-36 overflow-y-auto">
+                                  <p>{contact.notes}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only ant-btn-dangerous delete-contact-btn w-auto h-auto"
+                              onClick={() => handleDeleteContact(contact._id)}
+                            >
+                              <DeleteOutlined className="!border-red-500" />
+                            </button>
+                            <button
+                              type="button"
+                              className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only edit-contact-btn muted-icon w-auto h-auto"
+                              onClick={() => handleEditContact(contact._id)}
+                            >
+                              <EditOutlined className="text-[#bdbdbd]" />
+                            </button>
+                          </>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ) : (
-                <Paragraph
-                  className="display-notes"
-                  editable={{
-                    onStart: handleEditNote,
-                  }}
-                >
-                  {notes}
-                </Paragraph>
+                showForm && (
+                  <div className="interview-contacts-container">
+                    <div className="add-interview-form">
+                      <div className="field-row grid grid-cols-2 gap-4">
+                        <div className="job-contacts-input flex flex-col gap-1">
+                          <label htmlFor="firstName" className="font-medium">
+                            First Name
+                          </label>
+                          <Input
+                            id="firstName"
+                            type="text"
+                            value={contactFormData.firstName}
+                            onChange={handleInputChange}
+                            placeholder="First Name"
+                            className="p-2 border !rounded-md"
+                          />
+                          {errors.firstName && (
+                            <p className="text-red-500 text-sm">
+                              {errors.firstName}
+                            </p>
+                          )}
+                        </div>
+                        <div className="job-contacts-input flex flex-col gap-1">
+                          <label htmlFor="lastName" className="font-medium">
+                            Last Name
+                          </label>
+                          <Input
+                            id="lastName"
+                            placeholder="Last Name"
+                            type="text"
+                            value={contactFormData.lastName}
+                            onChange={handleInputChange}
+                            className="p-2 border !rounded-md"
+                          />
+                          {errors.lastName && (
+                            <p className="text-red-500 text-sm">
+                              {errors.lastName}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="field-row grid grid-cols-2 gap-4 mt-4">
+                        <div className="job-contacts-input flex flex-col gap-1">
+                          <label htmlFor="email" className="font-medium">
+                            Email
+                          </label>
+                          <Input
+                            id="email"
+                            placeholder="hello@example.com"
+                            type="email"
+                            value={contactFormData.email}
+                            onChange={handleInputChange}
+                            className="p-2 border !rounded-md"
+                          />
+                          {errors.email && (
+                            <p className="text-red-500 text-sm">
+                              {errors.email}
+                            </p>
+                          )}
+                        </div>
+                        <div className="job-contacts-input flex flex-col gap-1">
+                          <label htmlFor="phoneNumber" className="font-medium">
+                            Phone Number
+                          </label>
+                          <Input
+                            id="phoneNumber"
+                            placeholder="+234 80X XXXXXXX"
+                            value={contactFormData.phoneNumber}
+                            onChange={handleInputChange}
+                            className="border p-2 !rounded-md"
+                          />
+                          {errors.phoneNumber && (
+                            <p className="text-red-500 text-sm">
+                              {errors.phoneNumber}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="field-row mt-4">
+                        <div className="job-contacts-input flex flex-col gap-1">
+                          <label htmlFor="notes" className="font-medium">
+                            Notes
+                          </label>
+                          <Input.TextArea
+                            id="notes"
+                            placeholder="Add notes about this contact"
+                            rows={4}
+                            value={contactFormData.notes}
+                            onChange={handleInputChange}
+                            className="border p-2 !rounded-md"
+                          />
+                        </div>
+                      </div>
+                      <div className="field-row flex gap-4 mt-4 mb-5">
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={handleSaveContact}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          type="default"
+                          size="small"
+                          onClick={handleCancel}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )
               )}
             </div>
-            <div className="footer-note text-neutral-500 text-xs">
-              * Changes will be automatically saved
-            </div>
           </div>
+
+          {/* Delete Confirmation Modal */}
+          <Modal
+            open={showDeleteModal}
+            footer={null}
+            onCancel={() => setShowDeleteModal(false)}
+            closable={false} // To match the original modal without a close button
+          >
+            <p className="!text-[26px] !font-semibold !text-[#111313] !leading-[1.4]">
+              Are you sure you want to disconnect this contact from this job
+              post?
+            </p>
+            <div className="flex justify-end mt-4 gap-2">
+              <Button
+                className="!order-2 !ml-2 !font-medium !border !border-[#111313] !rounded !text-[#111313] hover:!bg-neutralHover"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                No, keep contact
+              </Button>
+              <Button
+                className="!order-2 !ml-2 !font-medium !border !border-[#c32525] !rounded !text-dangerText hover:!bg-neutralHover"
+                onClick={confirmDeleteContact}
+              >
+                Yes, disconnect contact
+              </Button>
+            </div>
+          </Modal>
         </div>
       )}
     </div>

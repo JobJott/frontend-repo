@@ -14,6 +14,32 @@ export const FullscreenLoader = ({ spinning, text }) => {
   );
 };
 
+export const ContactscreenLoader = ({ loading, setLoading }) => {
+  const [percent, setPercent] = useState(0);
+  const showLoader = () => {
+    setLoading(true);
+    let ptg = -10;
+    const interval = setInterval(() => {
+      ptg += 5;
+      setPercent(ptg);
+      if (ptg > 120) {
+        clearInterval(interval);
+        setLoading(false);
+        setPercent(0);
+      }
+    }, 100);
+  };
+
+  return (
+    <Spin
+      spinning={loading}
+      percent={percent}
+      fullscreen
+      text="Loading contents"
+    />
+  );
+};
+
 const StyledDeleteModal = styled(Modal)`
   .ant-modal-content {
     padding: 0;
@@ -70,7 +96,7 @@ const StyledDeleteModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const DeleteJobModal = ({  
+export const DeleteJobModal = ({
   deleteModalOpen,
   setDeleteModalOpen,
   selectedJobId,
@@ -540,8 +566,17 @@ export const AppliedExtended = ({
       }
 
       setFollowUpDates(dates);
+    } else {
+      setFollowUpDates([]); // Clear if no application date
     }
   }, [selectedJob]);
+
+  // Helper function to get ordinal suffix for numbers (1st, 2nd, 3rd, etc.)
+  const getOrdinal = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
 
   return (
     <div
@@ -595,27 +630,54 @@ export const AppliedExtended = ({
           }}
         >
           <ul>
-            
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 1st follow up 1 week after the application date
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 2nd follow up 2 weeks after the application date
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 3rd follow up 3 weeks after the application date
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Archive job if you haven't heard back after 3 weeks
-              </button>
-            </li>
+            {followUpDates.length > 0 ? (
+              <>
+                {followUpDates.map((date, index) => (
+                  <li className="bulleted" key={index}>
+                    <button
+                      className="_btn_mkpcn_1 _link_mkpcn_17"
+                      type="button"
+                    >
+                      Send {index + 1}
+                      {getOrdinal(index + 1)} follow up on{" "}
+                      {date.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </button>
+                  </li>
+                ))}
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Archive job if you haven't heard back after 3 weeks
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 1st follow up 1 week after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 2nd follow up 2 weeks after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 3rd follow up 3 weeks after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Archive job if you haven't heard back after 3 weeks
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
@@ -955,20 +1017,19 @@ export const NegotiatingExtended = ({
   );
 };
 
-const JobListingDrawer = ({ setActiveTab }) => {
-  const [activeTab, setActiveTabLocal] = useState("job-info");
+const JobListingDrawer = ({ activeTab, setActiveTab }) => {
+  // const [activeTab, setActiveTabLocal] = useState("job-info");
 
   const tabs = [
     { id: "job-info", label: "Job Info", icon: JobInfoIcon },
-    { id: "notes", label: "Notes", icon: NotesIcon },
+    { id: "cover-letter", label: "Cover Letter", icon: NotesIcon },
     { id: "resumes", label: "Resumes", icon: ResumesIcon },
     { id: "contacts", label: "Contacts", icon: ContactsIcon },
     { id: "templates", label: "Email Templates", icon: EmailTemplatesIcon },
-    { id: "checklist", label: "Check List", icon: CheckListIcon },
   ];
 
   const handleTabClick = (id) => {
-    setActiveTabLocal(id);
+    // setActiveTabLocal(id);
     setActiveTab(id); // Update the active tab in the parent component
   };
 
@@ -1090,22 +1151,22 @@ const EmailTemplatesIcon = () => (
   </svg>
 );
 
-const CheckListIcon = () => (
-  <svg
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="1.5"
-    viewBox="0 0 18 18"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M16.9997 1H1.12177"></path>
-    <path d="M16.9997 17L16.9997 1"></path>
-    <path d="M1 16.9998L1 1"></path>
-    <path d="M17 16.9998L1 16.9998"></path>
-    <path d="M5.48926 9.20947L8.06812 12.2095L13.2259 6.20947"></path>
-  </svg>
-);
+// const CheckListIcon = () => (
+//   <svg
+//     fill="none"
+//     stroke="currentColor"
+//     strokeLinecap="round"
+//     strokeLinejoin="round"
+//     strokeWidth="1.5"
+//     viewBox="0 0 18 18"
+//     xmlns="http://www.w3.org/2000/svg"
+//   >
+//     <path d="M16.9997 1H1.12177"></path>
+//     <path d="M16.9997 17L16.9997 1"></path>
+//     <path d="M1 16.9998L1 1"></path>
+//     <path d="M17 16.9998L1 16.9998"></path>
+//     <path d="M5.48926 9.20947L8.06812 12.2095L13.2259 6.20947"></path>
+//   </svg>
+// );
 
 export default JobListingDrawer;
