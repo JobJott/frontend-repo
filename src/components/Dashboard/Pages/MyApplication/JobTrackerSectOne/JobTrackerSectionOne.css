@@ -1625,9 +1625,50 @@ html [type="button"],
 }
 
 .job-contact-list-item.editing-mode {
-  display: block; /* Or another layout style that works for your design */
+  display: block;
 }
 
+.action-wrapper .module-body > *:last-child {
+  padding-bottom: var(--content-margin-y);
+}
+
+.job-templates-container {
+  position: relative;
+}
+
+.job-templates-container .templates-scrollable-wrapper .category-template-item {
+  padding: 1rem;
+  border: 1px solid rgb(255, 239, 220);
+  border-radius: 3px;
+}
+
+.job-templates-container
+  .templates-scrollable-wrapper
+  .category-template-item
+  h6 {
+  margin: 3px 0 20px;
+  line-height: 1.25rem;
+}
+.job-listing-drawer .action-wrapper p {
+  font-weight: 500;
+  font-size: inherit;
+}
+
+.job-templates-container
+  .templates-scrollable-wrapper
+  .category-template-item
+  > p {
+  margin-bottom: 1rem;
+}
+
+.job-templates-container
+  .templates-scrollable-wrapper
+  .category-template-item
+  footer {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
 @media (min-width: 480px) {
   h2,
   .h2 {

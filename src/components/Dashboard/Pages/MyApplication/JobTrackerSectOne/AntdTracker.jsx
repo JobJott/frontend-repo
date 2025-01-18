@@ -8,8 +8,9 @@ import {
   Typography,
   message,
   Input,
-  Spin,
+  Tabs,
   Modal,
+  Tooltip,
 } from "antd";
 import {
   PlusCircleOutlined,
@@ -21,6 +22,7 @@ import {
   MailOutlined,
   PhoneOutlined,
   InfoCircleOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import {
@@ -36,6 +38,7 @@ import {
   updateContactInAPI,
 } from "../../../../../utils/api/contactService";
 import { ContactscreenLoader } from "./ExtendedSections";
+import Item from "antd/es/list/Item";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
@@ -68,6 +71,8 @@ const AntdTracker = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contactToDelete, setContactToDelete] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const { TabPane } = Tabs;
 
   const [jobDates, setJobDates] = useState({});
   const dateFields = [
@@ -364,6 +369,32 @@ const AntdTracker = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log("Text copied to clipboard!");
+    });
+  };
+
+  const handleCopySubject = () => {
+    const subjectText = document.querySelector("h6.font-extrabold").innerText;
+    copyToClipboard(subjectText);
+
+    message.success({
+      icon: <CheckCircleOutlined style={{ color: "#52c41a" }} />,
+      content: "Template Subject copied successfully",
+    });
+  };
+
+  const handleCopyMessage = () => {
+    const messageText = document.querySelector("p.true").innerText;
+    copyToClipboard(messageText);
+
+    message.success({
+      icon: <CheckCircleOutlined style={{ color: "#52c41a" }} />,
+      content: "Template Message copied successfully",
+    });
   };
 
   return (
@@ -695,253 +726,252 @@ const AntdTracker = ({
             <div className="module-body opened">
               {showContacts ? (
                 <div className="job-contact-list-container">
-                  <ul className="job-contact-list">
-                    <li className="add-new-contact-btn-wrapper">
-                      <div>
-                        <Select
-                          showSearch
-                          placeholder="Find an existing contact"
-                          optionFilterProp="children"
-                          style={{ width: "100%" }}
-                        />
-                      </div>
-                      <div className="divider-container">
-                        <div className="divider">
-                          <span>or</span>
+                  <>
+                    {loading && <ContactscreenLoader />}
+                    <ul className="job-contact-list">
+                      <li className="add-new-contact-btn-wrapper">
+                        <div>
+                          <Select
+                            showSearch
+                            placeholder="Find an existing contact"
+                            optionFilterProp="children"
+                            style={{ width: "100%" }}
+                          />
                         </div>
-                      </div>
-                      <div>
-                        <Button
-                          type="primary"
-                          size="small"
-                          className="full-width"
-                          onClick={handleAddContact}
-                        >
-                          <PlusCircleOutlined />
-                          <span>Add a Contact</span>
-                        </Button>
-                      </div>
-                    </li>
-
-                    {contacts.map((contact) => (
-                      <li
-                        key={contact._id}
-                        className={`job-contact-list-item ${
-                          editContactId === contact._id ? "editing-mode" : ""
-                        }`}
-                      >
-                        {editContactId === contact._id ? (
-                          <div>
-                            {/* Inline Edit Form */}
-                            <div className="edit-contact-form">
-                              <div className="field-row grid grid-cols-2 gap-4">
-                                <div className="job-contacts-input flex flex-col gap-1">
-                                  <label
-                                    htmlFor="firstName"
-                                    className="font-medium"
-                                  >
-                                    First Name
-                                  </label>
-                                  <Input
-                                    id="firstName"
-                                    placeholder="First Name"
-                                    value={contactFormData.firstName}
-                                    onChange={(e) =>
-                                      setContactFormData((prev) => ({
-                                        ...prev,
-                                        firstName: e.target.value,
-                                      }))
-                                    }
-                                    className="p-2 border !rounded-md"
-                                  />
-                                  {errors.firstName && (
-                                    <p className="text-red-500 text-sm">
-                                      {errors.firstName}
-                                    </p>
-                                  )}
-                                </div>
-                                <div className="job-contacts-input flex flex-col gap-1">
-                                  <label
-                                    htmlFor="lastName"
-                                    className="font-medium"
-                                  >
-                                    Last Name
-                                  </label>
-                                  <Input
-                                    id="lastName"
-                                    placeholder="Last Name"
-                                    value={contactFormData.lastName}
-                                    onChange={(e) =>
-                                      setContactFormData((prev) => ({
-                                        ...prev,
-                                        lastName: e.target.value,
-                                      }))
-                                    }
-                                    className="p-2 border !rounded-md"
-                                  />
-                                  {errors.lastName && (
-                                    <p className="text-red-500 text-sm">
-                                      {errors.lastName}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="field-row grid grid-cols-2 gap-4 mt-4">
-                                <div className="job-contacts-input flex flex-col gap-1">
-                                  <label
-                                    htmlFor="email"
-                                    className="font-medium"
-                                  >
-                                    Email
-                                  </label>
-                                  <Input
-                                    id="email"
-                                    placeholder="hello@example.com"
-                                    type="email"
-                                    value={contactFormData.email}
-                                    onChange={(e) =>
-                                      setContactFormData((prev) => ({
-                                        ...prev,
-                                        email: e.target.value,
-                                      }))
-                                    }
-                                    className="p-2 border !rounded-md"
-                                  />
-                                  {errors.email && (
-                                    <p className="text-red-500 text-sm">
-                                      {errors.email}
-                                    </p>
-                                  )}
-                                </div>
-                                <div className="job-contacts-input flex flex-col gap-1">
-                                  <label
-                                    htmlFor="phoneNumber"
-                                    className="font-medium"
-                                  >
-                                    Phone Number
-                                  </label>
-                                  <Input
-                                    id="phoneNumber"
-                                    placeholder="+234 80X XXXXXXX"
-                                    value={contactFormData.phoneNumber}
-                                    onChange={(e) =>
-                                      setContactFormData((prev) => ({
-                                        ...prev,
-                                        phoneNumber: e.target.value,
-                                      }))
-                                    }
-                                    className="border p-2 !rounded-md"
-                                  />
-                                  {errors.phoneNumber && (
-                                    <p className="text-red-500 text-sm">
-                                      {errors.phoneNumber}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className="field-row mt-4">
-                                <div className="job-contacts-input flex flex-col gap-1">
-                                  <label
-                                    htmlFor="notes"
-                                    className="font-medium"
-                                  >
-                                    Notes
-                                  </label>
-                                  <Input.TextArea
-                                    id="notes"
-                                    placeholder="Add notes about this contact"
-                                    rows={4}
-                                    value={contactFormData.notes}
-                                    onChange={(e) =>
-                                      setContactFormData((prev) => ({
-                                        ...prev,
-                                        notes: e.target.value,
-                                      }))
-                                    }
-                                    className="border p-2 !rounded-md"
-                                  />
-                                </div>
-                              </div>
-                              <div className="field-row flex gap-4 mt-4 mb-5">
-                                <Button
-                                  type="primary"
-                                  size="small"
-                                  onClick={() =>
-                                    handleUpdateContact(
-                                      contact._id,
-                                      contactFormData
-                                    )
-                                  }
-                                >
-                                  Save
-                                </Button>
-                                <Button
-                                  type="default"
-                                  size="small"
-                                  onClick={handleCancelEdit}
-                                >
-                                  Cancel
-                                </Button>
-                              </div>
-                            </div>
+                        <div className="divider-container">
+                          <div className="divider">
+                            <span>or</span>
                           </div>
-                        ) : (
-                          <>
-                            <ContactscreenLoader
-                              setLoading={setLoading}
-                              loading={loading}
-                            />
-                            <div className="job-contacts-read-only">
-                              <div className="h4 read-only-name text-lg">
-                                <span>
-                                  {contact.firstName} {contact.lastName}
-                                </span>
-                              </div>
-                              <div className="read-only-contact-info email flex items-center">
-                                <MailOutlined className="mr-2" />
-                                <span>
-                                  <a
-                                    href={`mailto:${contact.email}`}
-                                    rel="noopener noreferrer"
-                                    className="font-normal text-[#111313] underline hover:no-underline"
+                        </div>
+                        <div>
+                          <Button
+                            type="primary"
+                            size="small"
+                            className="full-width"
+                            onClick={handleAddContact}
+                          >
+                            <PlusCircleOutlined />
+                            <span>Add a Contact</span>
+                          </Button>
+                        </div>
+                      </li>
+
+                      {contacts.map((contact) => (
+                        <li
+                          key={contact._id}
+                          className={`job-contact-list-item ${
+                            editContactId === contact._id ? "editing-mode" : ""
+                          }`}
+                        >
+                          {editContactId === contact._id ? (
+                            <div>
+                              {/* Inline Edit Form */}
+                              <div className="edit-contact-form">
+                                <div className="field-row grid grid-cols-2 gap-4">
+                                  <div className="job-contacts-input flex flex-col gap-1">
+                                    <label
+                                      htmlFor="firstName"
+                                      className="font-medium"
+                                    >
+                                      First Name
+                                    </label>
+                                    <Input
+                                      id="firstName"
+                                      placeholder="First Name"
+                                      value={contactFormData.firstName}
+                                      onChange={(e) =>
+                                        setContactFormData((prev) => ({
+                                          ...prev,
+                                          firstName: e.target.value,
+                                        }))
+                                      }
+                                      className="p-2 border !rounded-md"
+                                    />
+                                    {errors.firstName && (
+                                      <p className="text-red-500 text-sm">
+                                        {errors.firstName}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className="job-contacts-input flex flex-col gap-1">
+                                    <label
+                                      htmlFor="lastName"
+                                      className="font-medium"
+                                    >
+                                      Last Name
+                                    </label>
+                                    <Input
+                                      id="lastName"
+                                      placeholder="Last Name"
+                                      value={contactFormData.lastName}
+                                      onChange={(e) =>
+                                        setContactFormData((prev) => ({
+                                          ...prev,
+                                          lastName: e.target.value,
+                                        }))
+                                      }
+                                      className="p-2 border !rounded-md"
+                                    />
+                                    {errors.lastName && (
+                                      <p className="text-red-500 text-sm">
+                                        {errors.lastName}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="field-row grid grid-cols-2 gap-4 mt-4">
+                                  <div className="job-contacts-input flex flex-col gap-1">
+                                    <label
+                                      htmlFor="email"
+                                      className="font-medium"
+                                    >
+                                      Email
+                                    </label>
+                                    <Input
+                                      id="email"
+                                      placeholder="hello@example.com"
+                                      type="email"
+                                      value={contactFormData.email}
+                                      onChange={(e) =>
+                                        setContactFormData((prev) => ({
+                                          ...prev,
+                                          email: e.target.value,
+                                        }))
+                                      }
+                                      className="p-2 border !rounded-md"
+                                    />
+                                    {errors.email && (
+                                      <p className="text-red-500 text-sm">
+                                        {errors.email}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <div className="job-contacts-input flex flex-col gap-1">
+                                    <label
+                                      htmlFor="phoneNumber"
+                                      className="font-medium"
+                                    >
+                                      Phone Number
+                                    </label>
+                                    <Input
+                                      id="phoneNumber"
+                                      placeholder="+234 80X XXXXXXX"
+                                      value={contactFormData.phoneNumber}
+                                      onChange={(e) =>
+                                        setContactFormData((prev) => ({
+                                          ...prev,
+                                          phoneNumber: e.target.value,
+                                        }))
+                                      }
+                                      className="border p-2 !rounded-md"
+                                    />
+                                    {errors.phoneNumber && (
+                                      <p className="text-red-500 text-sm">
+                                        {errors.phoneNumber}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="field-row mt-4">
+                                  <div className="job-contacts-input flex flex-col gap-1">
+                                    <label
+                                      htmlFor="notes"
+                                      className="font-medium"
+                                    >
+                                      Notes
+                                    </label>
+                                    <Input.TextArea
+                                      id="notes"
+                                      placeholder="Add notes about this contact"
+                                      rows={4}
+                                      value={contactFormData.notes}
+                                      onChange={(e) =>
+                                        setContactFormData((prev) => ({
+                                          ...prev,
+                                          notes: e.target.value,
+                                        }))
+                                      }
+                                      className="border p-2 !rounded-md"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="field-row flex gap-4 mt-4 mb-5">
+                                  <Button
+                                    type="primary"
+                                    size="small"
+                                    onClick={() =>
+                                      handleUpdateContact(
+                                        contact._id,
+                                        contactFormData
+                                      )
+                                    }
                                   >
-                                    {contact.email}
-                                  </a>
-                                </span>
-                              </div>
-                              <div className="read-only-contact-info phone flex items-center">
-                                <PhoneOutlined className="mr-2" />
-                                <span>{contact.phoneNumber}</span>
-                              </div>
-                              <div className="read-only-contact-info notes mt-3">
-                                <span className="label font-semibold">
-                                  Notes:
-                                </span>
-                                <div className="notes-container max-h-36 overflow-y-auto">
-                                  <p>{contact.notes}</p>
+                                    Save
+                                  </Button>
+                                  <Button
+                                    type="default"
+                                    size="small"
+                                    onClick={handleCancelEdit}
+                                  >
+                                    Cancel
+                                  </Button>
                                 </div>
                               </div>
                             </div>
-                            <button
-                              type="button"
-                              className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only ant-btn-dangerous delete-contact-btn w-auto h-auto"
-                              onClick={() => handleDeleteContact(contact._id)}
-                            >
-                              <DeleteOutlined className="!border-red-500" />
-                            </button>
-                            <button
-                              type="button"
-                              className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only edit-contact-btn muted-icon w-auto h-auto"
-                              onClick={() => handleEditContact(contact._id)}
-                            >
-                              <EditOutlined className="text-[#bdbdbd]" />
-                            </button>
-                          </>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
+                          ) : (
+                            <>
+                              <div className="job-contacts-read-only">
+                                <div className="h4 read-only-name text-lg">
+                                  <span>
+                                    {contact.firstName} {contact.lastName}
+                                  </span>
+                                </div>
+                                <div className="read-only-contact-info email flex items-center">
+                                  <MailOutlined className="mr-2" />
+                                  <span>
+                                    <a
+                                      href={`mailto:${contact.email}`}
+                                      rel="noopener noreferrer"
+                                      className="font-normal text-[#111313] underline hover:no-underline"
+                                    >
+                                      {contact.email}
+                                    </a>
+                                  </span>
+                                </div>
+                                <div className="read-only-contact-info phone flex items-center">
+                                  <PhoneOutlined className="mr-2" />
+                                  <span>{contact.phoneNumber}</span>
+                                </div>
+                                <div className="read-only-contact-info notes mt-3">
+                                  <span className="label font-semibold">
+                                    Notes:
+                                  </span>
+                                  <div className="notes-container max-h-36 overflow-y-auto">
+                                    <p>{contact.notes}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only ant-btn-dangerous delete-contact-btn w-auto h-auto"
+                                onClick={() => handleDeleteContact(contact._id)}
+                              >
+                                <DeleteOutlined className="!border-red-500" />
+                              </button>
+                              <button
+                                type="button"
+                                className="ant-btn ant-btn-link ant-btn-lg ant-btn-icon-only edit-contact-btn muted-icon w-auto h-auto"
+                                onClick={() => handleEditContact(contact._id)}
+                              >
+                                <EditOutlined className="text-[#bdbdbd]" />
+                              </button>
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 </div>
               ) : (
                 showForm && (
@@ -1087,6 +1117,339 @@ const AntdTracker = ({
               </Button>
             </div>
           </Modal>
+        </div>
+      )}
+
+      {activeTab === "templates" && (
+        <div className="ant-col tools-drawer scroll">
+          <div className="action-wrapper summary-module-wrapper _job-listing-tool-content_1pqaz_5">
+            <div className="module-header">
+              <h3>
+                <svg
+                  fill="none"
+                  height="40"
+                  viewBox="0 0 20 16"
+                  width="40"
+                  xmlns="http://www.w3.org/2000/svg"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="1.5"
+                  className="!w-6 !h-6"
+                >
+                  <rect
+                    height="13"
+                    rx="0.5"
+                    width="18"
+                    x="1.07727"
+                    y="1.5"
+                  ></rect>
+                  <path d="M1.07727 2L9.7703 8.76125C9.95086 8.90168 10.2037 8.90168 10.3842 8.76125L19.0773 2"></path>
+                </svg>
+                Email Templates
+              </h3>
+              <div className="module-header-action">
+                <button
+                  type="button"
+                  className="_button_11uyj_1 _with-icon_11uyj_47 _icon-only_11uyj_51 _round_11uyj_141 _flat_11uyj_95 _medium_11uyj_127 _close-button_1pqaz_1 !text-red-500 !text-lg"
+                  onClick={handleClose}
+                >
+                  <CloseCircleOutlined className="!w-5 !h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="module-body opened">
+              <div className="job-templates-container">
+                <div className="templates-scrollable-wrapper">
+                  <Tabs
+                    type="card"
+                    items={[
+                      {
+                        key: "template-1",
+                        label: (
+                          <Tooltip title="Use this template to apply for a job.">
+                            Job Application
+                          </Tooltip>
+                        ),
+                        children: (
+                          <div className="category-template-item">
+                            <h6 className="font-extrabold">
+                              Subject: Application for [Job Title] - [Your Full
+                              Name]
+                            </h6>
+                            <p className="true">
+                              Dear [Hiring Manager's Name or "Hiring Manager"],{" "}
+                              <br />
+                              <br />
+                              I hope this message finds you well. I am writing
+                              to express my interest in the [Job Title] position
+                              at [Company Name], as advertised on [Job
+                              Board/Company Website/Referral]. <br />
+                              <br />
+                              With my background in [Your Field/Industry],
+                              including over [X years of experience] in
+                              [specific skills or achievements], I am confident
+                              in my ability to contribute significantly to your
+                              team. In my previous role(s) at [Previous Company
+                              Name(s)], I successfully [specific accomplishments
+                              or responsibilities that are relevant to the job].{" "}
+                              <br />
+                              <br />
+                              I have attached my resume and [any additional
+                              documents, if applicable] for your review. I would
+                              welcome the opportunity to further discuss how my
+                              skills and experiences align with the needs of
+                              your team. <br />
+                              <br />
+                              Thank you for considering my application. Please
+                              feel free to contact me at [your email address] or
+                              [your phone number] at your convenience. I look
+                              forward to the possibility of contributing to
+                              [Company Name]'s success.
+                              <br />
+                              <br />
+                              Best regards, <br />
+                              [Your Full Name] <br />
+                              [Your LinkedIn Profile (if applicable)] <br />
+                              [Your Contact Information]
+                            </p>
+                            <footer>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopySubject}
+                              >
+                                Copy Subject
+                              </Button>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopyMessage}
+                              >
+                                Copy Message
+                              </Button>
+                            </footer>
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "template-2",
+                        label: (
+                          <Tooltip title="Follow up on a job application.">
+                            Follow Up
+                          </Tooltip>
+                        ),
+                        children: (
+                          <div className="category-template-item">
+                            <h6 className="font-extrabold">
+                              Subject: Following up on [X ROLE] application at
+                              [X]
+                            </h6>
+                            <p className="true">
+                              Hi [RECRUITER'S NAME], <br />
+                              <br />
+                              I hope you're well. I wanted to follow up on my
+                              previous email to see if you had any updates
+                              regarding the timeline for hiring a [ROLE] at
+                              [COMPANY NAME]. <br />
+                              <br />
+                              I'm sure you're quite busy but wanted to reiterate
+                              my interest in the position. <br />
+                              <br />
+                              Again, I appreciate your time and consideration
+                              and look forward to hearing from you. Thanks so
+                              much! <br />
+                              <br />
+                              Best, <br />
+                              [YOUR NAME]
+                            </p>
+                            <footer>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopySubject}
+                              >
+                                Copy Subject
+                              </Button>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopyMessage}
+                              >
+                                Copy Message
+                              </Button>
+                            </footer>
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "template-3",
+                        label: (
+                          <Tooltip title="Respond to a rejection letter professionally.">
+                            Rejection Letter
+                          </Tooltip>
+                        ),
+                        children: (
+                          <div className="category-template-item">
+                            <h6 className="font-extrabold">
+                              Subject: Thank You for the Opportunity - [Your
+                              Full Name]
+                            </h6>
+                            <p className="true">
+                              Dear [Hiring Manager's Name], <br />
+                              <br />
+                              Thank you for getting back to me regarding the
+                              [Job Title] position at [Company Name]. While I am
+                              disappointed to hear that I was not selected for
+                              the role, I truly appreciate the opportunity to
+                              interview and learn more about your team and
+                              organization. <br />
+                              <br />
+                              I would like to stay in touch and hope to be
+                              considered for any future opportunities that align
+                              with my skills and experience. <br />
+                              <br />
+                              Wishing you and your team all the best. <br />
+                              <br />
+                              Best regards, <br />
+                              [YOUR NAME] <br />
+                              [Your Contact Information]
+                            </p>
+                            <footer>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopySubject}
+                              >
+                                Copy Subject
+                              </Button>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopyMessage}
+                              >
+                                Copy Message
+                              </Button>
+                            </footer>
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "template-4",
+                        label: (
+                          <Tooltip title="Job application email for referral from a connection">
+                            Referral
+                          </Tooltip>
+                        ),
+                        children: (
+                          <div className="category-template-item">
+                            <h6 className="font-extrabold">
+                              Subject: Job application for the position of [job
+                              title]
+                            </h6>
+                            <p className="true">
+                              Respected [Recipient's Name], <br />
+                              <br />
+                              My name is [your name], and I'm writing to apply
+                              for the [job title] position. I have been
+                              researching your company for the past few months
+                              and have only heard positive things about your
+                              organization.
+                              <br />
+                              <br />
+                              I have been referred to you by Mr./Ms. [Referrer's
+                              name], who is working for [Referrer's company
+                              name] as [designation's name]. They also highly
+                              regard your company and have especially
+                              recommended me to you.
+                              <br />
+                              <br />
+                              I have a work experience of over [years] at
+                              [company's name]. Therefore, I have the experience
+                              necessary to work for your esteemed organization.
+                              <br />
+                              <br />
+                              I have also attached my resume and await your
+                              valuable response.
+                              <br />
+                              <br />
+                              Thanking you, <br />
+                              Yours sincerely,
+                              <br />
+                              [Your Name]
+                            </p>
+                            <footer>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopySubject}
+                              >
+                                Copy Subject
+                              </Button>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopyMessage}
+                              >
+                                Copy Message
+                              </Button>
+                            </footer>
+                          </div>
+                        ),
+                      },
+                      {
+                        key: "template-5",
+                        label: (
+                          <Tooltip title="Withdraw a job application politely.">
+                            Withdraw Application
+                          </Tooltip>
+                        ),
+                        children: (
+                          <div className="category-template-item">
+                            <h6 className="font-extrabold">
+                              Subject: Request to withdraw my job application
+                            </h6>
+                            <p className="true">
+                              Respected [Recipient's Name], <br />
+                              <br />
+                              Thank you for taking the time to interview me for
+                              the position of [Job Title] at your reputed
+                              company. <br />
+                              <br />
+                              However, with a heavy heart, I would like to
+                              withdraw my application. It was a hard decision,
+                              but I had to take it owing to [state the reason].{" "}
+                              <br />
+                              <br />
+                              Thanking you, <br />
+                              Sincerely, <br />
+                              [Your Name]
+                            </p>
+                            <footer>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopySubject}
+                              >
+                                Copy Subject
+                              </Button>
+                              <Button
+                                type="button"
+                                className="bg-[#111313] !text-white"
+                                onClick={handleCopyMessage}
+                              >
+                                Copy Message
+                              </Button>
+                            </footer>
+                          </div>
+                        ),
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

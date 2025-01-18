@@ -60,7 +60,7 @@ const MyApplication = () => {
   return (
     <>
       <main className="mainboard-content">
-        <div className="job-tracker-container">
+        <div className="job-tracker-container relative">
           <div className="job-tracker-content-wrapper">
             {/* <JobTrackerSectionTwo /> */}
             <Outlet

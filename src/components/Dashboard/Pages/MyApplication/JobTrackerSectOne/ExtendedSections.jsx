@@ -14,29 +14,30 @@ export const FullscreenLoader = ({ spinning, text }) => {
   );
 };
 
-export const ContactscreenLoader = ({ loading, setLoading }) => {
-  const [percent, setPercent] = useState(0);
-  const showLoader = () => {
-    setLoading(true);
-    let ptg = -10;
-    const interval = setInterval(() => {
-      ptg += 5;
-      setPercent(ptg);
-      if (ptg > 120) {
-        clearInterval(interval);
-        setLoading(false);
-        setPercent(0);
-      }
-    }, 100);
-  };
-
+export const ContactscreenLoader = () => {
   return (
-    <Spin
-      spinning={loading}
-      percent={percent}
-      fullscreen
-      text="Loading contents"
-    />
+    <div
+      className="
+      absolute top-0 left-0 h-full w-full bg-white/50 z-[1000]
+      flex gap-2 items-center justify-center
+    "
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="lucide lucide-loader-circle animate-spin w-5 h-5 text-grey-600"
+      >
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+      </svg>
+      <span className="text-grey-600">Loading content</span>
+    </div>
   );
 };
 
