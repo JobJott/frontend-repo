@@ -39,6 +39,7 @@
   color: var(--whiteColor);
   line-height: 1.5;
   font-size: 2rem;
+  font-weight: 600;
 }
 
 a {
