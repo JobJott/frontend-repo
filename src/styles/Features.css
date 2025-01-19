@@ -118,18 +118,18 @@
   }
 
   .features-text p {
-    font-size: 0.95rem;
+    font-size: 0.10rem;
   }
 
   .features-details {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-  }
+  } 
 
   .flex-container .feature-item {
     flex: 1 1 45%;
   }
-}
+} 
 
 @media only screen and (max-width: 768px) {
   .features-container {
