@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../../styles/HeroSection.css";
 // import rectbig from "../../assets/rectbig.svg"
-import rectsmall from "../../assets/rectsmall.svg"
+import rectsmall from "../../assets/rectsmall.svg";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 
@@ -22,16 +22,13 @@ const HeroSection = () => {
   }, []);
 
   return (
-      <section className="hero-section-container"
-      id="home-section">
-        <div className="hero">
+    <section className="hero-section-container" id="home-section">
+      <div className="hero">
         {/* text content */}
         <div className="textContent">
           <div className="headline">
             <h1>
-              <span>
-                 Simplify Your Job Search with Our Tracker             
-              </span>
+              Simplify Your Job Search with <br /> <span> Our Tracker</span>
             </h1>
           </div>
           <div className="call-to-action">
@@ -43,15 +40,17 @@ const HeroSection = () => {
             </p>
           </div>
           <div className="hero-section-btn">
-          <Link to="/auth/signup"><button className="get-started-btn">Get Started</button></Link>
+            <Link to="/auth/signup">
+              <button className="get-started-btn">Get Started</button>
+            </Link>
           </div>
         </div>
         <div>
-          <img src={rectsmall} alt="rectangle" className="hero-rect1"/>
-          <img src={rectsmall} alt="rectangle" className="hero-rect2"/>
+          <img src={rectsmall} alt="rectangle" className="hero-rect1" />
+          <img src={rectsmall} alt="rectangle" className="hero-rect2" />
         </div>
-        </div>
-        </section>
+      </div>
+    </section>
   );
 };
 

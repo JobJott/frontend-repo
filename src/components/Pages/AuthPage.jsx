@@ -9,7 +9,11 @@ const AuthPage = () => {
         <Route path="signin" element={<AuthContainer formType="signin" />} />
         <Route path="signup" element={<AuthContainer formType="signup" />} />
         <Route
-          path="reset-password"
+          path="forget-password"
+          element={<AuthContainer formType="forget-password" />}
+        />
+        <Route
+          path="reset-password/:token"
           element={<AuthContainer formType="reset-password" />}
         />
       </Routes>

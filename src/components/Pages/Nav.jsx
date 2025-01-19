@@ -4,7 +4,7 @@ import divider from "../../assets/Divider.svg";
 import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
-import SideBar from "./SideBar";
+// import SideBar from "./SideBar";
 import "../../styles/Nav.css";
 
 const Nav = () => {
