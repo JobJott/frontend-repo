@@ -3,6 +3,7 @@ import { FiLoader } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 import { SideDashData, SideDashData2 } from "./Sidedash/SidedashData";
 import chevronCollapse from "../../assets/chevronCollapse.svg";
+import { RadarOutlined } from "@mui/icons-material";
 
 const SideDash = ({ isOpen, toggleSidebar }) => {
   return (
@@ -10,17 +11,23 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
       <div className="sidebar-container">
         <div className="sidebar-container-wrap">
           <div className="side-nav-header">
-            <div className="side-nav-content">
+            <div className="side-nav-content w-full bg-[#99BFBF] rounded-xl p-2">
               <div className="content-text">
-                <h1>
-                  JobJ
+                <h1 className="!tracking-normal">
+                  J
                   <span>
-                    <FiLoader />
+                    {/* <FiLoader /> */}
+                    <RadarOutlined />
+                  </span>
+                  bJ
+                  <span>
+                    {/* <FiLoader /> */}
+                    <RadarOutlined />
                   </span>
                   tt
                 </h1>
               </div>
-              <button className="toggle-btn" onClick={toggleSidebar}>
+              <button className="toggle-btn !top-0" onClick={toggleSidebar}>
                 <img
                   src={chevronCollapse}
                   style={{ color: "white" }}
@@ -30,17 +37,23 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
             </div>
           </div>
 
-          <div className="side-nav-menu">
+          <div className="side-nav-menu !pt-10 !gap-8">
             {SideDashData.map((item) => (
-              <div key={item.id} className="side-nav-menu-item">
+              <div
+                key={item.id}
+                className={`side-nav-menu-item ${
+                  isOpen ? "" : "flex items-center justify-center"
+                }`}
+              >
                 <NavLink
                   to={item.path}
+                  end={item.path === "/dashboard"}
                   className={({ isActive }) =>
                     isActive ? "active-link" : "link"
                   }
                 >
                   {({ isActive }) => (
-                    <div className="menu-content">
+                    <div className="menu-content gap-3">
                       <span
                         className={`sidebar-icon ${isActive ? "selected" : ""}`}
                       >
@@ -48,7 +61,7 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                       </span>
                       {isOpen && (
                         <span
-                          className={`sidebar-title ${
+                          className={`sidebar-title !ml-0 ${
                             isActive ? "selected" : ""
                           }`}
                         >
@@ -72,9 +85,14 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
             ))}
           </div>
 
-          <div className="side-nav-footer">
+          <div className="side-nav-footer !pt-10 mb-6 !gap-8">
             {SideDashData2.map((item) => (
-              <div key={item.id} className="side-nav-menu-item">
+              <div
+                key={item.id}
+                className={`side-nav-menu-item ${
+                  isOpen ? "" : "flex items-center justify-center"
+                }`}
+              >
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
@@ -82,7 +100,7 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                   }
                 >
                   {({ isActive }) => (
-                    <div className="menu-content">
+                    <div className="menu-content gap-3">
                       <span
                         className={`sidebar-icon ${isActive ? "selected" : ""}`}
                       >

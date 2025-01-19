@@ -51,7 +51,7 @@
 }
 
 .side-nav-header {
-  height: 2.375rem;
+  /* height: 2.375rem; */
   margin-bottom: 2rem;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .content-text span {
-  font-size: 25px;
+  font-size: 30px;
   display: inline-block;
 }
 
@@ -149,9 +149,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 1rem;
   color: #a7b9b6;
   font-weight: 600;
   border-radius: 50%;
@@ -164,10 +164,11 @@
 
 .sidebar-icon > svg {
   position: absolute;
-  top: -0.125rem;
-  left: -0.125rem;
-  width: 2.5rem;
-  height: 2.5rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Adjust position to center */
+  width: 1.5rem;
+  height: 1.5rem;
   vertical-align: middle;
 }
 

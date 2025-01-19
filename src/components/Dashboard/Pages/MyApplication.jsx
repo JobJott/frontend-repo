@@ -10,10 +10,8 @@ import {
   updateJobInAPI,
 } from "../../../utils/api/jobService";
 
-const MyApplication = () => {
-  const [jobs, setJobs] = useState([]);
+const MyApplication = ({ modalOpen, setModalOpen, jobs, setJobs }) => {
   const [selectedJob, setSelectedJob] = useState(null); // State to track the currently selected job.
-  const [modalOpen, setModalOpen] = useState(false);
   const [loadingJobs, setLoadingJobs] = useState(true);
 
   useEffect(() => {

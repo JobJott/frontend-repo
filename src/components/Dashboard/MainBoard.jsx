@@ -20,6 +20,8 @@ const MainBoard = ({ isSideDashOpen }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [loadingText, setLoadingText] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [jobs, setJobs] = useState([]);
 
   const routeToLeadingText = {
     "/dashboard": "Loading overview...",
@@ -89,9 +91,29 @@ const MainBoard = ({ isSideDashOpen }) => {
           )}
           {!isLoading && (
             <Routes>
-              <Route index element={<Overview />} />
+              <Route
+                index
+                element={
+                  <Overview
+                    modalOpen={modalOpen}
+                    setModalOpen={setModalOpen}
+                    jobs={jobs}
+                    setJobs={setJobs}
+                  />
+                }
+              />
               {/* <Route path="resume-builder" element={<ResumeBuilder />} />  */}
-              <Route path="my-applications/*" element={<MyApplication />}>
+              <Route
+                path="my-applications/*"
+                element={
+                  <MyApplication
+                    modalOpen={modalOpen}
+                    setModalOpen={setModalOpen}
+                    jobs={jobs}
+                    setJobs={setJobs}
+                  />
+                }
+              >
                 <Route index element={<JobTrackerSection0 />} />
                 <Route
                   path="job-trackerv1"

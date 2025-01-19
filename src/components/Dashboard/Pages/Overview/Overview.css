@@ -1,184 +1,328 @@
- /* General Styles */
+/* General Styles */
 body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #f5f8fc;
-    color: black;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f5f8fc;
+  color: black;
+}
+
+.career-dashboard {
+  max-width: 100vw;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Career Goal Section */
+.career-goal {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
+  animation: slideDown 1s ease-in-out;
+}
+
+.career-goal .goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.career-goal h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.career-goal .edit-btn {
+  background: #ffffff;
+  color: #4facfe;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.3s ease-in-out;
+}
+
+.career-goal .edit-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Video Section */
+.intro-video {
+  text-align: center;
+  margin-bottom: 30px;
+  animation: slideUp 1s ease-in-out;
+}
+
+.video-container {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.intro-video button {
+  margin-top: 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.intro-video button:hover {
+  background: #1e7e34;
+}
+
+/* Task List Section */
+.task-list {
+  margin-top: 20px;
+}
+
+.task-list h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.task {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #f9fafc;
+  border: 1px solid #e6e6e6;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.task h4 {
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.task p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.task button {
+  margin-top: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.task button:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .career-dashboard {
-    max-width: 100vw;
-    margin: 20px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 12px;
-    display: flex;
-    gap: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1.2s ease-in-out;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Career Goal Section */
-  .career-goal {
-    margin-bottom: 30px;
-    padding: 20px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-    color: white;
-    animation: slideDown 1s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+._center_1szvl_1 {
+  box-sizing: content-box;
+  max-inline-size: var(--width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.ant-col-xs-24 {
+  display: block;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.home-container .ant-space {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.summary-module-wrapper {
+  position: relative;
+  padding: 1.25rem;
+  line-height: 1.4;
+  background-color: #fff;
+  border: 1px solid #ece4db;
+}
+
+.home-container .summary-module-wrapper {
+  box-shadow: 0 1px 2px #0000001a;
+}
+.jobjott-plus-container .col {
+  flex-basis: 50%;
+  flex-grow: 1;
+}
+
+.ant-modal {
+  min-width: 300px;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  max-width: 80% !important;
+}
+
+.jobjott-plus-container .left {
+  background-color: #111313;
+  color: #fff;
+  padding: 82px 92px 92px;
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  line-height: 120%;
+}
+
+.jobjott-plus-modal .ant-modal-content {
+  background-color: transparent;
+  border-radius: 24px;
+  padding: 0%;
+}
+
+.jobjott-plus-container .col {
+  flex-basis: 50%;
+  flex-grow: 1;
+}
+
+.jobjott-plus-container .right {
+  background-color: #fff;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.ant-btn.price-btn {
+  display: flex;
+  align-items: center;
+  border: 1px solid #17282a;
+  padding: 20px 24px 20px 32px;
+  height: 72px;
+  gap: 2rem;
+}
+.ant-btn {
+  line-height: 1;
+  font-size: 16px;
+  padding: 8px 16px;
+  letter-spacing: 0;
+  box-shadow: none;
+  border-radius: 4px;
+}
+
+.jobjott-plus-container .ant-btn-secondary {
+  height: 54px;
+  font-weight: 600;
+}
+
+.ant-btn.ant-btn-secondary {
+  background-color: #99bfbf;
+  border: 1px solid #99bfbf;
+  color: #000;
+  border: none;
+}
+
+.ant-btn.ant-btn-round,
+.ant-btn.ant-btn-round-outline {
+  border-radius: 50vh;
+}
+
+.ant-btn.price-btn.selected,
+.ant-btn.price-btn.selected:hover {
+  background: #2427ab;
+  color: #fff;
+}
+
+/* Responsive Design */
+@media (min-width: 480px) {
+  h3,
+  .h3 {
+    font-size: 26px;
+  }
+}
+
+@media (min-width: 576px) {
+  .summary-module-wrapper {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
   .career-goal .goal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
   .career-goal h2 {
-    margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
-  
-  .career-goal .edit-btn {
-    background: #ffffff;
-    color: #4facfe;
-    border: none;
-    border-radius: 20px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .career-goal .edit-btn:hover {
-    transform: scale(1.1);
-  }
-  
-  /* Video Section */
-  .intro-video {
-    text-align: center;
-    margin-bottom: 30px;
-    animation: slideUp 1s ease-in-out;
-  }
-  
-  .video-container {
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-  
-  .intro-video button {
-    margin-top: 20px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
-  }
-  
-  .intro-video button:hover {
-    background: #1e7e34;
-  }
-  
-  /* Task List Section */
-  .task-list {
-    margin-top: 20px;
-  }
-  
-  .task-list h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-  }
-  
-  .task {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background: #f9fafc;
-    border: 1px solid #e6e6e6;
-    animation: fadeIn 1.5s ease-in-out;
-  }
-  
-  .task h4 {
-    margin-bottom: 5px;
-    font-size: 1.1rem;
-  }
-  
-  .task p {
-    font-size: 0.95rem;
-    color: #555;
-  }
-  
+
   .task button {
-    margin-top: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    width: 100%;
   }
-  
-  .task button:hover {
-    background: #0056b3;
-    transform: scale(1.05);
+}
+
+@media (min-width: 992px) {
+  .ant-col-lg-12 {
+    display: block;
+    flex: 0 0 50%;
+    max-width: 50%;
   }
-  
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+}
+
+@media (min-width: 1200px) {
+  .ant-col-xl-8 {
+    display: block;
+    flex: 0 0 33.33333333%;
+    max-width: 33.33333333%;
   }
-  
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
+  .ant-col-xl-16 {
+    display: block;
+    flex: 0 0 66.66666667%;
+    max-width: 66.66666667%;
   }
-  
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
+  .ant-col-xl-24 {
+    display: block;
+    flex: 0 0 100%;
+    max-width: 100%;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .career-goal .goal-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .career-goal h2 {
-      font-size: 1.2rem;
-    }
-  
-    .task button {
-      width: 100%;
-    }
-  }
-  
+}
+
 /*   
   .career-goal, .intro-video, .task-list {
     margin-bottom: 30px;

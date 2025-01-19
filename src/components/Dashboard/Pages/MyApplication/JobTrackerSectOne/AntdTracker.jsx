@@ -38,7 +38,7 @@ import {
   updateContactInAPI,
 } from "../../../../../utils/api/contactService";
 import { ContactscreenLoader } from "./ExtendedSections";
-import Item from "antd/es/list/Item";
+import { generateCoverLetter } from "../../../../../utils/api/userService";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
@@ -60,7 +60,7 @@ const AntdTracker = ({
   const [interviewType, setInterviewType] = useState(null);
   const [interviewFormat, setInterviewFormat] = useState(null);
 
-  const [coverLetter, setCoverLetter] = useState(true);
+  const [coverLetter, setCoverLetter] = useState([]);
   const [showCoverLetterForm, setShowCoverLetterForm] = useState(false);
 
   const [showContacts, setShowContacts] = useState(true);
@@ -397,6 +397,35 @@ const AntdTracker = ({
     });
   };
 
+  const handleCoverLetterInputChange = (e) => {
+    const { id, value } = e.target;
+    setCoverLetterForm((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSaveGenerateCoverLetter = async () => {
+    try {
+      const saveCoverLetter = await generateCoverLetter({
+        ...coverLetterForm,
+      });
+      // setCoverLetter((prev) => [...prev, savedContact.contact]);
+      console.log(saveCoverLetter);
+      setCoverLetterForm({
+        companyName: "",
+        jobTitle: "",
+        insights: "",
+      });
+      message.success({
+        icon: <InfoCircleOutlined />,
+        content: "Cover letter generated!",
+      });
+    } catch (error) {
+      console.error("Error generating cover letter:", error);
+      message.error("Failed to generate cover letter.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="ant-row ant-row-no-wrap scroll-parent">
       {activeTab === "job-info" && (
@@ -620,7 +649,7 @@ const AntdTracker = ({
                           id="companyName"
                           type="text"
                           value={coverLetterForm.companyName}
-                          onChange={handleInputChange}
+                          onChange={handleCoverLetterInputChange}
                           placeholder="Enter the company name"
                           className="p-2 border !rounded-md"
                         />
@@ -639,7 +668,7 @@ const AntdTracker = ({
                           placeholder="Enter the job title"
                           type="text"
                           value={coverLetterForm.jobTitle}
-                          onChange={handleInputChange}
+                          onChange={handleCoverLetterInputChange}
                           className="p-2 border !rounded-md"
                         />
                         {/* {errors.jobTitle && (
@@ -661,7 +690,7 @@ const AntdTracker = ({
                         placeholder="Add insights or details for the cover letter"
                         rows={6}
                         value={coverLetterForm.insights}
-                        onChange={handleInputChange}
+                        onChange={handleCoverLetterInputChange}
                         className="border p-2 !rounded-md"
                       />
                     </div>
@@ -670,7 +699,7 @@ const AntdTracker = ({
                     <Button
                       type="primary"
                       size="small"
-                      // onClick={handleGenerateCoverLetter}
+                      onClick={handleSaveGenerateCoverLetter}
                     >
                       Generate
                     </Button>

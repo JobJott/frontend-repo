@@ -16,3 +16,22 @@ export const updateUserProfile = async (userData) => {
     );
   }
 };
+
+export const generateCoverLetter = async (coverLetter) => {
+  try {
+    const response = axios.post(
+      `${API_URL}/generate-cover-letter`,
+      coverLetter,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to generate cover letter"
+    );
+  }
+};
