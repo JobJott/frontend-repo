@@ -8,9 +8,9 @@ import { FaRegUserCircle } from "react-icons/fa";
 export const SideDashData = [
   {
     id: 1,
-    title: "Overview",
+    title: "Home",
     icon: <HomeIcon />,
-    path: "/dashboard/Overview",
+    path: "/dashboard",
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ export const SideDashData2 = [
     id: 5,
     title: "Support Center",
     icon: <HelpIcon />,
-    path: "/dashboard/support",
+    path: "/dashboard/supportcenter",
   },
   {
     id: 6,

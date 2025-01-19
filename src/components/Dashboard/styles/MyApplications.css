@@ -1053,6 +1053,13 @@ textarea {
   background-color: hsl(var(--jobjott-600));
 }
 
+.job-tracker-container .job-tracker-section:last-child {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  border-bottom: none;
+}
+
 @media (min-width: 768px) {
   .job-tracker-container .job-tracker-actions .filter-input {
     min-width: 160px;

@@ -1,4 +1,5 @@
 import React from "react";
+import "./JobPipeline.css";
 
 const JobPipeline = () => {
   const pipelineSections = [
@@ -21,7 +22,7 @@ const JobPipeline = () => {
             <div
               key={section.id}
               className={`job-pipeline-section-wrapper reset-all-button-styles ${
-                section.disabled ? "" : "contains-listings"
+                section.disabled ? "" : "contains-listings active-filter"
               }`}
             >
               <div className="section-wrapper-inner">

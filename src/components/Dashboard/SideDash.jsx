@@ -55,6 +55,16 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                           {item.title}
                         </span>
                       )}
+                      {!isOpen && (
+                        <div
+                          className={`side-nav-item-label ${
+                            isActive ? "selected" : ""
+                          }`}
+                          // style={{ top: "92px" }}
+                        >
+                          {item.title}
+                        </div>
+                      )}
                     </div>
                   )}
                 </NavLink>
@@ -86,6 +96,16 @@ const SideDash = ({ isOpen, toggleSidebar }) => {
                         >
                           {item.title}
                         </span>
+                      )}
+                      {!isOpen && (
+                        <div
+                          className={`side-nav-item-label ${
+                            isActive ? "selected" : ""
+                          }`}
+                          // style={{ top: "92px" }}
+                        >
+                          {item.title}
+                        </div>
                       )}
                     </div>
                   )}

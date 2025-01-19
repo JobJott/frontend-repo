@@ -1,6 +1,45 @@
-import React, { useState } from "react";
-import { Checkbox, Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Checkbox, Modal, Spin, Typography } from "antd";
 import styled from "styled-components";
+import axios from "axios";
+
+export const FullscreenLoader = ({ spinning, text }) => {
+  return (
+    <div className={`fullscreen-loader ${spinning ? "show" : ""}`}>
+      <Spin size="default" />
+      <Typography.Text className="loading-text">
+        {text || "Loading..."}
+      </Typography.Text>
+    </div>
+  );
+};
+
+export const ContactscreenLoader = () => {
+  return (
+    <div
+      className="
+      absolute top-0 left-0 h-full w-full bg-white/50 z-[1000]
+      flex gap-2 items-center justify-center
+    "
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="lucide lucide-loader-circle animate-spin w-5 h-5 text-grey-600"
+      >
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+      </svg>
+      <span className="text-grey-600">Loading content</span>
+    </div>
+  );
+};
 
 const StyledDeleteModal = styled(Modal)`
   .ant-modal-content {
@@ -58,12 +97,35 @@ const StyledDeleteModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const DeleteJobModal = ({ deleteModalOpen, setDeleteModalOpen }) => {
-  const handleDeleteClick = () => {
-    // Add custom logic for "Delete Job"
-    console.log("Job Deleted");
+export const DeleteJobModal = ({
+  deleteModalOpen,
+  setDeleteModalOpen,
+  selectedJobId,
+  setJobs,
+}) => {
+  const handleDeleteClick = async () => {
+    if (!selectedJobId) {
+      console.error("No job selected for deletion.");
+      return;
+    }
 
-    setDeleteModalOpen(false); // Close dropdown
+    const token = localStorage.getItem("authtoken");
+
+    try {
+      await axios.delete(`http://localhost:8080/api/jobs/${selectedJobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
+
+      setJobs((prevJobs) =>
+        prevJobs.filter((job) => job._id !== selectedJobId)
+      ); // Update state after successful deletion
+      console.log("Job Deleted");
+      setDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Failed to delete the job", error);
+    }
   };
 
   return (
@@ -100,13 +162,9 @@ export const DeleteJobModal = ({ deleteModalOpen, setDeleteModalOpen }) => {
 
 export const BookmarkExtended = ({
   isChecked,
-  setIsChecked,
+  handleCheckboxChange,
   setIsExpanded,
 }) => {
-  const handleBoxChecked = (e) => {
-    setIsChecked(e.target.checked);
-  };
-
   const handleSuggestionBoxClick = (e) => {
     e.stopPropagation(); // Prevent event bubbling
     setIsExpanded(true); // Keep the section expanded
@@ -143,9 +201,7 @@ export const BookmarkExtended = ({
                   "--wrap": "wrap",
                 }}
               >
-                <label className="ant-checkbox-wrapper">
-                  <Checkbox onChange={handleBoxChecked} checked={isChecked} />
-                </label>
+                <Checkbox onChange={handleCheckboxChange} checked={isChecked} />
                 Review the Job Position details
               </div>
             </button>
@@ -242,7 +298,11 @@ const StyledAppModal = styled(Modal)`
     font-size: 14px;
   }
 `;
-export const ApplicationModal = ({ modalOpenApp, setModalOpenApp }) => {
+export const ApplicationModal = ({
+  modalOpenApp,
+  setModalOpenApp,
+  handleStatusChange,
+}) => {
   return (
     <StyledAppModal
       open={modalOpenApp}
@@ -266,7 +326,12 @@ export const ApplicationModal = ({ modalOpenApp, setModalOpenApp }) => {
         <button
           type="button"
           className="ant-btn ant-btn-default ant-btn-dangerous"
-          onClick={() => setModalOpenApp(false)}
+          onClick={() => {
+            handleStatusChange({
+              target: { value: "Applied" },
+            });
+            setModalOpenApp(false);
+          }}
         >
           <span>Yes, Update status</span>
         </button>
@@ -281,8 +346,12 @@ export const ApplyingExtended = ({
   selectedItem,
   handleBoxCheckedOne,
   handleItemSelectedOne,
+  selectedJob,
+  handleStatusChange,
 }) => {
   const [modalOpenApp, setModalOpenApp] = useState(false);
+  const companyName = selectedJob?.companyName;
+  const companyURL = selectedJob?.URL;
 
   const handleSuggestionBoxClick = (e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -297,12 +366,10 @@ export const ApplyingExtended = ({
     "Get Referral": [
       {
         type: "link",
-        content: "Check if you know anyone at Sails hub on LinkedIn",
-        href: 'https://www.linkedin.com/search/results/people/?keywords=Sails%20hub&network=["F"]&amp;sid=_ZI',
-      },
-      {
-        type: "button",
-        content: "Ask a contact for an introduction to a person at Sails hub",
+        content: `Check if you know anyone at ${companyName} on LinkedIn`,
+        href: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(
+          companyName
+        )}&network=["F"]&amp;sid=_ZI`,
       },
       {
         type: "link",
@@ -320,9 +387,8 @@ export const ApplyingExtended = ({
         content: "Review job post keywords to include in your application",
       },
       {
-        type: "link",
+        type: "text",
         content: "Include job post title in your resume",
-        href: "https://app.tealhq.com/resume-builder/career-history#target-titles",
       },
       {
         type: "text",
@@ -339,7 +405,7 @@ export const ApplyingExtended = ({
       {
         type: "link",
         content: "Check if the application requires a cover letter",
-        href: "",
+        href: `${companyURL}`,
       },
       {
         type: "link",
@@ -349,31 +415,34 @@ export const ApplyingExtended = ({
       {
         type: "link",
         content: "Search Google News to learn more about the company",
-        href: "",
+        href: `https://news.google.com/search?q=${encodeURIComponent(
+          companyName
+        )}&hl=en-NG&gl=NG&ceid=NG:en`,
       },
       {
         type: "link",
         content: "Use Grammarly for free to check for typos and grammar",
-        href: "",
+        href: "https://www.grammarly.com/?affiliateNetwork=sas&affiliateID=2893507",
       },
     ],
     "Identify the Recruiter or Hiring Manager": [
       {
         type: "link",
         content: "Find recruiter details on LinkedIn",
-        href: "https://www.linkedin.com",
+        href: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(
+          companyName
+        )}&network=[%22F%22]&sid=_ZI`,
       },
       {
-        type: "link",
+        type: "text",
         content: "Send a message to the recruiter or hiring manager",
-        href: "https://www.linkedin.com",
       },
     ],
     "Submit Application": [
       { type: "text", content: "Double-check for typos and formatting issues" },
       {
         type: "button",
-        content: "Save application confirmation for your records",
+        content: `Move job to "Applied" stage on your job tracker`,
         onClick: handleModalClick,
         id: "btn-click",
       },
@@ -415,15 +484,11 @@ export const ApplyingExtended = ({
                     "--wrap": "wrap",
                   }}
                 >
-                  <label className="ant-checkbox-wrapper">
-                    <Checkbox
-                      className="ant-checkbox-input"
-                      checked={checkedItems.setOne.includes(item)}
-                      onChange={(e) => handleBoxCheckedOne(e, item)}
-                    >
-                      {item}
-                    </Checkbox>
-                  </label>
+                  <Checkbox
+                    checked={checkedItems.setOne.includes(item)}
+                    onChange={(e) => handleBoxCheckedOne(e, item)}
+                  />
+                  {item}
                 </div>
               </button>
             </li>
@@ -474,14 +539,44 @@ export const ApplyingExtended = ({
       <ApplicationModal
         modalOpenApp={modalOpenApp}
         setModalOpenApp={setModalOpenApp}
+        handleStatusChange={handleStatusChange} // Pass the function to modal
+        selectedJob={selectedJob}
       />
     </div>
   );
 };
 
-export const AppliedExtended = ({ isChecked, setIsChecked }) => {
-  const handleBoxChecked = (e) => {
-    setIsChecked(e.target.checked);
+export const AppliedExtended = ({
+  isChecked,
+  handleCheckboxChange,
+  selectedJob,
+}) => {
+  const [followUpDates, setFollowUpDates] = useState([]);
+
+  useEffect(() => {
+    if (selectedJob?.dates.applied) {
+      // Create follow-up dates based on the date the job was applied
+      const dates = [];
+      const appliedDate = new Date(selectedJob.dates.applied); // Assume selectedJob has 'dateApplied'
+
+      // Generate 3 follow-up dates, 7 days apart
+      for (let i = 1; i <= 3; i++) {
+        const followUpDate = new Date(appliedDate);
+        followUpDate.setDate(appliedDate.getDate() + i * 7); // Add 7 days for each follow-up
+        dates.push(followUpDate);
+      }
+
+      setFollowUpDates(dates);
+    } else {
+      setFollowUpDates([]); // Clear if no application date
+    }
+  }, [selectedJob]);
+
+  // Helper function to get ordinal suffix for numbers (1st, 2nd, 3rd, etc.)
+  const getOrdinal = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
   };
 
   return (
@@ -515,9 +610,7 @@ export const AppliedExtended = ({ isChecked, setIsChecked }) => {
                   "--wrap": "wrap",
                 }}
               >
-                <label className="ant-checkbox-wrapper">
-                  <Checkbox onChange={handleBoxChecked} checked={isChecked} />
-                </label>
+                <Checkbox onChange={handleCheckboxChange} checked={isChecked} />
                 Follow up on Job Applications
               </div>
             </button>
@@ -538,27 +631,54 @@ export const AppliedExtended = ({ isChecked, setIsChecked }) => {
           }}
         >
           <ul>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 1st follow up on 12/24/2024
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 2nd follow up on 12/31/2024
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Send 3rd follow up on 1/7/2025
-              </button>
-            </li>
-            <li className="bulleted">
-              <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
-                Archive job on job tracker if you haven't heard back after 3
-                weeks
-              </button>
-            </li>
+            {followUpDates.length > 0 ? (
+              <>
+                {followUpDates.map((date, index) => (
+                  <li className="bulleted" key={index}>
+                    <button
+                      className="_btn_mkpcn_1 _link_mkpcn_17"
+                      type="button"
+                    >
+                      Send {index + 1}
+                      {getOrdinal(index + 1)} follow up on{" "}
+                      {date.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </button>
+                  </li>
+                ))}
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Archive job if you haven't heard back after 3 weeks
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 1st follow up 1 week after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 2nd follow up 2 weeks after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Send 3rd follow up 3 weeks after the application date
+                  </button>
+                </li>
+                <li className="bulleted">
+                  <button className="_btn_mkpcn_1 _link_mkpcn_17" type="button">
+                    Archive job if you haven't heard back after 3 weeks
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
@@ -898,17 +1018,22 @@ export const NegotiatingExtended = ({
   );
 };
 
-const JobListingDrawer = () => {
-  const [activeTab, setActiveTab] = useState("job-info");
+const JobListingDrawer = ({ activeTab, setActiveTab }) => {
+  // const [activeTab, setActiveTabLocal] = useState("job-info");
 
   const tabs = [
     { id: "job-info", label: "Job Info", icon: JobInfoIcon },
-    { id: "notes", label: "Notes", icon: NotesIcon },
+    { id: "cover-letter", label: "Cover Letter", icon: NotesIcon },
     { id: "resumes", label: "Resumes", icon: ResumesIcon },
     { id: "contacts", label: "Contacts", icon: ContactsIcon },
     { id: "templates", label: "Email Templates", icon: EmailTemplatesIcon },
-    { id: "checklist", label: "Check List", icon: CheckListIcon },
   ];
+
+  const handleTabClick = (id) => {
+    // setActiveTabLocal(id);
+    setActiveTab(id); // Update the active tab in the parent component
+  };
+
   return (
     <div
       role="tablist"
@@ -931,7 +1056,7 @@ const JobListingDrawer = () => {
           className={`_button_11uyj_1 _with-icon_11uyj_47 _ghost_11uyj_112 _medium_11uyj_127 ${
             activeTab === tab.id ? "active" : ""
           }`}
-          onClick={() => setActiveTab(tab.id)}
+          onClick={() => handleTabClick(tab.id)}
         >
           <tab.icon />
           {tab.label}
@@ -1027,22 +1152,22 @@ const EmailTemplatesIcon = () => (
   </svg>
 );
 
-const CheckListIcon = () => (
-  <svg
-    fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth="1.5"
-    viewBox="0 0 18 18"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M16.9997 1H1.12177"></path>
-    <path d="M16.9997 17L16.9997 1"></path>
-    <path d="M1 16.9998L1 1"></path>
-    <path d="M17 16.9998L1 16.9998"></path>
-    <path d="M5.48926 9.20947L8.06812 12.2095L13.2259 6.20947"></path>
-  </svg>
-);
+// const CheckListIcon = () => (
+//   <svg
+//     fill="none"
+//     stroke="currentColor"
+//     strokeLinecap="round"
+//     strokeLinejoin="round"
+//     strokeWidth="1.5"
+//     viewBox="0 0 18 18"
+//     xmlns="http://www.w3.org/2000/svg"
+//   >
+//     <path d="M16.9997 1H1.12177"></path>
+//     <path d="M16.9997 17L16.9997 1"></path>
+//     <path d="M1 16.9998L1 1"></path>
+//     <path d="M17 16.9998L1 16.9998"></path>
+//     <path d="M5.48926 9.20947L8.06812 12.2095L13.2259 6.20947"></path>
+//   </svg>
+// );
 
 export default JobListingDrawer;

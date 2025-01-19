@@ -72,30 +72,31 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const EditJobModal = ({
+  modalOpen,
+  setModalOpen,
+  selectedJob,
+  onJobUpdate,
+}) => {
   const [formData, setFormData] = useState({
-    jobTitle: "",
-    URL: "",
-    companyName: "",
-    location: "",
-    jobDescription: "",
+    jobTitle: selectedJob?.jobTitle || "",
+    URL: selectedJob?.URL || "",
+    companyName: selectedJob?.companyName || "",
+    location: selectedJob?.location || "",
+    jobDescription: selectedJob?.jobDescription || "",
   });
 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Reset form data and errors when the modal is closed
-    if (!modalOpen) {
-      setFormData({
-        jobTitle: "",
-        URL: "",
-        companyName: "",
-        location: "",
-        jobDescription: "",
-      });
-      setErrors({});
-    }
-  }, [modalOpen]);
+    setFormData({
+      jobTitle: selectedJob?.jobTitle || "",
+      URL: selectedJob?.URL || "",
+      companyName: selectedJob?.companyName || "",
+      location: selectedJob?.location || "",
+      jobDescription: selectedJob?.jobDescription || "",
+    });
+  }, [selectedJob]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -113,10 +114,10 @@ const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
     if (validateForm()) {
-      onFormSubmit(formData); // Save the data and pass it to the mainboard
+      await onJobUpdate({ ...selectedJob, ...formData }); // Merge form data with selectedJob
       setModalOpen(false); // Close the modal after saving
     }
   };
@@ -181,7 +182,7 @@ const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
                 {input.label}
               </label>
               <input
-                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
                 aria-describedby=":rn:-form-item-description"
                 name={input.name}
                 type={input.type}
@@ -209,16 +210,17 @@ const EditJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
             </label>
 
             {/* Input container */}
-            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50">
+            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50 z-1001">
               <textarea
                 id="job-description"
-                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone "
+                name="jobDescription"
+                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone z-1001 font-medium"
                 placeholder="Enter the job description here..."
                 spellCheck="false"
                 type="text"
                 value={formData.jobDescription}
                 onChange={handleChange}
-              ></textarea>
+              />
             </div>
           </div>
 

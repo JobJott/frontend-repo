@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { addJobToAPI } from "../../../../../utils/api/jobService";
 
-const StyledModal = styled(Modal)`  
+const StyledModal = styled(Modal)`
   .ant-modal-content {
     padding: 0 !important;
     border-radius: 0px;
@@ -54,7 +57,6 @@ const StyledModal = styled(Modal)`
     font-size: 14px;
   }
 
-
   .ProseMirror {
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -73,7 +75,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
+const AntJobModal = ({ modalOpen, setModalOpen, setJobs }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     URL: "",
@@ -83,6 +85,8 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Reset form data and errors when the modal is closed
@@ -114,11 +118,32 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent page reload
+
     if (validateForm()) {
-      onFormSubmit(formData); // Save the data and pass it to the mainboard
-      setModalOpen(false); // Close the modal after saving
+      setIsSubmitting(true);
+      const trimmedData = {
+        ...Object.fromEntries(
+          Object.entries(formData).map(([key, value]) => [key, value.trim()])
+        ),
+        status: "Bookmarked",
+      };
+
+      try {
+        const newJob = await addJobToAPI(trimmedData);
+        setJobs((prevJobs) => [newJob, ...prevJobs]);
+        message.success("Job added successfully!");
+        setModalOpen(false);
+        localStorage.setItem("selectedJobId", newJob._id);
+        localStorage.setItem("selectedStatus", "Bookmarked");
+        navigate("/dashboard/my-applications/job-trackerv1");
+      } catch (error) {
+        console.log("Error creating job:", error);
+        message.error("Failed to add job. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -182,7 +207,7 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
                 {input.label}
               </label>
               <input
-                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-9 w-full px-3 py-2 rounded-md border border-input bg-background text-sm file:border-0 bg-transparent text-sm font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50"
                 aria-describedby=":rn:-form-item-description"
                 name={input.name}
                 type={input.type}
@@ -210,16 +235,17 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
             </label>
 
             {/* Input container */}
-            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50">
+            <div className="rounded-md border border-input bg-background text-sm flex flex-col flex-auto placeholder:text-muted-foreground focus-visible:outline-none focus-visible:shadow-duotone disabled:cursor-not-allowed disabled:opacity-50 z-1001">
               <textarea
                 id="job-description"
-                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone "
+                name="jobDescription"
+                className="tiptap ProseMirror relative cursor-text w-full h-48 md:h-72 px-3 py-2 overflow-y-auto focus-visible:outline-none focus-visible:shadow-duotone z-1001 font-medium"
                 placeholder="Enter the job description here..."
                 spellCheck="false"
                 type="text"
                 value={formData.jobDescription}
                 onChange={handleChange}
-              ></textarea>
+              />
             </div>
           </div>
 
@@ -234,8 +260,9 @@ const AntJobModal = ({ modalOpen, setModalOpen, onFormSubmit }) => {
             <button
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-bold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 focus-visible:ring-primary h-10 px-4 py-2 rounded-md"
               type="submit"
+              disabled={isSubmitting}
             >
-              Save Job
+              {isSubmitting ? "Saving..." : "Save Job"}
             </button>
           </div>
         </form>
