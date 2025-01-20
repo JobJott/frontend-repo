@@ -17,6 +17,7 @@ import {
   addSalaryRangeToAPI,
   updateSalaryRangeInAPI,
 } from "@/utils/api/jobService";
+import { fetchCurrencies } from "../../../../../utils/api/currencyService";
 
 const { Option } = Select;
 
@@ -65,53 +66,20 @@ const AddSalaryRange = ({
     }
   };
 
-  const fetchCurrencies = async () => {
-    setLoadingCurrencies(true);
-    try {
-      const response = await fetch(
-        "https://restcountries.com/v3.1/all?fields=currencies"
-      );
-      const data = await response.json();
-
-      const currencyMap = [];
-      const uniqueCurrencies = new Set();
-
-      data.forEach((country) => {
-        if (country.currencies) {
-          Object.keys(country.currencies).forEach((currencyCode) => {
-            const currencySymbol = country.currencies[currencyCode]?.symbol;
-            const currencyName = country.currencies[currencyCode]?.name;
-
-            // Add currency only if it hasn't been added before
-            if (
-              currencyName &&
-              currencySymbol &&
-              !uniqueCurrencies.has(currencyName)
-            ) {
-              uniqueCurrencies.add(currencyName);
-              currencyMap.push({
-                name: currencyName,
-                symbol: currencySymbol,
-                code: currencyCode,
-              });
-            }
-          });
-        }
-      });
-
-      const sortedCurrencies = currencyMap.sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-      setCurrencies(sortedCurrencies);
-    } catch (error) {
-      console.error("Error fetching currencies:", error);
-    } finally {
-      setLoadingCurrencies(false);
-    }
-  };
-
   useEffect(() => {
-    fetchCurrencies();
+    const loadCurrencies = async () => {
+      setLoadingCurrencies(true);
+      try {
+        const currencyList = await fetchCurrencies();
+        setCurrencies(currencyList);
+      } catch (error) {
+        console.error("Error fetching currencies:", error);
+      } finally {
+        setLoadingCurrencies(false);
+      }
+    };
+
+    loadCurrencies();
   }, []);
 
   const initializeForm = () => {

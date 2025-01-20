@@ -183,3 +183,25 @@ export const deleteInterviewDetails = async (jobId) => {
     );
   }
 };
+
+export const fetchStatusData = async ({ startDate, endDate }) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/job-status-summary`,
+      {
+        startDate,
+        endDate,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authtoken")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch status data"
+    );
+  }
+};

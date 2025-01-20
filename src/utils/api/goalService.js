@@ -1,0 +1,27 @@
+import axios from "axios";
+
+const API_URL = "http://localhost:8080/api/goals";
+
+export const createGoal = async (goalData) => {
+  const token = localStorage.getItem("authtoken");
+  const response = await axios.post(`${API_URL}/add`, goalData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getGoals = async () => {
+  const token = localStorage.getItem("authtoken");
+  const response = await axios.get(API_URL, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const updateGoal = async (goalId, goalData) => {
+  const token = localStorage.getItem("authtoken");
+  const response = await axios.put(`${API_URL}/${goalId}`, goalData, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
