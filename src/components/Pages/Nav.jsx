@@ -5,7 +5,7 @@ import Logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 // import SideBar from "./SideBar";
-import "../../styles/Nav.css";
+import "../../styles/Nav.css";  
 import { RadarOutlined } from "@mui/icons-material";
 
 const Nav = () => {
@@ -40,19 +40,21 @@ const Nav = () => {
         <div className="navbar">
           <div className="flex items-center">
             <div className="content-text !block">
-              <h1 className="!tracking-normal text-[#012332] font-semibold">
-                J
-                <span>
-                  {/* <FiLoader /> */}
-                  <RadarOutlined className="text-[10px]" />
-                </span>
-                bJ
-                <span>
-                  {/* <FiLoader /> */}
-                  <RadarOutlined />
-                </span>
-                tt
-              </h1>
+              <Link to="/">
+                <h1 className="!tracking-normal text-[#012332] text-[24px] font-bold">
+                  J
+                  <span>
+                    {/* <FiLoader /> */}
+                    <RadarOutlined className="text-[10px]" />
+                  </span>
+                  bJ
+                  <span>
+                    {/* <FiLoader /> */}
+                    <RadarOutlined />
+                  </span>
+                  tt
+                </h1>
+              </Link>
             </div>
 
             <div className="navbar-left">

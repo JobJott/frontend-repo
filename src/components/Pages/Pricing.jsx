@@ -2,12 +2,14 @@ import React from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import Nav from "./Nav";
 import "../../styles/Pricing.css";
+import { Link } from "react-router-dom";
 
 const Pricing = () => {
   return (
     <div>
       <Nav />
-      <div className="hero-section bg-[#F5F9F9]">
+
+      <div className="pricing-component hero-section bg-[#F5F9F9]">
         <div className="w-[98%] md:w-[60%] mx-auto pt-28 md:pt-40">
           <h2 className="text-[2.5rem] md:text-[3rem] text-center font-bold mb-5 md:leading-tight text-[#012332]">
             Find Your Perfect Plan.
@@ -67,16 +69,18 @@ const Pricing = () => {
                   </p>
                 </li>
               </ul>
-              <button className="bg-black py-5 mt-5 rounded-full w-full text-white text-sm">
-                Select Plan
-              </button>
+              <Link to="/auth/signin">
+                <button className="bg-[#2A8E9E] py-5 mt-5 rounded-full w-full text-white text-sm">
+                  Select Plan
+                </button>
+              </Link>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-5 shadow">
             <div className="bg-background p-4 rounded-2xl">
-              <p className="text-sm mb-5">Standard Plan</p>
-              <h4 className="text-5xl font-bold mb-5">
-                <span className="text-sm">NGN</span> 10,000.00{" "}
+              <p className="text-[0.875rem] mb-5">Standard Plan</p>
+              <h4 className="text-[3rem] leading-4 font-bold mb-5">
+                <span className="text-[0.875rem]">NGN</span> 10,000.00{" "}
                 <span className="text-sm font-normal"></span>
               </h4>
               <p className="text-sm w-full leading-relaxed tracking-tight">
@@ -116,16 +120,19 @@ const Pricing = () => {
                   </p>
                 </li>
               </ul>
-              <button className="bg-black py-5 mt-5 rounded-full w-full text-white text-sm">
-                Select Plan
-              </button>
+              <Link to="/auth/signin">
+                <button className="bg-[#2A8E9E] py-5 mt-5 rounded-full w-full text-white text-sm">
+                  Select Plan
+                </button>
+              </Link>
             </div>
           </div>
           <div className="bg-white rounded-2xl p-5 shadow">
             <div className="bg-background p-4 rounded-2xl">
               <p className="text-sm mb-5">Pro Version</p>
-              <h4 className="text-5xl font-bold mb-5">
-                <span className="text-sm">NGN</span> 20,000.00
+              <h4 className="text-[3rem] leading-4 font-bold mb-5">
+                <span className="text-[0.875rem]">NGN</span> 20,000.00{" "}
+                <span className="text-sm font-normal"></span>
               </h4>
               <p className="text-sm w-full leading-relaxed tracking-tight">
                 Professional Cover Letters tailored specifically to different
@@ -171,9 +178,11 @@ const Pricing = () => {
                   </p>
                 </li>
               </ul>
-              <button className="bg-black py-5 mt-5 rounded-full w-full text-white text-sm">
-                Select Plan
-              </button>
+              <Link to="/auth/signin">
+                <button className="bg-[#2A8E9E] py-5 mt-5 rounded-full w-full text-white text-sm">
+                  Select Plan
+                </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,15 +1,9 @@
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
+.pricing-component h1,
+.pricing-component h2,
+.pricing-component h3,
+.pricing-component h4,
+.pricing-component h5,
+.pricing-component h6,
+.pricing-component p {
   color: #012332;
 }

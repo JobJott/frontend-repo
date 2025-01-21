@@ -5,6 +5,7 @@ import { FaLinkedin } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "../../styles/Footer.css";
+import { RadarOutlined } from "@mui/icons-material";
 
 const Footer = () => {
   return (
@@ -12,15 +13,21 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-row">
           <div className="logo">
-            <h1>
-              <a href="/">
-                JobJ
+            <Link to="/">
+              <h1 className="!tracking-normal text-[#012332] text-[56px] font-bold tracki\">
+                J
                 <span>
-                  <FiLoader />
+                  {/* <FiLoader /> */}
+                  <RadarOutlined fontSize="large" />
+                </span>
+                bJ
+                <span>
+                  {/* <FiLoader /> */}
+                  <RadarOutlined fontSize="large" />
                 </span>
                 tt
-              </a>
-            </h1>
+              </h1>
+            </Link>
           </div>
 
           <div className="footer-2">
@@ -41,21 +48,21 @@ const Footer = () => {
               <a href="#">Privacy policy</a>
               <a href="#">Status</a>
             </div>
-            </div>
+          </div>
 
-            <div className="socials">
-              <h4>Follow us on</h4>
-              <div className="social-icons">
-                <a href="#">
-                  <FaTwitter />
-                </a>
-                <a href="#">
-                  <FaLinkedin />
-                </a>
-                <a href="#">
-                  <FaFacebook />
-                </a>
-              </div>
+          <div className="socials">
+            <h4>Follow us on</h4>
+            <div className="social-icons">
+              <a href="#">
+                <FaTwitter />
+              </a>
+              <a href="#">
+                <FaLinkedin />
+              </a>
+              <a href="#">
+                <FaFacebook />
+              </a>
+            </div>
           </div>
         </div>
 

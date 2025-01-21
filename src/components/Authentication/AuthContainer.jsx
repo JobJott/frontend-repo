@@ -3,6 +3,7 @@ import { FiLoader } from "react-icons/fi";
 import Loader from "../Pages/Loader";
 import { Link } from "react-router-dom";
 import "./Forms.css";
+import { RadarOutlined } from "@mui/icons-material";
 
 const SignUpForm = React.lazy(() => import("./SignUpForm"));
 const SignInForm = React.lazy(() => import("./SignInForm"));
@@ -29,15 +30,21 @@ const AuthContainer = ({ formType }) => {
     <Suspense fallback={<Loader />}>
       <div className="auth-bg">
         <div className="logo">
-          <h1>
-            <a href="/">
-              JobJ
+          <Link to="/">
+            <h1 className="!tracking-normal text-[#fff] text-[30px] font-bold">
+              J
               <span>
-                <FiLoader />
+                {/* <FiLoader /> */}
+                <RadarOutlined className="text-[15px]" />
+              </span>
+              bJ
+              <span>
+                {/* <FiLoader /> */}
+                <RadarOutlined />
               </span>
               tt
-            </a>
-          </h1>
+            </h1>
+          </Link>
         </div>
 
         <div className="form-container">{renderForm()}</div>
