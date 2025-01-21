@@ -24,8 +24,8 @@ const MainBoard = ({ isSideDashOpen }) => {
   const [jobs, setJobs] = useState([]);
 
   const routeToLeadingText = {
-    "/dashboard": "Loading overview...",
-    "/dashboard/resume": "loading resume...",
+    "/dashboard/home": "Loading overview...",
+    "/dashboard/resume-builder": "loading resume...",
     "/dashboard/my-applications": "Loading jobs...",
     "/dashboard/contacts": "Loading contacts...",
   };
@@ -93,6 +93,7 @@ const MainBoard = ({ isSideDashOpen }) => {
             <Routes>
               <Route
                 index
+                path="home"
                 element={
                   <Overview
                     modalOpen={modalOpen}

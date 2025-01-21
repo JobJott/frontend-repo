@@ -99,7 +99,7 @@ function App() {
               </Suspense>
             }
           >
-            <Route index element={<Overview />} />
+            <Route index path="home" element={<Overview />} />
             <Route path="my-applications/*" element={<MyApplication />} />
             <Route path="contacts" element={<Contact />} />
             <Route path="account" element={<Account />} />

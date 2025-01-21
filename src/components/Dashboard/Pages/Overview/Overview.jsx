@@ -1,20 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Overview.css";
 import { StyleProvider } from "@ant-design/cssinjs";
 import AntJobModal from "../MyApplication/ActionButtons/AntJobModal";
 import { FaPlus, FaPlusCircle } from "react-icons/fa";
-import { DatePicker, Divider, Radio } from "antd";
+import { Badge, DatePicker, Divider, Modal, notification, Spin } from "antd";
 import { MailOutline, RadarOutlined, StarOutline } from "@mui/icons-material";
 import JobjottModal from "./jobjottModal.jsx";
 import GoalsModal from "./goalsModal.jsx";
-import { Pie } from "react-chartjs-2";
-import dayjs from "dayjs";
-import { fetchStatusData } from "../../../../utils/api/jobService.js";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { EditOutlined } from "@ant-design/icons";
+import WeekGoalModal from "./weekGoalModal.jsx";
+import {
+  BellFilled,
+  EditOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import { getGoals } from "../../../../utils/api/goalService.js";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import dayjs from "dayjs";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { Tooltip as AntdTooltip } from "antd";
+import { Tooltip as ChartTooltip } from "recharts";
+import { fetchJobsFromAPI } from "../../../../utils/api/jobService.js";
+import InterviewModal from "./interviewModal.jsx";
 
 const Overview = ({
   modalOpen,
@@ -23,6 +31,7 @@ const Overview = ({
   setJobs,
   fallbackSymbol = "¤",
 }) => {
+  const [user, setUser] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [goal, setGoal] = useState(null);
@@ -30,17 +39,31 @@ const Overview = ({
   const selectedGoal = goal?._id;
   const widthValue = "100%";
   const gutterValue = "0";
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    startDate: dayjs().startOf("week"),
-    endDate: dayjs().endOf("week"),
-  });
-  const [timeFrame, setTimeFrame] = useState("thisWeek");
-  const [statusData, setStatusData] = useState({
-    bookmarked: 5,
-    applied: 10,
-    interviewing: 3,
-    negotiating: 2,
-  });
+  const [progress, setProgress] = useState(0);
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [weekGoal, setWeekGoal] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [inputGoal, setInputGoal] = useState(weekGoal);
+
+  const [data, setData] = useState([]);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [loadingData, setLoadingData] = useState(false);
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(1, "month"),
+    dayjs(),
+  ]);
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]; // Colors for pie chart
+
+  const [modalNotifOpen, setModalNotifOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData)); // Parse and set user data
+    }
+  }, []);
 
   // Fetch goals on component mount
   useEffect(() => {
@@ -82,82 +105,319 @@ const Overview = ({
     return "Next Career Goal: Land a new job";
   };
 
-  const handleDateRangeChange = (dates) => {
-    if (dates) {
-      setSelectedDateRange({
-        startDate: dates[0],
-        endDate: dates[1],
-      });
-      setTimeFrame(null);
+  useEffect(() => {
+    // Fetch the number of job applications moved to "Applied" stage in the last week
+    const fetchWeeklyProgress = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/applications/weekly-progress"
+        );
+        const { applicationsMovedToApplied, totalApplications } = response.data;
+
+        setProgress(applicationsMovedToApplied);
+        setTotalApplications(totalApplications);
+      } catch (error) {
+        console.error("Error fetching weekly progress", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeeklyProgress();
+  }, []);
+
+  const handleEdit = () => {
+    setInputGoal(weekGoal);
+    setIsVisible(true);
+  };
+
+  const handleSave = () => {
+    setWeekGoal(inputGoal);
+    setIsVisible(false);
+  };
+
+  // Calculate percentage progress
+  const progressPercentage = Math.min((progress / weekGoal) * 100, 100);
+  const circleShade = `rgba(121, 61, 136, ${
+    0.4 + 0.6 * Math.min(progress / weekGoal, 1)
+  })`;
+
+  const remaining = Math.max(weekGoal - progress, 0);
+
+  let message;
+  if (progress === 0) {
+    message = (
+      <p className="mb-0 text-[12px] font-medium">
+        <span
+          data-br=":r0:"
+          data-brr="1"
+          style={{
+            textDecoration: "inherit",
+            textWrap: "balance",
+          }}
+          className="inline-block align-top max-w-[286px]"
+        >
+          Make sure to move jobs to "Applied" in your{" "}
+          <Link
+            to="/dashboard/my-applications/job-trackerv2"
+            className="font-semibold text-[#111313] underline hover:no-underline"
+          >
+            Job Tracker
+          </Link>{" "}
+          to see your weekly goal progress ✅
+        </span>
+      </p>
+    );
+  } else if (remaining > 0) {
+    message = (
+      <p>
+        {remaining} application{remaining > 1 ? "s" : ""} remaining to meet your
+        weekly goal! 🚀
+        <br />
+        <Link
+          to="/dashboard/my-applications/job-trackerv2"
+          className="font-semibold text-[#111313] underline hover:no-underline"
+        >
+          Apply Now
+        </Link>
+      </p>
+    );
+  } else {
+    message = <p>You achieved your weekly goal! 🎉</p>;
+  }
+
+  const formatDate = (date) => {
+    const today = new Date().toDateString();
+    const jobDate = new Date(date).toDateString();
+
+    if (jobDate === today) {
+      return "TODAY";
+    }
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const fetchedJobs = await fetchJobsFromAPI();
+        setJobs(fetchedJobs);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        message.error("Unable to fetch jobs. Please try again later.");
+      } finally {
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  // Group jobs by date
+  const groupedJobs = jobs.reduce((acc, job) => {
+    const date = formatDate(job.createdAt);
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(job);
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    fetchPipelineData(dateRange[0], dateRange[1]);
+  }, [dateRange]);
+
+  const fetchPipelineData = async (startDate, endDate) => {
+    setLoadingData(true);
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/jobs/pipeline-stats",
+        {
+          params: {
+            startDate: startDate.format("YYYY-MM-DD"),
+            endDate: endDate.format("YYYY-MM-DD"),
+          },
+        }
+      );
+
+      const { pipelineData, totalJobs } = response.data;
+
+      if (pipelineData.length === 0) {
+        message.info("No jobs found for the selected date range.");
+      }
+
+      setData(
+        pipelineData.map((item) => ({
+          name: item._id, // Status
+          value: item.count,
+          percentage: ((item.count / totalJobs) * 100).toFixed(1), // Percentage
+        }))
+      );
+      setTotalJobs(totalJobs);
+    } catch (error) {
+      console.error("Error fetching pipeline data:", error);
+      message.error("Failed to load data.");
+    } finally {
+      setLoadingData(false);
     }
   };
 
-  const handleTimeFrameChange = (value) => {
-    setTimeFrame(value);
-    if (value === "thisWeek") {
-      setSelectedDateRange({
-        startDate: dayjs().startOf("week"),
-        endDate: dayjs().endOf("week"),
-      });
-    } else if (value === "lastWeek") {
-      setSelectedDateRange({
-        startDate: dayjs().subtract(1, "week").startOf("week"),
-        endDate: dayjs().subtract(1, "week").endOf("week"),
-      });
+  const onDateChange = (dates) => {
+    if (dates && dates[0] && dates[1]) {
+      setDateRange(dates);
+    } else {
+      message.warning("Please select a valid date range.");
     }
   };
 
-  const chartData = {
-    labels: ["Bookmarked", "Applied", "Interviewing", "Negotiating"],
-    datasets: [
-      {
-        label: "Job Status Distribution",
-        data: Object.values(statusData),
-        backgroundColor: ["#8e44ad", "#3498db", "#e67e22", "#2ecc71"],
-        hoverBackgroundColor: ["#9b59b6", "#5dade2", "#f39c12", "#27ae60"],
-      },
-    ],
+  const handleViewSchedule = (job) => {
+    setSelectedJob(job);
+    setModalNotifOpen(true);
   };
 
-  // useEffect(() => {
-  //   // Fetch updated status data based on the selected date range
-  //   const fetchAndSetStatusData = async () => {
-  //     try {
-  //       const response = await fetchStatusData({
-  //         startDate: selectedDateRange.startDate.format("YYYY-MM-DD"),
-  //         endDate: selectedDateRange.endDate.format("YYYY-MM-DD"),
-  //       });
-  //       setStatusData(response);
-  //     } catch (error) {
-  //       console.error("Error fetching status data:", error.message);
-  //     }
-  //   };
+  const isValidDate = (date) => {
+    return !isNaN(new Date(date).getTime());
+  };
 
-  //   fetchAndSetStatusData();
-  // }, [selectedDateRange]);
+  const sortJobsByDate = (jobs) => {
+    return jobs
+      .filter((job) => isValidDate(job.interview?.interviewDate))
+      .sort(
+        (a, b) =>
+          new Date(a.interview.interviewDate) -
+          new Date(b.interview.interviewDate)
+      );
+  };
+
+  const getBorderColor = (interviewDate) => {
+    const now = new Date();
+    const date = new Date(interviewDate);
+    const diff = (date - now) / (1000 * 60 * 60 * 24); // Difference in days
+
+    if (diff <= 3) return "border-red-500";
+    if (diff <= 7) return "border-yellow-500";
+    return "border-green-500";
+  };
+
+  // const sortedJobs = sortJobsByDate(jobs);
+
+  // Hook for tracking missed interviews
+  // const useMissedInterviews = (jobs) => {
+  const [missedInterviews, setMissedInterviews] = useState([]);
+  const [shownNotifications, setShownNotifications] = useState(new Set());
+  const [showMissedDetails, setShowMissedDetails] = useState(false);
+  const notificationRef = useRef(null);
+
+  // Hook to detect click outside the notification dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target)
+      ) {
+        setShowMissedDetails(false); // Close dropdown when clicking outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Track missed interviews
+  useEffect(() => {
+    const now = new Date();
+    const missed = jobs.filter(
+      (job) =>
+        job.interview?.interviewDate &&
+        new Date(job.interview.interviewDate) < now &&
+        !shownNotifications.has(job._id) // Ensure notification is shown only once
+    );
+
+    setMissedInterviews((prev) => [...prev, ...missed]);
+    missed.forEach((job) => {
+      setShownNotifications((prev) => new Set(prev).add(job._id));
+      notification.warning({
+        message: "Missed Interview",
+        description: `You missed an interview with ${job.companyName} for the position ${job.jobTitle}.`,
+        duration: 5,
+      });
+    });
+  }, [jobs, shownNotifications]);
+
+  const sortedJobs = sortJobsByDate(jobs);
+  // const missedInterviews = useMissedInterviews(jobs);
 
   return (
     <>
       <div className="p-2 bg-white w-full border-b border-solid border-[#ece4db] flex justify-between items-center px-5">
         <div>
           {/* <h4>`Welcome home, ${user.firstName}!`</h4> */}
-          <h4 className="text-[16px]">Welcome home, Osas!</h4>
+          <h4 className="text-[16px]">
+            {" "}
+            Welcome home,{" "}
+            <span className="font-semibold">
+              {user ? user.firstName : "Guest"}!
+            </span>{" "}
+          </h4>
         </div>
         <div>
           <ul className="flex gap-4 items-center">
-            <li className="p-2 rounded-md border border-1-[#111313]">
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 512 512"
-                className="text-exl leading-8"
-                height="1em"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M440.08 341.31c-1.66-2-3.29-4-4.89-5.93-22-26.61-35.31-42.67-35.31-118 0-39-9.33-71-27.72-95-13.56-17.73-31.89-31.18-56.05-41.12a3 3 0 0 1-.82-.67C306.6 51.49 282.82 32 256 32s-50.59 19.49-59.28 48.56a3.13 3.13 0 0 1-.81.65c-56.38 23.21-83.78 67.74-83.78 136.14 0 75.36-13.29 91.42-35.31 118-1.6 1.93-3.23 3.89-4.89 5.93a35.16 35.16 0 0 0-4.65 37.62c6.17 13 19.32 21.07 34.33 21.07H410.5c14.94 0 28-8.06 34.19-21a35.17 35.17 0 0 0-4.61-37.66zM256 480a80.06 80.06 0 0 0 70.44-42.13 4 4 0 0 0-3.54-5.87H189.12a4 4 0 0 0-3.55 5.87A80.06 80.06 0 0 0 256 480z"></path>
-              </svg>
+            <li
+              className="p-2 rounded-md border border-1-[#111313] relative cursor-pointer"
+              onClick={() => setShowMissedDetails(!showMissedDetails)}
+            >
+              <Badge size="small" count={missedInterviews.length} offset={[0, 0]}>
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth="0"
+                  viewBox="0 0 512 512"
+                  className="leading-8 text-exl cursor-pointer"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M440.08 341.31c-1.66-2-3.29-4-4.89-5.93-22-26.61-35.31-42.67-35.31-118 0-39-9.33-71-27.72-95-13.56-17.73-31.89-31.18-56.05-41.12a3 3 0 0 1-.82-.67C306.6 51.49 282.82 32 256 32s-50.59 19.49-59.28 48.56a3.13 3.13 0 0 1-.81.65c-56.38 23.21-83.78 67.74-83.78 136.14 0 75.36-13.29 91.42-35.31 118-1.6 1.93-3.23 3.89-4.89 5.93a35.16 35.16 0 0 0-4.65 37.62c6.17 13 19.32 21.07 34.33 21.07H410.5c14.94 0 28-8.06 34.19-21a35.17 35.17 0 0 0-4.61-37.66zM256 480a80.06 80.06 0 0 0 70.44-42.13 4 4 0 0 0-3.54-5.87H189.12a4 4 0 0 0-3.55 5.87A80.06 80.06 0 0 0 256 480z"></path>
+                </svg>{" "}
+              </Badge>
+
+              {/* Notification Dropdown */}
+              {showMissedDetails && (
+                <div
+                  ref={notificationRef}
+                  className="absolute top-12 right-4 bg-white shadow-lg p-4 rounded-lg border w-64 z-1001"
+                >
+                  <h3 className="font-semibold mb-2">Missed Interviews</h3>
+                  {missedInterviews.length > 0 ? (
+                    <ul className="space-y-2">
+                      {missedInterviews.map((job) => (
+                        <li key={job._id} className="text-sm text-gray-700">
+                          <p>
+                            <strong>{job.jobTitle}</strong> at {job.companyName}
+                          </p>
+                          <p>
+                            <small>
+                              Missed on:{" "}
+                              {new Date(
+                                job.interview.interviewDate
+                              ).toLocaleString()}
+                            </small>
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      No missed interviews.
+                    </p>
+                  )}
+                </div>
+              )}
             </li>
             <span>
               <Divider variant="solid" type="vertical" className="!m-0 !h-8" />
@@ -264,134 +524,250 @@ const Overview = ({
 
                 <div className="ant-space-item">
                   <div className="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-6">
-                    <div className="p-6 bg-white shadow rounded-tl-xl rounded-br-xl">
-                      <h2 className="text-lg font-semibold mb-4">
-                        Job Tracking Pipeline
-                      </h2>
-
-                      {/* Date range selector  */}
-                      <div className="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div>
-                          <DatePicker.RangePicker
-                            format="YYYY-MM-DD"
-                            onChange={handleDateRangeChange}
-                            value={[
-                              selectedDateRange.startDate,
-                              selectedDateRange.endDate,
-                            ]}
-                          />
-                        </div>
-                        <div>
-                          <Radio.Group
-                            value={timeFrame}
-                            onChange={(e) =>
-                              handleTimeFrameChange(e.target.value)
-                            }
-                          >
-                            <Radio.Button value="thisWeek">
-                              This Week
-                            </Radio.Button>
-                            <Radio.Button value="lastWeek">
-                              Last Week
-                            </Radio.Button>
-                          </Radio.Group>
-                        </div>
-                      </div>
-
-                      {/* Visualization chart  */}
-                      <div className="flex flex-col items-center">
-                        <Pie
-                          data={chartData}
-                          options={{
-                            responsive: true,
-                            plugins: {
-                              legend: {
-                                display: true,
-                                position: "bottom",
-                              },
-                            },
-                          }}
-                        />
-                        <div className="mt-4">
-                          <p className="text-[14px] leading-5 text-gray-500">
-                            Total Jobs:{" "}
-                            {Object.values(statusData).reduce(
-                              (a, b) => a + b,
-                              0
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
                     {/* <!-- Left Section: Weekly Applications --> */}
-                    <div className="w-full lg:w-1/2 p-6 bg-white shadow rounded-xl rounded-tl-none rounded-bl-none">
+                    <div className="w-full lg:w-1/2 p-6 bg-white shadow rounded-tl-none rounded-tr-xl rounded-br-xl ">
                       <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold">
+                        <h2 className="text-lg font-bold h3 mb-1">
                           Job Applications
-                        </h2>
-                        <button className="text-gray-500 hover:text-gray-800">
-                          <svg
-                            viewBox="64 64 896 896"
-                            focusable="false"
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            aria-hidden="true"
+                          <AntdTooltip
+                            title="Set a goal and track your weekly job application progress. We recommend starting with at least 5 applications a week."
+                            className="font-medium font-sans"
                           >
-                            <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 000-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 009.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path>
-                          </svg>
+                            <InfoCircleOutlined className="mb-[2px] p-1 text-[#111313] text-[18px] align-middle cursor-help" />
+                          </AntdTooltip>
+                        </h2>
+                        <button
+                          type="button"
+                          className="text-[#99BFBF] hover:text-[#99BFBF]"
+                          onClick={handleEdit}
+                        >
+                          <EditOutlined className="text-[19px]" />
                         </button>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <div className="relative w-40 h-40">
-                          <svg
-                            className="absolute inset-0 w-full h-full"
-                            viewBox="0 0 100 100"
-                          >
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="45"
-                              fill="none"
-                              stroke="#AF8BB8"
-                              strokeWidth="10"
-                            ></circle>
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="45"
-                              fill="none"
-                              stroke="#793D88"
-                              strokeWidth="10"
-                              strokeDasharray="282.743"
-                              strokeDashoffset="70"
-                              style={{
-                                transition: "stroke-dashoffset 500ms ease-out",
-                              }}
-                            ></circle>
-                          </svg>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center">
-                              <span className="text-3xl font-bold text-gray-900">
-                                12
+                      <div className="flex flex-col flex-grow items-center text-center gap-[26px]">
+                        <AntdTooltip
+                          title={`Sent Applications: ${progress} (${Math.round(
+                            progressPercentage
+                          )}%)`}
+                        >
+                          <div className="relative max-w-40 flex rounded-[50%] overflow-hidden my-0 mx-auto">
+                            <div className="activity-ring-label absolute top-[50%] left-[50%] max-w-[90%]">
+                              <span className="activity-ring-count text-[32px] font-extrabold">
+                                {progress}
                               </span>
-                              <p className="text-sm text-gray-600">
-                                Applications Sent
-                              </p>
+                              <span className="font-medium">
+                                applications sent
+                              </span>
                             </div>
+                            <svg
+                              viewBox="0 0 100 100"
+                              width="100%"
+                              height="100%"
+                            >
+                              <path
+                                d="M 95 50 A 45 45 0 1 1 94.9999999931461 49.99921460183664"
+                                fill="none"
+                                strokeWidth="10"
+                                strokeLinecap="round"
+                                stroke="#AF8BB8"
+                              ></path>
+                              <path
+                                d="M 95 50 A 45 45 0 1 1 94.9999999931461 49.99921460183664"
+                                fill="none"
+                                strokeWidth="10"
+                                strokeDasharray="282.7433388230814"
+                                strokeDashoffset={
+                                  282.7433388230814 -
+                                  (progressPercentage / 100) * 282.7433388230814
+                                }
+                                strokeLinecap="round"
+                                stroke={loading ? "#AF8BB8" : circleShade} // Darker shade while loading
+                                style={{
+                                  transition:
+                                    "stroke-dashoffset 500ms ease-out",
+                                }}
+                              ></path>
+                            </svg>
                           </div>
-                        </div>
-                        <div className="mt-4 text-center">
-                          <span className="bg-purple-200 text-purple-600 text-xs px-2 py-1 rounded">
-                            Goal: 5
+                        </AntdTooltip>
+                        <div className=" activity-footer flex flex-col  gap-4 mt-4 text-center">
+                          <span className="activity-pill">
+                            Goal: {weekGoal}
                           </span>
-                          <p className="text-sm text-gray-600 mt-2">
-                            You achieved your weekly goal! 🎉
-                          </p>
+                          {message}
                         </div>
                       </div>
                     </div>
 
                     {/* <!-- Right Section: Application History --> */}
+                    <div
+                      className="w-full lg:w-1/2 p-6 bg-white shadow rounded-tl-xl rounded-tr-none rounded-br-none rounded-bl-xl overflow-y-auto"
+                      style={{ height: "393px" }}
+                    >
+                      <div className="flex grow flex-col justify-between mb-4">
+                        <h2 className="text-lg font-bold h3 mb-1">
+                          Recent Applications
+                        </h2>
+                      </div>
+                      {/* Recent Applications List */}
+                      <div>
+                        {Object.entries(groupedJobs).map(
+                          ([date, jobList], index) => (
+                            <div key={index} className="mb-6">
+                              {/* Date Header */}
+                              <div className="mb-2 font-semibold text-gray-600 text-sm">
+                                {date}
+                              </div>
+                              <hr className="mb-4 border-t border-gray-300" />
+
+                              {/* Job Applications */}
+                              {jobList.map((job, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex justify-between items-center mb-4 p-2 hover:bg-gray-50 rounded"
+                                >
+                                  {/* Left Section: Job Details */}
+                                  <div className="flex items-center">
+                                    <div className="flex flex-col">
+                                      <span className="font-bold">
+                                        {job.jobTitle}
+                                      </span>
+                                      <span className="text-sm text-gray-500">
+                                        {job.companyName}; {job.location}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Right Section: Status */}
+                                  <div className="flex items-center">
+                                    {/* Job Status */}
+                                    <span
+                                      className={`text-sm px-2 py-1 rounded ${
+                                        [
+                                          "Archived",
+                                          "Withdrawn",
+                                          "Not Selected",
+                                          "No Response",
+                                        ].includes(job.status)
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-green-100 text-green-600"
+                                      }`}
+                                    >
+                                      {job.status}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        )}
+
+                        {/* View All Applications Link */}
+                        <div className="text-center mt-4">
+                          <Link
+                            to="/dashboard/my-applications/job-trackerv1"
+                            className="text-blue-500 font-semibold hover:underline"
+                          >
+                            View All Applications History
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="ant-space-item">
+                  <div className="border bg-card text-card-foreground shadow-sm rounded-tl-none rounded-bl-xl rounded-br-none rounded-tr-xl">
+                    <div className="flex flex-col space-y-1.5 p-6">
+                      <div className="flex grow flex-col justify-between items-center mb-4">
+                        <h2 className="text-lg font-bold h3 mb-1">
+                          Job Search Pipeline
+                        </h2>
+                        <span className="font-medium text-[14px]">
+                          <DatePicker.RangePicker
+                            value={dateRange}
+                            onChange={onDateChange}
+                            format="YYYY-MM-DD"
+                          />
+                        </span>
+                      </div>
+
+                      {loadingData ? (
+                        <Spin size="large" />
+                      ) : data.length > 0 ? (
+                        <div className="flex flex-row items-center">
+                          <ResponsiveContainer width="50%" height={300}>
+                            <PieChart>
+                              <Pie
+                                data={data}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={100}
+                                fill="#8884d8"
+                                // label={({ name, percentage }) =>
+                                //   `${name}: ${percentage}%`
+                                // }
+                              >
+                                {data.map((entry, index) => (
+                                  <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                  />
+                                ))}
+                              </Pie>
+                              <ChartTooltip
+                                content={({ payload }) => {
+                                  if (payload && payload.length > 0) {
+                                    const { name, value, percentage } =
+                                      payload[0].payload;
+                                    return (
+                                      <div className="p-2 bg-white shadow rounded">
+                                        <p>
+                                          <strong>{name}</strong>
+                                        </p>
+                                        <p>Total: {value}</p>
+                                        <p>Percentage: {percentage}%</p>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                }}
+                              />
+                            </PieChart>
+                          </ResponsiveContainer>
+                          {/* Labels and Percentages */}
+                          <div className="mt-4 w-[50%]">
+                            <h3 className="text-lg font-bold mb-2">Details</h3>
+                            <ul className="space-y-2">
+                              {data.map((entry, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-center space-x-2"
+                                >
+                                  <div
+                                    className="w-4 h-4 rounded-full"
+                                    style={{
+                                      backgroundColor:
+                                        COLORS[index % COLORS.length],
+                                    }}
+                                  ></div>
+                                  <span className="font-medium">
+                                    {entry.name}
+                                  </span>
+                                  <span className="ml-auto">
+                                    {entry.value} ({entry.percentage}%)
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        <p>No data available for the selected range.</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -506,14 +882,58 @@ const Overview = ({
                     </div>
                   </div>
 
-                  <div className="summary-module-wrapper followups-container rounded-tl-xl rounded-bl-xl rounded-tr-none rounded-br-none">
-                    <div className="module-header flex mb-4 justify-between">
+                  <div
+                    className="summary-module-wrapper followups-container rounded-tl-xl rounded-bl-xl rounded-tr-none rounded-br-none overflow-y-auto"
+                  >
+                    <div className="module-header flex mb-4 justify-between flex-col">
                       <div className="module-heading">
                         <h2 className="h3 tracking-normal font-semibold leading-[1.2]">
                           Upcoming Interviews{" "}
                         </h2>
                       </div>
-                      <div className="module-header-action"></div>
+                      <hr className="mb-4 mt-4 border-t border-gray-300" />
+
+                      <div className="space-y-4 -mx-5">
+                        {sortedJobs.map((job) => (
+                          <div
+                            key={job._id}
+                            className={`flex justify-between items-center border p-4 rounded-md ${getBorderColor(
+                              job.interview?.interviewDate
+                            )}`}
+                          >
+                            <div>
+                              <h3 className="text-[20px] font-semibold">
+                                {job.jobTitle}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                {job.companyName}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                Interview Type:{" "}
+                                {job.interview?.interviewType || "N/A"}
+                              </p>
+                              <button
+                                onClick={() => handleViewSchedule(job)}
+                                className="text-blue-500 hover:underline"
+                              >
+                                View Schedule
+                              </button>
+                            </div>
+                            <div className="flex flex-col text-right">
+                              <p className="text-sm text-gray-500">
+                                {new Date(
+                                  job.interview?.interviewDate
+                                ).toLocaleDateString()}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {new Date(
+                                  job.interview?.interviewDate
+                                ).toLocaleTimeString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -541,6 +961,18 @@ const Overview = ({
           const updatedGoals = await getGoals();
           setGoal(updatedGoals);
         }}
+      />
+      <WeekGoalModal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        handleSave={handleSave}
+        inputGoal={inputGoal}
+        setInputGoal={setInputGoal}
+      />
+      <InterviewModal
+        modalNotifOpen={modalNotifOpen}
+        setModalNotifOpen={setModalNotifOpen}
+        selectedJob={selectedJob}
       />
     </>
   );

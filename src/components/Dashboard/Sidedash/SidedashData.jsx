@@ -13,7 +13,7 @@ export const SideDashData = [
     id: 1,
     title: "Home",
     icon: <TbSmartHome className="!text-xl" />,
-    path: "/dashboard",
+    path: "/dashboard/home",
   },
   {
     id: 2,

@@ -48,6 +48,7 @@ const SignInForm = () => {
 
         if (token && user?.firstName) {
           localStorage.setItem("authtoken", token);
+          localStorage.setItem("user", JSON.stringify(user)); // Store user details
           // localStorage.setItem("refreshToken", refreshToken);
 
           notification.success({

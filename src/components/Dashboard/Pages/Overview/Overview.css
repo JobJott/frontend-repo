@@ -270,6 +270,38 @@ body {
   width: 600px !important;
 }
 
+.activity-ring-label {
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.activity-pill {
+  background: #99bfbf;
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px 20px;
+  border-radius: 20px;
+}
+
+.application-modal {
+  max-width: 400px !important;
+}
+
+.application-modal p {
+  font-size: 14px;
+}
+
+.application-modal .ant-modal-footer {
+  border-top: 1px solid #ece4db;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
 /* Responsive Design */
 @media (min-width: 480px) {
   h3,
