@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 // import SideBar from "./SideBar";
 import "../../styles/Nav.css";
+import { RadarOutlined } from "@mui/icons-material";
 
 const Nav = () => {
   const [toggle, setToggle] = useState(false);
@@ -37,35 +38,37 @@ const Nav = () => {
     <>
       <nav className={`navbar-header ${isScrolled ? "navbar-scrolled" : ""}`}>
         <div className="navbar">
-          <div className="navbar-left">
-            <div className="navbar-logo">
-              <a href="/" style={{ margin: "auto 0" }}>
-                <img src={Logo} alt="logo" />
-              </a>
+          <div className="flex items-center">
+            <div className="content-text !block">
+              <h1 className="!tracking-normal text-[#012332] font-semibold">
+                J
+                <span>
+                  {/* <FiLoader /> */}
+                  <RadarOutlined className="text-[10px]" />
+                </span>
+                bJ
+                <span>
+                  {/* <FiLoader /> */}
+                  <RadarOutlined />
+                </span>
+                tt
+              </h1>
             </div>
 
-            <div className="navbar-menu">
-              <a href="/" className="menu-links long-text">
-                <p className="menu-title">Job Application Tracker</p>
-              </a>
+            <div className="navbar-left">
+              <div className="navbar-menu">
+                <a href="/" className="menu-links long-text">
+                  <p className="menu-title">Job Application Tracker</p>
+                </a>
 
-              <a href="/" className="menu-links">
-                <p className="menu-title">
-                  Resources
-                  <span className="dropdown-icon">
-                    <img src={arrowdown} alt="arrow-down" />
-                  </span>
-                </p>
-              </a>
+                <Link to="/dashboard/supportcenter" className="menu-links">
+                  <p className="menu-title">Support Center</p>
+                </Link>
 
-              <a href="/" className="menu-links">
-                <p className="menu-title">
-                  More
-                  <span className="dropdown-icon">
-                    <img src={arrowdown} alt="arrow-down" />
-                  </span>
-                </p>
-              </a>
+                <Link to="/pricing" className="menu-links">
+                  <p className="menu-title">Pricing</p>
+                </Link>
+              </div>
             </div>
           </div>
 

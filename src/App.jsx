@@ -5,6 +5,7 @@ import Loader from "./components/Pages/Loader";
 import Error from "./components/Pages/Error";
 import "./index.css";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import Pricing from "./components/Pages/Pricing";
 
 const Nav = lazy(() => import("./components/Pages/Nav"));
 const HeroSection = lazy(() => import("./components/Pages/HeroSection"));
@@ -77,6 +78,14 @@ function App() {
           element={
             <Suspense fallback={<Loader />}>
               <AuthPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/pricing"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Pricing />
             </Suspense>
           }
         />

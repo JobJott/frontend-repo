@@ -44,16 +44,16 @@ const Account = () => {
   };
 
   return (
-    <div className="bg-[#f9fafb] min-h-screen p-0">
+    <div className="bg-[#f9fafb p-0">
       <div className="max-w-full mx-auto bg-white p-6 rounded-lg shadow-md">
         {/* Tabs Navigation */}
         <nav className="flex border-b border-gray-300 pb-3">
-          <button className="text-green-900 font-bold mr-6">My Account</button>
+          <button className="text-[#111313] font-bold mr-6">My Account</button>
         </nav>
 
         {/* Member Information Section */}
         <div className="mt-6">
-          <h3 className="text-xl font-bold text-green-900">
+          <h3 className="text-xl font-bold text-[#111313]">
             Member Information
           </h3>
           <form className="space-y-4 mt-4">
@@ -107,7 +107,7 @@ const Account = () => {
               <button
                 type="button"
                 onClick={handleUpdateProfile}
-                className="bg-green-900 text-white px-4 py-2 rounded hover:bg-green-700"
+                className="bg-[#111313] text-white px-4 py-2 rounded hover:bg-green-700"
               >
                 Save
               </button>
@@ -124,7 +124,7 @@ const Account = () => {
 
         {/* Change Password Section */}
         <div className="mt-10">
-          <h3 className="text-xl font-bold text-green-900">Change Password</h3>
+          <h3 className="text-xl font-bold text-[#111313]">Change Password</h3>
           <form className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -176,7 +176,7 @@ const Account = () => {
             <button
               type="button"
               onClick={handleUpdateProfile}
-              className="bg-green-900 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="bg-[#111313] text-white px-4 py-2 rounded hover:bg-green-700"
             >
               Save
             </button>

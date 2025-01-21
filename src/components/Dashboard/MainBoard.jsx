@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy } from "react";
 import "./styles/Mainboard.css";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import MyApplication from "./Pages/MyApplication";
 import Contact from "./Pages/Contact";
 import Account from "./Pages/Account/Account";
@@ -115,7 +115,16 @@ const MainBoard = ({ isSideDashOpen }) => {
                   />
                 }
               >
-                <Route index element={<JobTrackerSection0 />} />
+                <Route
+                  index
+                  element={
+                    jobs.length > 0 ? (
+                      <Navigate to="job-trackerv1" replace />
+                    ) : (
+                      <JobTrackerSection0 />
+                    )
+                  }
+                />
                 <Route
                   path="job-trackerv1"
                   element={<JobTrackerSectionOne />}

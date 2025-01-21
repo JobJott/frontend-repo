@@ -15,6 +15,7 @@ import {
   BellOutlined,
   FileTextOutlined,
   SearchOutlined,
+  LeftCircleOutlined,
 } from "@ant-design/icons";
 import { FaPlus } from "react-icons/fa";
 import { AnalyticsOutlined } from "@mui/icons-material";
@@ -229,6 +230,13 @@ const JobjottModal = ({ openModal, setOpenModal }) => {
             </div>
           ) : (
             <div className="checkout" style={{ padding: "138px 40px 97px" }}>
+              <button
+                type="button"
+                onClick={() => setIsPaymentFormVisible(false)}
+                className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
+              >
+                <LeftCircleOutlined /> <span>Back to Plan Selection</span>
+              </button>
               <div className="w-full mb-6">
                 <p className="text-[1.25rem] leading-7 font-semibold flex justify-between">
                   <span>JobJott plus</span>
@@ -243,9 +251,18 @@ const JobjottModal = ({ openModal, setOpenModal }) => {
                 <div id="payment-element" className="StripeElement">
                   {/* Stripe Payment Element */}
                 </div>
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-[14px] leading-5 font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-black text-white hover:bg-secondary/80 focus-visible:ring-secondary h-10 px-4 py-2 rounded-3xl w-full">
+                <a
+                  href={
+                    selectedPlan === "10k"
+                      ? "https://paystack.com/pay/bqojc7nu6m" // Link for 10k plan
+                      : "https://paystack.com/pay/v7h9r58hwo" // Replace with the 20k plan link
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-[14px] leading-5 font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-95 transition-all duration-75 bg-black text-white hover:bg-secondary/80 focus-visible:ring-secondary h-10 px-4 py-2 rounded-3xl w-full"
+                >
                   Purchase
-                </button>
+                </a>
               </form>
             </div>
           )}
